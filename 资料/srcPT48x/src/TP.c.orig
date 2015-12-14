@@ -1,0 +1,2101 @@
+#include"includes.h"
+
+//#define DOUBLE_HEAT_ENABLE
+//#define BIT_CAL_ENABLE
+#define BYTE_BIT_CAL_ENABLE//先按字节算点，最后按位算点，平均加热点数
+
+enum
+{
+    TP_CMD_PRINT_DOTLINE,
+    TP_CMD_FEED_TO_MARK,
+    TP_CMD_FEED,
+    TP_CMD_CUT,
+    TP_CMD_MAX
+};
+
+// 首先确定每个点行需要分几次加热(TP_MAX_HEAT_STROBE)，然后确定每次加热需要走纸的步数(TP_MAX_STROBE_STEP)
+// 最终必须保证(TP_MAX_HEAT_STROBE*TP_MAX_STROBE_STEP) = 一个点行的总步进数
+
+#ifdef Half_Step
+#define TP_MAX_HEAT_STROBE	(1)			// 分几次加热，必须保证(LineDot/8/TP_MAX_HEAT_STROBE)是整数
+#if defined(DOUBLE_HEAT_ENABLE)
+#define TP_MAX_STROBE_STEP	(2)
+#else
+#define TP_MAX_STROBE_STEP	(4)			// 每个加热Strobe上的步进
+#endif
+#else
+#define TP_MAX_HEAT_STROBE	(1)			// 分几次加热，必须保证(LineDot/8/TP_MAX_HEAT_STROBE)是整数
+#if defined(DOUBLE_HEAT_ENABLE)
+#define TP_MAX_STROBE_STEP	(1)
+#else
+#define TP_MAX_STROBE_STEP	(2)			// 每个加热Strobe上的步进
+#endif
+#endif
+
+
+#if defined(DEBUG_TEST)
+#define TP_MAX_HEAT_DOT		(64)		// 每次最多能够加热的点数，必须大等于8
+#else
+#define TP_MAX_HEAT_DOT		(96)		// 每次最多能够加热的点数，必须大等于8
+#endif
+
+#if defined(DOUBLE_HEAT_ENABLE)
+#define TpMinWaitTime	(TIMER1_MS_TO_CNT(0.050))
+#else
+#define TpMinWaitTime	(TIMER1_MS_TO_CNT(0.100))
+#endif
+
+#define T1_PCLK_DIV     3
+
+
+#define DISABLE_TIMER_INTERRUPT()	do{	\
+		NVIC_DisableIRQ(TIMER_32_1_IRQn); \
+	}while(0)
+
+#define LATCH_HIGH()	do{	\
+		LPC_GPIO0->MASKED_ACCESS[0x100] = 0x100;	\
+	}while(0)
+
+#define LATCH_LOW()	do{	\
+	    LPC_GPIO0->MASKED_ACCESS[0x100] = 0x000;	\
+	}while(0)
+
+
+//====================================================================
+#define MOTOR_PWR_ON()    do{ \
+        LPC_GPIO3->MASKED_ACCESS[0x4] = 0x4; \
+        }while(0)
+
+#define MOTOR_PWR_OFF()   do{ \
+       LPC_GPIO3->MASKED_ACCESS[0x4] = 0x0; \
+        }while(0)
+
+#define MOTOR_PHASE_1A_HIGH()  do{ \
+       LPC_GPIO0->MASKED_ACCESS[0x4] = 0x4; \
+       }while(0)
+
+#define MOTOR_PHASE_1A_LOW()   do{ \
+       LPC_GPIO0->MASKED_ACCESS[0x4] = 0x0; \
+}while(0)
+
+#define MOTOR_PHASE_1B_HIGH()  do{ \
+       LPC_GPIO0->MASKED_ACCESS[0x8] = 0x8; \
+       }while(0)
+
+#define MOTOR_PHASE_1B_LOW()   do{ \
+       LPC_GPIO0->MASKED_ACCESS[0x8] = 0x0;  \
+       }while(0)
+
+#define MOTOR_PHASE_2A_HIGH()  do{ \
+       LPC_GPIO3->MASKED_ACCESS[0x10] = 0x10; \
+       }while(0)
+
+#define MOTOR_PHASE_2A_LOW()   do{ \
+       LPC_GPIO3->MASKED_ACCESS[0x10] = 0x00; \
+       }while(0)
+
+#define MOTOR_PHASE_2B_HIGH()  do{ \
+       LPC_GPIO3->MASKED_ACCESS[0x20] = 0x20; \
+       }while(0)
+
+#define MOTOR_PHASE_2B_LOW()   do{  \
+       LPC_GPIO3->MASKED_ACCESS[0x20] = 0x00; \
+       }while(0)
+
+//=====================================================================
+#if defined(PT486)||defined(PT487)||defined(PT48D)
+   #define STROBE_0_ON()     do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x2] = 0x2; \
+           }while(0)
+
+   #define STROBE_0_OFF()    do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x2] = 0x0; \
+           }while(0)
+
+   #define STROBE_1_ON()     do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x4] = 0x4; \
+           }while(0)
+
+   #define STROBE_1_OFF()    do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x4] = 0x0; \
+           }while(0)
+
+#elif defined(PT488)
+   #define STROBE_0_ON()     do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x2] = 0x0; \
+           }while(0)
+
+   #define STROBE_0_OFF()    do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x2] = 0x2; \
+           }while(0)
+
+  #define STROBE_1_ON()     do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x4] = 0x0;  \
+           }while(0)
+
+  #define STROBE_1_OFF()     do{ \
+           LPC_GPIO1->MASKED_ACCESS[0x4] = 0x4; \
+           }while(0)
+
+#endif
+//======================================================================
+
+
+#define PRN_POWER_CHARGE() \
+	do{ \
+		LPC_GPIO1->MASKED_ACCESS[0x400] = 0x400; \
+	}while(0)
+
+#define PRN_POWER_DISCHARGE() \
+	do{ \
+	    LPC_GPIO1->MASKED_ACCESS[0x400] = 0x000;\
+	}while(0)
+
+//======================================================================
+
+typedef enum
+{
+    TPSTATE_IDLE = 0,
+    TPSTATE_PRE_IDLE,
+    TPSTATE_START,
+    TPSTATE_HEAT_WITH_FEED,       // 开始加热，走纸，时间最长为马达步进时间(下一状态为TPSTATE_HEAT1_FEED_B)，最短为加热时间(下一状态为TPSTATE_HEAT1_STOP_A)
+    TPSTATE_HEAT_WITHOUT_FEED,
+    TPSTATE_FEED,
+    TPSTATE_WAIT_TIME,          //唤醒等待时间
+    TPSTATE_MAX
+} TPSTATE_T;
+
+typedef struct
+{
+	TPSTATE_T state;
+	uint8_t phase;
+	uint16_t repeat;
+
+	uint32_t heat;
+	uint32_t heat_setting;
+	uint32_t heat_remain;
+	uint32_t feed_time[TP_MAX_STROBE_STEP];
+
+	uint8_t feed_step;		// 单个Strobe加热时马达步进计数器
+	uint8_t strobe_step;	// 单个点行加热时需要分的Strobe数的计数器
+	uint8_t accel;
+	uint16_t head;
+	volatile uint16_t tail;
+	uint16_t feedmax;
+	uint8_t heat_max_cnt;
+	uint8_t heat_cnt;
+    uint8_t heat_buf[((LineDot/TP_MAX_HEAT_STROBE)+(TP_MAX_HEAT_DOT-7)-1)/(TP_MAX_HEAT_DOT-7)][LineDot/8];
+} TP_T;
+
+static TP_T tp;
+static uint8_t TP_dot[16][LineDot/8+1];		// 增加一个控制位
+
+extern uint8_t clr_all_dot=0;
+extern void WakeUpTP_MODE1(void)
+{
+    volatile uint16_t len;
+
+    PrintBufToZero();
+    esc_sts.bitmap_flag = 0;
+	memset(esc_sts.dot, 0, sizeof(esc_sts.dot));
+	esc_sts.start_dot = 0;
+    max_start_col =0;
+	esc_sts.dot_minrow = ARRAY_SIZE(esc_sts.dot[0]);
+
+    len =  LineDot/8;
+    while (len--)
+    {
+         SSP0_SendData(0);
+    }
+    LATCH_LOW();
+    len = 100;
+    while (len--);
+    LATCH_HIGH();
+    tp.tail=tp.head;
+    TPIntSetIdle();
+    clr_all_dot=1;
+}
+
+static void TPForwardStep(int direction)
+{
+
+    PRN_POWER_DISCHARGE();
+#if defined(PT486) || defined(PT487)||defined(PT48D)
+#ifdef Half_Step
+	switch (tp.phase & 0x07)
+	{
+        case 0:
+            MOTOR_PHASE_1A_HIGH();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_HIGH();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 1:
+            MOTOR_PHASE_1A_HIGH();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 2:
+            MOTOR_PHASE_1A_HIGH();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_HIGH();
+        break;
+        case 3:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_HIGH();
+        break;
+        case 4:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_HIGH();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_HIGH();
+        break;
+        case 5:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_HIGH();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 6:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_HIGH();
+            MOTOR_PHASE_2A_HIGH();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 7:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_HIGH();
+            MOTOR_PHASE_2B_LOW();
+        break;
+     }
+
+#else
+
+        switch (tp.phase & 0x03)
+        {
+		   case 0:
+                MOTOR_PHASE_1A_HIGH();
+                MOTOR_PHASE_1B_LOW();
+                MOTOR_PHASE_2A_HIGH();
+                MOTOR_PHASE_2B_LOW();
+            break;
+            case 1:
+                MOTOR_PHASE_1A_HIGH();
+                MOTOR_PHASE_1B_LOW();
+                MOTOR_PHASE_2A_LOW();
+                MOTOR_PHASE_2B_HIGH();
+            break;
+            case 2:
+                MOTOR_PHASE_1A_LOW();
+                MOTOR_PHASE_1B_HIGH();
+                MOTOR_PHASE_2A_LOW();
+                MOTOR_PHASE_2B_HIGH();
+            break;
+            case 3:
+                MOTOR_PHASE_1A_LOW();
+                MOTOR_PHASE_1B_HIGH();
+                MOTOR_PHASE_2A_HIGH();
+                MOTOR_PHASE_2B_LOW();
+            break;
+         }
+#endif
+
+#else
+#if defined(Half_Step)
+	switch (tp.phase & 0x07)
+	{
+        case 7:
+            MOTOR_PHASE_1A_HIGH();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_HIGH();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 6:
+            MOTOR_PHASE_1A_HIGH();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 5:
+            MOTOR_PHASE_1A_HIGH();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_HIGH();
+        break;
+        case 4:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_HIGH();
+        break;
+        case 3:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_HIGH();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_HIGH();
+        break;
+        case 2:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_HIGH();
+            MOTOR_PHASE_2A_LOW();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 1:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_HIGH();
+            MOTOR_PHASE_2A_HIGH();
+            MOTOR_PHASE_2B_LOW();
+        break;
+        case 0:
+            MOTOR_PHASE_1A_LOW();
+            MOTOR_PHASE_1B_LOW();
+            MOTOR_PHASE_2A_HIGH();
+            MOTOR_PHASE_2B_LOW();
+        break;
+     }
+
+#else
+        switch (tp.phase & 0x03)
+        {
+            case 3:
+                MOTOR_PHASE_1A_HIGH();
+                MOTOR_PHASE_1B_LOW();
+                MOTOR_PHASE_2A_HIGH();
+                MOTOR_PHASE_2B_LOW();
+            break;
+            case 2:
+                MOTOR_PHASE_1A_HIGH();
+                MOTOR_PHASE_1B_LOW();
+                MOTOR_PHASE_2A_LOW();
+                MOTOR_PHASE_2B_HIGH();
+            break;
+            case 1:
+                MOTOR_PHASE_1A_LOW();
+                MOTOR_PHASE_1B_HIGH();
+                MOTOR_PHASE_2A_LOW();
+                MOTOR_PHASE_2B_HIGH();
+            break;
+            case 0:
+                MOTOR_PHASE_1A_LOW();
+                MOTOR_PHASE_1B_HIGH();
+                MOTOR_PHASE_2A_HIGH();
+                MOTOR_PHASE_2B_LOW();
+            break;
+         }
+#endif
+#endif
+     PRN_POWER_CHARGE();
+	tp.phase += direction;
+}
+static uint16_t const TpAccelerationSteps[] =
+{
+    TIMER1_MS_TO_CNT(9.027),
+	TIMER1_MS_TO_CNT(5.579),
+	TIMER1_MS_TO_CNT(4.308),
+	TIMER1_MS_TO_CNT(2.614),
+	TIMER1_MS_TO_CNT(2.500),
+	TIMER1_MS_TO_CNT(2.426),
+	TIMER1_MS_TO_CNT(2.272),
+	TIMER1_MS_TO_CNT(2.144),
+	TIMER1_MS_TO_CNT(2.035),
+	TIMER1_MS_TO_CNT(1.941),
+	TIMER1_MS_TO_CNT(1.859),
+	TIMER1_MS_TO_CNT(1.786),
+	TIMER1_MS_TO_CNT(1.721),
+	TIMER1_MS_TO_CNT(1.663),
+	TIMER1_MS_TO_CNT(1.610),
+	TIMER1_MS_TO_CNT(1.561),
+	TIMER1_MS_TO_CNT(1.517),
+	TIMER1_MS_TO_CNT(1.477),
+	TIMER1_MS_TO_CNT(1.439),
+	TIMER1_MS_TO_CNT(1.404),
+	TIMER1_MS_TO_CNT(1.372),
+	TIMER1_MS_TO_CNT(1.342),
+	TIMER1_MS_TO_CNT(1.313),
+	TIMER1_MS_TO_CNT(1.287),
+	TIMER1_MS_TO_CNT(1.261),
+	TIMER1_MS_TO_CNT(1.238),
+	TIMER1_MS_TO_CNT(1.215),
+	TIMER1_MS_TO_CNT(1.194),
+	TIMER1_MS_TO_CNT(1.174),
+	TIMER1_MS_TO_CNT(1.155),
+	TIMER1_MS_TO_CNT(1.136),
+	TIMER1_MS_TO_CNT(1.119),
+	TIMER1_MS_TO_CNT(1.102),
+	TIMER1_MS_TO_CNT(1.086),
+	TIMER1_MS_TO_CNT(1.071),
+	TIMER1_MS_TO_CNT(1.056),
+	TIMER1_MS_TO_CNT(1.042),
+	TIMER1_MS_TO_CNT(1.029),
+	TIMER1_MS_TO_CNT(1.016),
+	TIMER1_MS_TO_CNT(1.003),
+	TIMER1_MS_TO_CNT(0.991),
+	TIMER1_MS_TO_CNT(0.979),
+	TIMER1_MS_TO_CNT(0.968),
+	TIMER1_MS_TO_CNT(0.957),
+	TIMER1_MS_TO_CNT(0.947),
+	TIMER1_MS_TO_CNT(0.936),
+	TIMER1_MS_TO_CNT(0.927),
+	TIMER1_MS_TO_CNT(0.917),
+	TIMER1_MS_TO_CNT(0.908),
+	TIMER1_MS_TO_CNT(0.899),
+	TIMER1_MS_TO_CNT(0.890),
+	TIMER1_MS_TO_CNT(0.882),
+	TIMER1_MS_TO_CNT(0.873),
+	TIMER1_MS_TO_CNT(0.865),
+	TIMER1_MS_TO_CNT(0.857),
+	TIMER1_MS_TO_CNT(0.850),
+	TIMER1_MS_TO_CNT(0.842),
+	TIMER1_MS_TO_CNT(0.835),
+	TIMER1_MS_TO_CNT(0.828),
+	TIMER1_MS_TO_CNT(0.821),
+	TIMER1_MS_TO_CNT(0.815),
+	TIMER1_MS_TO_CNT(0.808),
+	TIMER1_MS_TO_CNT(0.802),
+#if defined(DOUBLE_HEAT_ENABLE)
+    TIMER1_MS_TO_CNT(0.796),
+	TIMER1_MS_TO_CNT(0.789),
+	TIMER1_MS_TO_CNT(0.784),
+	TIMER1_MS_TO_CNT(0.778),
+	TIMER1_MS_TO_CNT(0.772),
+	TIMER1_MS_TO_CNT(0.766),
+	TIMER1_MS_TO_CNT(0.761),
+	TIMER1_MS_TO_CNT(0.756),
+	TIMER1_MS_TO_CNT(0.750),
+	TIMER1_MS_TO_CNT(0.745),
+	TIMER1_MS_TO_CNT(0.740),
+	TIMER1_MS_TO_CNT(0.735),
+	TIMER1_MS_TO_CNT(0.731),
+	TIMER1_MS_TO_CNT(0.726),
+	TIMER1_MS_TO_CNT(0.721),
+	TIMER1_MS_TO_CNT(0.717),
+	TIMER1_MS_TO_CNT(0.712),
+	TIMER1_MS_TO_CNT(0.708),
+	TIMER1_MS_TO_CNT(0.704),
+	/*TIMER1_MS_TO_CNT(0.699),
+	TIMER1_MS_TO_CNT(0.695),
+	TIMER1_MS_TO_CNT(0.691),
+	TIMER1_MS_TO_CNT(0.687),
+	TIMER1_MS_TO_CNT(0.683),
+	TIMER1_MS_TO_CNT(0.679),
+	TIMER1_MS_TO_CNT(0.675),
+	TIMER1_MS_TO_CNT(0.672),
+	TIMER1_MS_TO_CNT(0.668),
+	TIMER1_MS_TO_CNT(0.664),
+	TIMER1_MS_TO_CNT(0.661),
+	TIMER1_MS_TO_CNT(0.657),
+	TIMER1_MS_TO_CNT(0.654),
+	TIMER1_MS_TO_CNT(0.651),
+	TIMER1_MS_TO_CNT(0.647),
+	TIMER1_MS_TO_CNT(0.644),
+	TIMER1_MS_TO_CNT(0.641),
+	TIMER1_MS_TO_CNT(0.637),
+	TIMER1_MS_TO_CNT(0.634),
+	TIMER1_MS_TO_CNT(0.631),
+	TIMER1_MS_TO_CNT(0.628),
+	TIMER1_MS_TO_CNT(0.625),
+	TIMER1_MS_TO_CNT(0.622),
+	TIMER1_MS_TO_CNT(0.619),
+	TIMER1_MS_TO_CNT(0.616),
+	TIMER1_MS_TO_CNT(0.614),
+	TIMER1_MS_TO_CNT(0.611),
+	TIMER1_MS_TO_CNT(0.608),*/
+#endif
+};
+
+// 加热时间根据电压调整
+static uint32_t TPHeatVoltageAdj(uint32_t tm)
+{
+
+#if defined(TP_VOLTAGE_SNS)
+    int8_t Voltage_Addr;
+    //int16_t Temp_V;
+    static uint32_t const Voltage_Ratio[]=
+    {
+		#if defined(DOUBLE_HEAT_ENABLE)
+        TIMER1_MS_TO_CNT(5.40),//3.3V
+        TIMER1_MS_TO_CNT(4.80),//3.4V
+        TIMER1_MS_TO_CNT(4.40),//3.5V
+        TIMER1_MS_TO_CNT(3.80),//3.6V
+        TIMER1_MS_TO_CNT(3.20),//3.7V
+        TIMER1_MS_TO_CNT(2.90),//3.8V
+        TIMER1_MS_TO_CNT(2.70),//3.9V
+        TIMER1_MS_TO_CNT(2.40),//4.0V
+        TIMER1_MS_TO_CNT(2.20),//4.1V
+        TIMER1_MS_TO_CNT(2.00),//4.2V
+        #else
+		TIMER1_MS_TO_CNT(6.50),//3.3V
+        TIMER1_MS_TO_CNT(5.80),//3.4V
+        TIMER1_MS_TO_CNT(5.50),//3.5V
+        TIMER1_MS_TO_CNT(4.90),//3.6V
+        TIMER1_MS_TO_CNT(4.40),//3.7V
+        TIMER1_MS_TO_CNT(4.00),//3.8V
+        TIMER1_MS_TO_CNT(3.80),//3.9V
+        TIMER1_MS_TO_CNT(3.40),//4.0V
+        TIMER1_MS_TO_CNT(3.00),//4.1V
+        TIMER1_MS_TO_CNT(2.50),//4.2V
+		/*TIMER1_MS_TO_CNT(5.80),//3.3V
+        TIMER1_MS_TO_CNT(5.20),//3.4V
+        TIMER1_MS_TO_CNT(4.80),//3.5V
+        TIMER1_MS_TO_CNT(4.20),//3.6V
+        TIMER1_MS_TO_CNT(3.60),//3.7V
+        TIMER1_MS_TO_CNT(3.30),//3.8V
+        TIMER1_MS_TO_CNT(3.10),//3.9V
+        TIMER1_MS_TO_CNT(2.80),//4.0V
+        TIMER1_MS_TO_CNT(2.60),//4.1V
+        TIMER1_MS_TO_CNT(2.40),//4.2V*/
+		#endif
+    };
+    Voltage_Addr = ((Power_AD*380*33)/(1024*180) - 33+3);//3为修正值
+    if(Voltage_Addr >= 0)
+    {
+        if(Voltage_Addr <= 9)
+        tm = Voltage_Ratio[Voltage_Addr];
+        else
+        tm = Voltage_Ratio[9];
+    }
+    else
+    {
+       tm = Voltage_Ratio[0];
+    }
+ #endif
+
+   	return tm;
+
+
+}
+uint8_t const Heat_Temperater_Ratio[]=
+{
+// 比例        温度
+    100,        //25
+    99,
+    98,
+    97,
+    96,
+    95,         //30
+    94,
+    93,
+    92,
+    91,
+    90,         //35
+    89,
+    88,
+    87,
+    86,
+    85,         //40
+    84,
+    83,
+    82,
+    81,
+    80,         //45
+    79,
+    78,
+    77,
+    76,
+    75,         //50
+    74,
+    73,
+    72,
+    71,
+    70,         //55
+    69,
+    68,
+    67,
+    66,
+    65,         //60
+    64,
+    63,
+    62,
+    61,
+    60,         //65
+    59,
+    58,
+    57,
+    56,
+    55,         //70
+    54,
+    53,
+    52,
+    51,
+    50,         //75
+    50,
+    50,
+    50,
+    50,
+    50,         //80
+    50,
+    50,
+    50,
+    50,
+    50,
+};
+uint8_t const Heat_TemperaterLow_Ratio[]=
+{
+// 比例        温度
+    100,        //25
+    101,
+    102,
+    103,
+    104,
+    105,         //20
+    106,
+    107,
+    108,
+    109,
+    110,         //15
+    111,
+    112,
+    113,
+    114,
+    116,         //10
+    118,
+    120,
+    122,
+    124,
+    128,         //5
+    132,
+    136,
+    140,
+    144,
+    148,         //0
+    152,
+    156,
+    160,
+    164,
+    168,         //-5
+    172,
+    178,
+    186,
+    194,
+    202,         //-10
+    210,
+    216,
+    220,
+    224,
+    228,         //-15
+    230,
+    238,
+    242,
+    248,
+    250,         //-20
+};
+// 加热时间根据热敏头的温度进行调整
+static uint32_t TPHeatThermalAdj(uint32_t tm,int16_t temp)
+{
+
+    if((temp < 25)&&((temp >= (-20))))
+    {
+        tm = tm *Heat_TemperaterLow_Ratio[(25 - temp)]/100;
+    }
+    else if ((temp >= 25)&&(temp <= 75))
+    {
+        tm = tm *Heat_Temperater_Ratio[(temp-25)]/100;
+    }
+    else if (temp>75)
+    {
+        tm = tm /2;   //超过65度，按50%加热
+    }
+
+	return tm;
+}
+
+static uint32_t TPHeatDotsAdj(uint32_t tm,uint16_t dots)
+{
+
+    #if (TP_MAX_HEAT_DOT == 48)
+	const uint8_t dot_ratio_tbl[TP_MAX_HEAT_DOT/4]=
+	{
+       85, 89, 91, 92, 93, 94,//0-24
+	   96, 98,100,100,100,100,
+	};
+	#elif (TP_MAX_HEAT_DOT == 64)
+	const uint8_t dot_ratio_tbl[TP_MAX_HEAT_DOT/4]=
+	{
+       85, 89, 91, 92, 93, 94,//0-24
+	   96, 98, 99, 99, 99, 99,
+	   100,100,100,100,
+	};
+	#elif (TP_MAX_HEAT_DOT == 96)
+	const uint8_t dot_ratio_tbl[TP_MAX_HEAT_DOT/4]=
+	{
+        85, 89, 91, 92, 93, 94,//0-24
+	    97, 97, 97, 98, 98, 98,
+	    99, 99, 99, 99, 99, 99,
+	   100,100,100,100,100,100,
+	};
+    #elif (TP_MAX_HEAT_DOT == 128)
+	const uint8_t dot_ratio_tbl[TP_MAX_HEAT_DOT/4]=
+	{
+        85, 89, 91, 92, 93, 94,//0-24
+	    97, 97, 97, 98, 98, 98,
+	    99, 99, 99, 99, 99, 99,
+	    100,100,100,100,100,100,
+	    100,100,100,100,100,100,
+	    100,100,
+	};
+	#else
+	#error	"NO Define ERROR"
+	#endif
+
+    if(dots<TP_MAX_HEAT_DOT)
+	{
+	  tm = tm * dot_ratio_tbl[dots/4]/100;
+	}
+	else
+	{
+	  tm = tm * dot_ratio_tbl[TP_MAX_HEAT_DOT/4-1]/100;
+	}
+    return tm;
+}
+// 加热前几行的加热时间调整
+static uint32_t TPHeatPreLineAdj(uint32_t tm)
+{
+//	TODO:
+//	tm += ((uint32_t)TpAccelerationSteps[tp.accel]) * 10 / 100;
+	return tm;
+}
+
+static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
+{
+    uint32_t heat;
+    uint32_t time, time_sum;
+    uint16_t i;
+
+    heat = TPHeatVoltageAdj(tp.heat_setting);
+	heat = TPHeatDotsAdj(heat,max_heat_dots);
+    heat = TPHeatThermalAdj(heat,TPHTemperature());
+    heat = TPHeatPreLineAdj(heat);
+
+    tp.heat = heat;
+    heat *= heat_cnt;
+	heat += TpMinWaitTime;
+
+    while(1)
+    {
+        time_sum = 0;
+        for(i=0; i<TP_MAX_STROBE_STEP; i++)
+        {
+
+            if((tp.accel+i) < (ARRAY_SIZE(TpAccelerationSteps) - 1))//加速表内继续加速
+            {
+                time = TpAccelerationSteps[tp.accel+i];
+            }
+            else
+            {
+                time = TpAccelerationSteps[ARRAY_SIZE(TpAccelerationSteps)-1];//加速表最后一步
+            }
+            tp.feed_time[i] = time;
+            time_sum += time;
+        }
+        if(time_sum < heat)
+        {
+            if(tp.accel)
+            {
+                tp.accel--;
+            }
+            else
+            {
+                for(i=0; i<TP_MAX_STROBE_STEP; i++)
+                {
+                    tp.feed_time[i] = heat/TP_MAX_STROBE_STEP;  // 加速时间均分
+                }
+                break;
+            }
+        }
+        else
+        {
+            if((tp.accel+TP_MAX_STROBE_STEP) < (ARRAY_SIZE(TpAccelerationSteps)-1))
+            {
+                tp.accel += TP_MAX_STROBE_STEP;
+            }
+            else
+            {
+                tp.accel = (ARRAY_SIZE(TpAccelerationSteps)-1);
+            }
+            break;
+        }
+    }
+
+}
+static uint16_t TPGetStepTime(void)
+{
+	uint16_t time;
+
+	time = TpAccelerationSteps[tp.accel];
+	if(tp.accel < (ARRAY_SIZE(TpAccelerationSteps)-1))
+	{
+		tp.accel++;
+	}
+	return time;
+}
+
+
+static void TPSetTimeCnt(uint16_t tm)
+{
+	if(tm < TpMinWaitTime)tm = TpMinWaitTime;
+
+	LPC_TMR32B1->TC  = 0;
+    LPC_TMR32B1->MR0 = tm;
+}
+
+static uint8_t TPFeedStep(void)
+{
+	TPSetTimeCnt(TPGetStepTime());	// set timer
+	if(TPPrinterReady() != TRUE )
+	{
+        return 0;
+	}
+	if(tp.feedmax)
+	{
+		TPForwardStep(1);
+		tp.feedmax--;
+	}
+	if(tp.feedmax)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+static void TPIntSetPreIdle(void)
+{
+	STROBE_0_OFF(); 	// stop heat
+	STROBE_1_OFF(); 	// stop heat
+	tp.feedmax = 60*1;		// 每1ms中断一次
+	tp.state = TPSTATE_PRE_IDLE;
+}
+
+static void TPIntSetIdle(void)
+{
+	STROBE_0_OFF(); 	// stop heat
+	STROBE_1_OFF(); 	// stop heat
+	DISABLE_TIMER_INTERRUPT();				// disable interrupt
+	MOTOR_PWR_OFF();
+	tp.state = TPSTATE_IDLE;
+
+}
+#if defined(BYTE_BIT_CAL_ENABLE)||defined(BIT_CAL_ENABLE)
+uint16_t MaxHeatDotsAdj(uint16_t dots)
+{
+    uint16_t max_heat_dot;//新的最大值
+
+    max_heat_dot = dots/(dots/(TP_MAX_HEAT_DOT+1)+1);//总加热点数加热次数
+
+	if ((max_heat_dot+1) <= TP_MAX_HEAT_DOT)         //8个点的误差，引起多一次的加热
+        max_heat_dot += 1;
+    else
+        max_heat_dot = TP_MAX_HEAT_DOT;
+
+    return max_heat_dot;
+}
+#else
+uint16_t MaxHeatDotsAdj(uint16_t dots)
+{
+    uint16_t max_heat_dot;//新的最大值
+
+    max_heat_dot = dots/(dots/(TP_MAX_HEAT_DOT+1)+1);//总加热点数加热次数
+    if ((max_heat_dot+8) <= TP_MAX_HEAT_DOT)         //8个点的误差，引起多一次的加热
+        max_heat_dot += 8;
+    else
+        max_heat_dot = TP_MAX_HEAT_DOT;
+    return max_heat_dot;
+}
+#endif
+#if defined(BYTE_BIT_CAL_ENABLE)
+static void TPDataShiftCntProc(uint8_t strobe_cnt)
+{
+	static uint8_t const Byte2DotNumTbl[] =
+	{
+		0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
+	};
+	uint8_t c;			// 当前字节
+	uint8_t dot;		// 当前字节的点数
+	uint8_t heat_cnt;	// 分开几次加热
+	uint16_t max_dot;	// 加热点累加和
+	uint16_t i,j, pt;		// 行缓冲区指针
+    uint16_t max_heat_dots=0;
+
+
+    for(i=0, pt=((LineDot/8/TP_MAX_HEAT_STROBE)*strobe_cnt); i<LineDot/8/TP_MAX_HEAT_STROBE; i++, pt++)
+    {
+	   c = TP_dot[tp.tail][pt];
+	   dot = Byte2DotNumTbl[c];
+       max_heat_dots += dot;
+    }
+    max_heat_dots = MaxHeatDotsAdj(max_heat_dots);
+
+	memset(tp.heat_buf[0], 0, sizeof(tp.heat_buf[0]));
+
+	for(i=0, pt=((LineDot/8/TP_MAX_HEAT_STROBE)*strobe_cnt), heat_cnt=0, max_dot=0; i<LineDot/8/TP_MAX_HEAT_STROBE; i++, pt++)
+	{
+		c = TP_dot[tp.tail][pt];
+		dot = Byte2DotNumTbl[c];
+		if((max_dot+dot)<=max_heat_dots)
+		{
+			max_dot += dot;
+			tp.heat_buf[heat_cnt][pt] = c;
+		}
+		else
+		{
+              for (j=0; j<8; j++)
+   		      {
+                 c = TP_dot[tp.tail][pt] & (1<<(7-(j&0x07)));
+                 if(c)
+                 {
+                    if((max_dot+1) <= max_heat_dots)
+                    {
+                        max_dot++;
+                    }
+                    else
+                    {
+                        heat_cnt++;
+                        max_dot = 1;
+                        memset(tp.heat_buf[heat_cnt], 0, sizeof(tp.heat_buf[0]));
+                    }
+                    tp.heat_buf[heat_cnt][pt+j/8] |= c;
+                 }
+   		      }
+		}
+
+	}
+	if(max_dot)
+    {
+       heat_cnt++;
+	}
+
+	tp.heat_max_cnt = heat_cnt;//每行最多加热的次数
+	tp.heat_cnt = 0;
+	// 计算具体的加速表来满足时间要求
+	TPAdjustStepTime(heat_cnt,max_heat_dots);
+
+}
+#elif defined(BIT_CAL_ENABLE)
+static uint8_t StartCal(uint8_t i)
+{
+#if ((LineDot%TP_MAX_HEAT_DOT) == 0)
+    if(i < ((LineDot/TP_MAX_HEAT_DOT+1)/2))
+        return (2*i);
+    else
+        return (2*(i-((LineDot/TP_MAX_HEAT_DOT+1)/2))+1);
+#else
+    #error "StartCal Define ERROR"
+    return i;
+#endif
+}
+static void TPDataShiftCntProc(uint8_t strobe_cnt)
+{
+	static uint8_t const Byte2DotNumTbl[] =
+	{
+		0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
+	};
+	uint8_t c;			// 当前字节
+	uint8_t dot;		// 当前字节的点数
+	uint8_t heat_cnt;	// 分开几次加热
+	uint16_t max_dot;	// 加热点累加和
+	uint16_t i,j, pt;		// 行缓冲区指针
+    uint16_t max_heat_dots=0;
+
+
+    for(i=0, pt=((LineDot/8/TP_MAX_HEAT_STROBE)*strobe_cnt); i<LineDot/8/TP_MAX_HEAT_STROBE; i++, pt++)
+    {
+	   c = TP_dot[tp.tail][pt];
+	   dot = Byte2DotNumTbl[c];
+       max_heat_dots += dot;
+    }
+    max_heat_dots = MaxHeatDotsAdj(max_heat_dots);
+
+
+    memset(tp.heat_buf[0], 0, sizeof(tp.heat_buf[0]));
+	for(i=0,heat_cnt=0,max_dot=0;i<LineDot/TP_MAX_HEAT_DOT/TP_MAX_HEAT_STROBE;i++)
+    {
+		for(j=0,pt=StartCal(i)+(LineDot/TP_MAX_HEAT_STROBE)*strobe_cnt;  \
+		    j<TP_MAX_HEAT_DOT;                                 \
+		    j++,pt+=(LineDot/TP_MAX_HEAT_DOT/TP_MAX_HEAT_STROBE))
+		{
+			c = TP_dot[tp.tail][pt/8] & (1<<(7-(pt&0x07)));
+			if(c)
+			{
+				if((max_dot+1) <= max_heat_dots)
+				{
+					max_dot++;
+				}
+				else
+				{
+					heat_cnt++;
+					max_dot = 1;
+					memset(tp.heat_buf[heat_cnt], 0, sizeof(tp.heat_buf[0]));
+				}
+				tp.heat_buf[heat_cnt][pt/8] |= c;
+			}
+		}
+	}
+	if(max_dot)
+    {
+       heat_cnt++;
+	}
+
+	tp.heat_max_cnt = heat_cnt;//每行最多加热的次数
+	tp.heat_cnt = 0;
+	// 计算具体的加速表来满足时间要求
+	TPAdjustStepTime(heat_cnt,max_heat_dots);
+
+}
+#else
+static void TPDataShiftCntProc(uint8_t strobe_cnt)
+{
+	static uint8_t const Byte2DotNumTbl[] =
+	{
+		0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+		4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8
+	};
+	uint8_t c;			// 当前字节
+	uint8_t dot;		// 当前字节的点数
+	uint8_t heat_cnt;	// 分开几次加热
+	uint16_t max_dot;	// 加热点累加和
+	uint16_t i,pt;		// 行缓冲区指针
+    uint16_t max_heat_dots=0;
+
+    for(i=0, pt=((LineDot/8/TP_MAX_HEAT_STROBE)*strobe_cnt); i<LineDot/8/TP_MAX_HEAT_STROBE; i++, pt++)
+    {
+	   c = TP_dot[tp.tail][pt];
+	   dot = Byte2DotNumTbl[c];
+       max_heat_dots += dot;
+    }
+    max_heat_dots = MaxHeatDotsAdj(max_heat_dots);
+
+	memset(tp.heat_buf[0], 0, sizeof(tp.heat_buf[0]));
+
+	for(i=0, pt=((LineDot/8/TP_MAX_HEAT_STROBE)*strobe_cnt), heat_cnt=0, max_dot=0; i<LineDot/8/TP_MAX_HEAT_STROBE; i++, pt++)
+	{
+		c = TP_dot[tp.tail][pt];
+		dot = Byte2DotNumTbl[c];
+		if((max_dot+dot)<=max_heat_dots)
+		{
+			max_dot += dot;
+		}
+		else
+		{
+			heat_cnt++;
+			max_dot = dot;
+			memset(tp.heat_buf[heat_cnt], 0, sizeof(tp.heat_buf[0]));
+		}
+		tp.heat_buf[heat_cnt][pt] = c;
+	}
+
+	if(max_dot)
+    {
+       heat_cnt++;
+	}
+
+	tp.heat_max_cnt = heat_cnt;//每行最多加热的次数
+	tp.heat_cnt = 0;
+	// 计算具体的加速表来满足时间要求
+	TPAdjustStepTime(heat_cnt,max_heat_dots);
+}
+#endif
+static void TPDataShiftOut(uint8_t *p, uint16_t len)
+{
+
+
+        while (len--)
+        {
+            //Send byte through the SPI1 peripheral
+            SSP0_SendData(*p++);
+           // Loop while DR register in not emplty
+
+        }
+
+        return;
+
+}
+
+static void TPDataDMAShiftToPrn(void)
+{
+    TPDataShiftOut(tp.heat_buf[tp.heat_cnt],ARRAY_SIZE(tp.heat_buf[0]));
+}
+
+static uint8_t TPCheckBuf(void)
+{
+	uint8_t ret;
+
+    if(TPPrinterReady() !=  TRUE )
+    {
+    	 TPIntSetIdle();
+	     ret = 0;
+         return ret;
+    }
+	if (tp.head != tp.tail)
+	{
+		switch (TP_dot[tp.tail][LineDot/8])
+		{
+		case TP_CMD_PRINT_DOTLINE:
+			TPDataShiftCntProc(0);		// 计算第一个加热行
+			if(tp.heat_cnt < tp.heat_max_cnt)//本行还有数据需要加热
+			{
+				TPDataDMAShiftToPrn();		// 开始送数据到打印机
+			}
+			tp.heat_remain = 0;
+			tp.feed_step = 0;
+			tp.strobe_step = 0;
+			tp.state = TPSTATE_HEAT_WITH_FEED;
+			ret = 1;
+			break;
+		case TP_CMD_FEED:
+			tp.feedmax = TP_dot[tp.tail][0] | (TP_dot[tp.tail][1] << 8);
+			tp.tail = (tp.tail+1) & (ARRAY_SIZE(TP_dot)-1);
+			tp.state = TPSTATE_FEED;
+			ret = 2;
+			break;
+		default:	// 未知类型，属于严重错误
+			tp.tail = (tp.tail+1) & (ARRAY_SIZE(TP_dot)-1);
+			TPIntSetIdle();
+			ret = 0;
+			break;
+		}
+	}
+	else
+	{
+        TPIntSetPreIdle();
+		ret = 0;
+	}
+	return ret;
+}
+
+extern void TPISRProc(void)
+{
+	switch (tp.state)
+	{
+	case TPSTATE_START: 	// start
+		switch (TPCheckBuf())
+		{
+		case 1:		// 打印
+			MOTOR_PWR_ON();
+			TPSetTimeCnt(TPGetStepTime());	// set timer
+			break;
+		case 2:		// 走纸
+			MOTOR_PWR_ON();
+			TPSetTimeCnt(TPGetStepTime());	// set timer
+			break;
+		default:
+			TPIntSetIdle();
+			break;
+		}
+		break;
+	case TPSTATE_HEAT_WITH_FEED:       // 开始马达步进
+		TPForwardStep(1);
+		// break;
+	case TPSTATE_HEAT_WITHOUT_FEED:
+		if(tp.heat_remain)			// 还要继续加热，每行刚开始加热或者一个步进内加热时间足够时此条件不成立
+		{
+			if(tp.feed_time[tp.feed_step] > tp.heat_remain)	// 当前步进的时间足够加热
+			{
+				TPSetTimeCnt(tp.heat_remain);	// 加热
+				tp.feed_time[tp.feed_step] -= tp.heat_remain;
+				tp.heat_remain = 0;
+				tp.state = TPSTATE_HEAT_WITHOUT_FEED;
+			}
+			else			// 时间不够或者刚好，先加热剩余时间//如果时间不够则走一步后继续跳入上一个if,刚好则跳入else
+			{
+				TPSetTimeCnt(tp.feed_time[tp.feed_step]); // 加热剩余时间
+				tp.heat_remain -= tp.feed_time[tp.feed_step];
+				tp.state = TPSTATE_HEAT_WITH_FEED;
+				tp.feed_step++;
+			}
+		}
+		else
+		{
+		   if(tp.heat_cnt < tp.heat_max_cnt)	// 已经有数据被送给打印机
+		   {
+
+    				tp.heat_cnt++;
+					STROBE_0_OFF();
+                    STROBE_1_OFF();
+    				LATCH_LOW();
+    				LATCH_HIGH();
+					STROBE_0_ON();
+    				STROBE_1_ON();
+    				if(tp.heat_cnt < tp.heat_max_cnt)	// 还有数据需要送到打印机
+    				{
+    					TPDataDMAShiftToPrn();		// shift next heat data to printer
+    				}
+    				if(tp.feed_time[tp.feed_step] > tp.heat)	// 当前步进的时间足够加热
+    				{
+    					TPSetTimeCnt(tp.heat);	// 加热
+    					tp.feed_time[tp.feed_step] -= tp.heat;
+    					tp.state = TPSTATE_HEAT_WITHOUT_FEED;
+    				}
+    				else			// 时间不够或者刚好，先加热剩余时间
+    				{
+    					TPSetTimeCnt(tp.feed_time[tp.feed_step]);	// 加热剩余时间
+    					tp.heat_remain = tp.heat - tp.feed_time[tp.feed_step];
+    					tp.state = TPSTATE_HEAT_WITH_FEED;
+    					tp.feed_step++;
+    				}
+					//STROBE_0_ON();
+    				//STROBE_1_ON();
+
+			}
+			else	// no any data need to print//本行加热次数完成
+			{
+				STROBE_0_OFF(); 	// stop heat
+				STROBE_1_OFF(); 	// stop heat
+				TPSetTimeCnt(tp.feed_time[tp.feed_step]);   // 停止加热时间//最后一次加热会出现这种情况，加热次数完成还有剩余步进时间
+				#if TP_MAX_STROBE_STEP>1
+				if(tp.feed_step < (TP_MAX_STROBE_STEP-1))		// 每个加热Strobe中包含的步进数
+				{
+					tp.feed_step++;
+					tp.state = TPSTATE_HEAT_WITH_FEED;
+				}
+				else	// 完成一个加热Strobe的控制
+				#endif
+				{
+					tp.feed_step = 0;
+					#if TP_MAX_HEAT_STROBE>1
+				    if(tp.strobe_step < (TP_MAX_HEAT_STROBE-1))
+					{
+						tp.strobe_step++;
+						TPDataShiftCntProc(tp.strobe_step);		// 计算下一个加热行
+						if(tp.heat_cnt < tp.heat_max_cnt)
+						{
+							TPDataDMAShiftToPrn();		// 开始送数据到打印机
+						}
+						tp.state = TPSTATE_HEAT_WITH_FEED;
+					}
+					else	// 当前点行打印完成
+					#endif
+					{
+						tp.tail = (tp.tail+1) & (ARRAY_SIZE(TP_dot)-1);
+						switch(TPCheckBuf())
+						{
+						case 0: 	// no data
+							//TPIntSetPreIdle();
+							break;
+						case 1:
+						case 2:
+						case 3:
+							break;
+						default:	// bug
+							TPIntSetIdle();
+							break;
+						}
+					}
+				}
+			}
+		}
+		break;
+	case TPSTATE_FEED:
+		if (TPFeedStep() == 0)
+		{
+			switch(TPCheckBuf())
+			{
+			case 0:		// no data
+				//TPIntSetPreIdle();
+				break;
+			case 1:
+			case 2:
+			case 3:
+				break;
+			default:	// bug
+				TPIntSetIdle();
+				break;
+			}
+		}
+		break;
+    case TPSTATE_WAIT_TIME:
+        if(--tp.repeat == 0 )
+        {
+           TPCheckBuf();
+        }
+        break;
+	case TPSTATE_PRE_IDLE:
+		TPSetTimeCnt(TIMER1_MS_TO_CNT(1.0));
+		if(tp.feedmax)
+		{
+			tp.feedmax--;
+			if(tp.feedmax & 0x01)
+			{
+				PRN_POWER_CHARGE();
+			}
+			else
+			{
+				PRN_POWER_DISCHARGE();
+			}
+		}
+		else
+		{
+			tp.accel = 0;				// 下次需要退纸，重新开始缓启动
+			switch(TPCheckBuf())
+			{
+			case 0:		// no data
+			default:	// bug
+				TPIntSetIdle();
+				break;
+			case 1:
+			case 2:
+			case 3:
+				break;
+			}
+		}
+		break;
+	default:
+		tp.state = TPSTATE_IDLE;
+		//break;
+	case TPSTATE_IDLE:
+		TPIntSetIdle();
+		break;
+	}
+}
+
+void TIMER32_1_IRQHandler(void)
+{
+
+    PRN_POWER_DISCHARGE();
+    PRN_POWER_CHARGE();
+    TPISRProc();
+    reset_timer32(TIMER_32_1);
+    enable_timer32(TIMER_32_1);
+	LPC_TMR32B1->IR = 1;			/* clear interrupt flag */
+
+}
+
+extern void TPSetSpeed(uint8_t speed)
+{
+#if defined(DOUBLE_HEAT_ENABLE)
+    uint16_t const TPHeatTbl[] =
+	{
+		TIMER1_MS_TO_CNT(1.00), // 0//80
+		TIMER1_MS_TO_CNT(1.20), // 1//70
+		TIMER1_MS_TO_CNT(1.50), // 2//60
+		TIMER1_MS_TO_CNT(2.00), // 3//50
+		TIMER1_MS_TO_CNT(2.50), // 4//40
+		TIMER1_MS_TO_CNT(3.00), // 5//30
+		TIMER1_MS_TO_CNT(4.50), // 6//20
+	};
+#else
+	uint16_t const TPHeatTbl[] =
+	{
+		TIMER1_MS_TO_CNT(1.50), // 0//80
+		TIMER1_MS_TO_CNT(1.70), // 1//70
+		TIMER1_MS_TO_CNT(2.00), // 2//60
+		TIMER1_MS_TO_CNT(2.50), // 3//50
+		TIMER1_MS_TO_CNT(3.00), // 4//40
+		TIMER1_MS_TO_CNT(3.50), // 5//30
+		TIMER1_MS_TO_CNT(6.00), // 6//20
+	};
+#endif
+	if (speed < ARRAY_SIZE(TPHeatTbl))
+	{
+		tp.heat_setting = TPHeatTbl[speed];
+	}
+}
+//#define SPEED_30MM
+//#define SPEED_40MM
+//#define SPEED_50MM
+//#define SPEED_60MM
+//#define SPEED_70MM
+
+extern void TPInit(void)
+{
+
+    LPC_IOCON->PIO1_10=0xD0;
+    GPIOSetDir(PORT1,GPIO_Pin_10,Output);
+
+    LPC_IOCON->PIO0_8=0xD0;
+    GPIOSetDir(PORT0,GPIO_Pin_8,Output);
+
+    LPC_IOCON->PIO3_2=0xD0;
+    GPIOSetDir(PORT3,GPIO_Pin_2,Output);
+
+    LPC_IOCON->PIO0_2=0xD0;
+     GPIOSetDir(PORT0,GPIO_Pin_2,Output);
+
+    LPC_IOCON->PIO0_3=0xD0;
+    GPIOSetDir(PORT0,GPIO_Pin_3,Output);
+
+    LPC_IOCON->PIO3_4=0xD0;
+    GPIOSetDir(PORT3,GPIO_Pin_4,Output);
+
+    LPC_IOCON->PIO3_5=0xD0;
+    GPIOSetDir(PORT3,GPIO_Pin_5,Output);
+
+    LPC_IOCON->R_PIO1_1=0xD1;
+    GPIOSetDir(PORT1,GPIO_Pin_1,Output);
+
+    LPC_IOCON->R_PIO1_2=0xD1;
+    GPIOSetDir(PORT1,GPIO_Pin_2,Output);
+//===========================
+    NVIC_SetPriority(TIMER_32_1_IRQn,1);
+    init_timer32(TIMER_32_1, 1000);
+    LPC_TMR32B1->PR=PR_Val-1;//1uS一个计数
+    NVIC_DisableIRQ(TIMER_32_1_IRQn);
+    enable_timer32(TIMER_32_1);
+
+
+    MOTOR_PWR_OFF();
+    STROBE_0_OFF();
+    STROBE_1_OFF();
+
+    MOTOR_PHASE_1A_LOW();
+    MOTOR_PHASE_1B_LOW();
+    MOTOR_PHASE_2A_LOW();
+    MOTOR_PHASE_2B_LOW();
+//===========================
+
+      tp.head = tp.tail = 0;
+      tp.state = TPSTATE_IDLE;
+
+}
+
+extern void SetDesity(void)
+{
+      #ifdef SPEED_30MM
+      TPSetSpeed(5);
+      #elif defined(SPEED_50MM)
+      TPSetSpeed(3);
+      #elif defined(SPEED_60MM)
+      TPSetSpeed(2);
+      #elif defined(SPEED_70MM)
+      TPSetSpeed(1);
+      #else
+      TPSetSpeed(4);
+      #endif
+}
+
+
+//======================================================================================================
+extern void Wake_up(void)
+{
+	tp.state = TPSTATE_WAIT_TIME;
+    tp.accel = 0;
+    tp.repeat =200;
+    LPC_TMR32B1->MR0 = TIMER1_MS_TO_CNT(5.00);
+    MOTOR_PWR_ON();
+    reset_timer32(TIMER_32_1);
+    enable_timer32(TIMER_32_1);
+    NVIC_EnableIRQ(TIMER_32_1_IRQn);//enable timer32_1
+}
+extern void TPStart(void)
+{
+	uint8_t i;
+    uint32_t delay;
+	if (!(TPPrinterReady() && (tp.state == TPSTATE_IDLE))) return;
+
+	tp.state = TPSTATE_START;
+	tp.accel = 0;
+
+	for(i=0; i<3; i++)
+	{
+		PRN_POWER_CHARGE();
+        delay = 30000;
+        while(delay--);
+		PRN_POWER_DISCHARGE();
+        delay = 10000;
+        while(delay--);
+
+	}
+    LPC_TMR32B1->MR0 = TpAccelerationSteps[0];
+	PRN_POWER_CHARGE();
+
+    reset_timer32(TIMER_32_1);
+    enable_timer32(TIMER_32_1);
+    NVIC_EnableIRQ(TIMER_32_1_IRQn);//enable timer32_1
+}
+
+//======================================================================================================
+static void TPPrintCmdToBuf(uint8_t cmd, uint8_t *dot, uint8_t len)
+{
+	uint32_t head;
+
+	head = (tp.head+1) & (ARRAY_SIZE(TP_dot)-1);
+	while (head == tp.tail)
+	{
+		// 因为打印中断处理程序有可能在异常的情况下进入Idle状态，所以需要不断检查这个状态
+        event_proc();
+	}
+	memcpy(TP_dot[tp.head & (ARRAY_SIZE(TP_dot)-1)], dot, len);
+	TP_dot[tp.head][LineDot/8] = cmd;
+	tp.head = (tp.head+1) & (ARRAY_SIZE(TP_dot)-1);
+	TPStart();
+}
+//======================================================================================================
+extern void TPPrintLine(uint8_t *dot)
+{
+	#if defined(DOUBLE_HEAT_ENABLE)
+	TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE, dot, LineDot/8);
+	#endif
+	TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE, dot, LineDot/8);
+}
+//======================================================================================================
+extern void TPFeedLine(uint16_t line)
+{
+    #ifdef Half_Step
+	line <<= 2;		// 一个点行等于4步
+	#else
+	line <<= 1;		// 一个点行等于2步
+    #endif
+	TPPrintCmdToBuf(TP_CMD_FEED, (uint8_t *)(&line), sizeof(line));
+}
+//======================================================================================================
+extern void TPFeedToMark(uint16_t line)
+{
+	line <<= 1;		// 一个点行等于两步
+	TPPrintCmdToBuf(TP_CMD_FEED_TO_MARK, (uint8_t *)(&line), sizeof(line));
+}
+//======================================================================================================
+extern void TPCut(uint8_t partial)
+{
+	TPPrintCmdToBuf(TP_CMD_CUT, (uint8_t *)(&partial), sizeof(partial));
+}
+//======================================================================================================
+extern uint32_t TPCheckBusy(void)
+{
+	if (tp.state == TPSTATE_IDLE)
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
+//======================================================================================================
+extern void TPFeedStart(void)
+{
+	if (tp.state == TPSTATE_IDLE)
+	{
+		TPFeedLine(500*8);		// 500mm
+	}
+}
+//======================================================================================================
+extern void TPFeedToMarkStart(void)
+{
+	if (tp.state == TPSTATE_IDLE)
+	{
+		TPFeedToMark(250*8);		// 250mm
+	}
+}
+//======================================================================================================
+extern void TPFeedStop(void)
+{
+	tp.feedmax = 0;		// interrupt will stop feed automaticcly
+}
+//======================================================================================================
+extern uint8_t IsPrintBufEmpty(void)
+{
+	if(tp.head != tp.tail)	// have data
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+static void TPPrintAsciiLine(char *buf, uint32_t len)
+{
+
+
+   PrintBufPushLine((uint8_t *)buf, len);
+
+
+}
+
+
+
+    extern void TPPrintTestPage(void)
+    {
+
+
+
+        uint32_t len,i;
+        char buf[64];
+
+        char const BC_SET_HRI[]={0x1d, 'H', 0x02};
+
+        char const BC_EAN13[]={0x1d, 0x6b, 0x43, 0x0d, '6', '9', '0', '1', '0', '2', '8', '0', '7', '5', '8', '3', '1'};
+
+        char const BC_CODE39[]={0x1d, 0x6b, 0x45, 0x09, '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+#if defined(SELF_TEST_BITMAP_SAMPLE)
+		char const BITMAP[]={0x1c, 0x70, 0x01,0x00};
+#endif
+        char const Init[]={0x1b,'@'};
+
+
+
+        PrintBufToZero();
+        memcpy(buf, Init, sizeof(Init));
+        TPPrintAsciiLine(buf, sizeof(Init));
+
+        len = snprintf(buf, sizeof(buf),  "\n");
+        TPPrintAsciiLine(buf,len);
+    #if defined(PT486)
+        len = snprintf(buf, sizeof(buf), "System: PT486LV\n");
+    #elif defined(PT488)
+        len = snprintf(buf, sizeof(buf), "System: PT488LV\n");
+    #elif defined(PT487)
+        len = snprintf(buf, sizeof(buf), "System: PT487LV\n");
+    #elif defined(PT48D)
+	    len = snprintf(buf, sizeof(buf), "System: PT48DLV\n");
+    #endif
+        TPPrintAsciiLine(buf,len);
+
+#if (VERSION_BETA==0)
+    #ifdef CODEPAGE
+            len = snprintf(buf, sizeof(buf), "Firmware:%d.%02d.%02dC LV\n", VERSION_MAJOR, VERSION_MINOR,VERSION_TEST);
+    #else
+            len = snprintf(buf, sizeof(buf), "Firmware:%d.%02d.%02d LV\n", VERSION_MAJOR, VERSION_MINOR,VERSION_TEST);
+    #endif
+#else
+    #ifdef CODEPAGE
+            len = snprintf(buf, sizeof(buf), "Firmware:%d.%02d.%02d beta%d C LV\n", VERSION_MAJOR, VERSION_MINOR,VERSION_TEST,VERSION_BETA);
+    #else
+            len = snprintf(buf, sizeof(buf), "Firmware:%d.%02d.%02d beta%d LV\n", VERSION_MAJOR, VERSION_MINOR,VERSION_TEST,VERSION_BETA);
+    #endif
+#endif
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf), "Build date: %s\n", __DATE__);
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf), "Build time: %s\n", __TIME__);
+        TPPrintAsciiLine(buf,len);
+#if 0
+		len = snprintf(buf, sizeof(buf), "Voltage: %d.%dV\n", ((Power_AD*380*33)/(1024*180))/10,((Power_AD*380*33)/(1024*180))%10);
+        TPPrintAsciiLine(buf,len);
+
+	    len = snprintf(buf, sizeof(buf), "Temperature: %d℃\n",TPHTemperature());
+        TPPrintAsciiLine(buf,len);
+#endif
+        len = snprintf(buf, sizeof(buf),  "\n");
+        TPPrintAsciiLine(buf,len);
+
+   	    len = snprintf(buf, sizeof(buf),  "[Uart Configure]\n");
+        TPPrintAsciiLine(buf,len);
+
+	    len = snprintf(buf, sizeof(buf),  "baudrate : %ld\n", config_idx2baud(para.com_baud));
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "flow ctrl : HW Flow Control\n");
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "\n");
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "[Install Fonts]\n");
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "ID  Font Name\n");
+        TPPrintAsciiLine(buf,len);
+
+
+        if(esc_sts.font_en == FONT_A_WIDTH)
+        {
+        len = snprintf(buf, sizeof(buf),  " 0  SYSTEM 12x24\n");
+        TPPrintAsciiLine(buf,len);
+        }
+        else
+        {
+        len = snprintf(buf, sizeof(buf),  " 1  SYSTEM 8x16\n");
+        TPPrintAsciiLine(buf,len);
+        }
+#ifndef CODEPAGE
+        len = snprintf(buf, sizeof(buf),  "10  24x24GBK汉字字库\n");
+        TPPrintAsciiLine(buf,len);
+#endif
+        len = snprintf(buf, sizeof(buf),  "\n");
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "[Barcode Samples]\n");
+        TPPrintAsciiLine(buf, len);
+
+        memcpy(buf, BC_SET_HRI, sizeof(BC_SET_HRI));
+        TPPrintAsciiLine(buf, sizeof(BC_SET_HRI));
+
+        len = snprintf(buf, sizeof(buf),  "EAN13:\n");
+        TPPrintAsciiLine(buf,len);
+        memcpy(buf, BC_EAN13, sizeof(BC_EAN13));
+        TPPrintAsciiLine(buf, sizeof(BC_EAN13));
+
+        len = snprintf(buf, sizeof(buf),  "CODE39:\n");
+        TPPrintAsciiLine(buf,len);
+        memcpy(buf, BC_CODE39, sizeof(BC_CODE39));
+        TPPrintAsciiLine(buf, sizeof(BC_CODE39));
+
+        len = snprintf(buf, sizeof(buf),  "\n");
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "[ASCII Samples]\n");
+        TPPrintAsciiLine(buf,len);
+        for(i=0x20; i<0x80; i++)
+        {
+            PrintBufPushBytes(i);
+        }
+
+        len = snprintf(buf, sizeof(buf),  "\n\n");
+        TPPrintAsciiLine(buf,len);
+
+#if defined(SELF_TEST_BITMAP_SAMPLE)
+		len = snprintf(buf, sizeof(buf),  "[Bitmap Samples]\n\n");
+        TPPrintAsciiLine(buf,len);
+
+        memcpy(buf, BITMAP, sizeof(BITMAP));
+        TPPrintAsciiLine(buf, sizeof(BITMAP));
+
+        len = snprintf(buf, sizeof(buf),  "\n\n");
+        TPPrintAsciiLine(buf,len);
+#endif
+        len = snprintf(buf, sizeof(buf),  "Selftest Finished.\n");
+        TPPrintAsciiLine(buf,len);
+
+        len = snprintf(buf, sizeof(buf),  "\n\n\n\n\n");
+        TPPrintAsciiLine(buf,len);
+
+    }
+
+#if defined(DEBUG_TEST)
+extern void TPSelfTest_1(void)
+{
+	uint8_t dot[LineDot/8];         //定义一个行，行的字节数目是多少，这边一共是576/8=72
+
+	uint32_t i,j,n;
+	memset(dot, 0x00, sizeof(dot));
+	for (i=0; i<32; i++)
+	{
+		TPPrintLine(dot);
+	}
+
+
+    for(i=0;i<80;i++)
+   {
+        for(j=0;j<1;j++)
+        {
+        memset(dot,0xaa,sizeof(dot));
+		TPPrintLine(dot);
+        }
+        for(j=0;j<1;j++)
+        {
+        memset(dot,0x55,sizeof(dot));
+		TPPrintLine(dot);
+        }
+  }
+//第二段
+//10x16=160 dotline
+for(i=0;i<10;i++)
+{
+        for(j=0;j<8;j++)
+        {
+        memset(dot,0xaa,sizeof(dot));
+		TPPrintLine(dot);
+        }
+        for(j=0;j<8;j++)
+        {
+        memset(dot,0x55,sizeof(dot));
+		TPPrintLine(dot);
+        }
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//第三段
+//(4+4)x20=160 dotline
+for(i=0;i<20;i++)
+{
+        for(j=0;j<4;j++)
+        {
+        memset(dot,0xcc,sizeof(dot));
+		TPPrintLine(dot);
+        }
+        for(j=0;j<4;j++)
+        {
+        memset(dot,0x33,sizeof(dot));
+		TPPrintLine(dot);
+        }
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//第四段
+//(7+7)x10=140 dotline
+for(i=0;i<10;i++)
+{
+        uint8_t buf1[3]={0xe3,0x8e,0x38};
+        uint8_t buf2[3]={0x1c,0x71,0xc7};
+        for(j=0;j<7;j++)
+        {
+         for(n=0;n<sizeof(dot)/sizeof(buf1);n++)
+         {
+            memcpy(dot+3*n,buf1,sizeof(buf1));
+         }
+         TPPrintLine(dot);
+        }
+       for(j=0;j<7;j++)
+        {
+         for(n=0;n<sizeof(dot)/sizeof(buf2);n++)
+         {
+            memcpy(dot+3*n,buf2,sizeof(buf2));
+         }
+         TPPrintLine(dot);
+        }
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+
+//第五段
+//(4+4)x3x3=72 dotline
+for(i=0;i<3;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0xaa,2);
+            memset(dot+4*n+2,0x00,2);
+            }
+
+        }
+       for(j=0;j<4;j++)
+        {
+        for(n=0;n<sizeof(dot)/4;n++)
+        {
+         memset(dot+4*n,0x55,2);
+         memset(dot+4*n+2,0x00,2);
+        }
+        }
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//
+for(i=0;i<3;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0x00,2);
+            memset(dot+4*n+2,0xaa,2);
+            }
+
+            TPPrintLine(dot);
+
+        }
+       for(j=0;j<4;j++)
+        {
+        for(n=0;n<sizeof(dot)/4;n++)
+        {
+         memset(dot+4*n,0x00,2);
+         memset(dot+4*n+2,0x55,2);
+        }
+		TPPrintLine(dot);
+
+        }
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//
+for(i=0;i<3;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0xaa,2);
+            memset(dot+4*n+2,0x00,2);
+            }
+
+            TPPrintLine(dot);
+
+        }
+       for(j=0;j<4;j++)
+        {
+        for(n=0;n<sizeof(dot)/4;n++)
+        {
+         memset(dot+4*n,0x55,2);
+         memset(dot+4*n+2,0x00,2);
+        }
+		TPPrintLine(dot);
+
+        }
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+
+
+//第六段
+//8 dotline
+
+//6x4x5=120
+for(i=0;i<6;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0x00,2);
+            memset(dot+4*n+2,0xff,2);
+            }
+
+            TPPrintLine(dot);
+
+        }
+
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//
+for(i=0;i<6;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0xff,2);
+            memset(dot+4*n+2,0x00,2);
+            }
+            TPPrintLine(dot);
+
+        }
+
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//
+for(i=0;i<6;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0x00,2);
+            memset(dot+4*n+2,0xff,2);
+            }
+            TPPrintLine(dot);
+
+        }
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+//
+for(i=0;i<6;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0xff,2);
+            memset(dot+4*n+2,0x00,2);
+            }
+            TPPrintLine(dot);
+
+        }
+
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+
+//
+for(i=0;i<6;i++)
+{
+
+        for(j=0;j<4;j++)
+        {
+            for(n=0;n<sizeof(dot)/4;n++)
+            {
+            memset(dot+4*n,0x00,2);
+            memset(dot+4*n+2,0xff,2);
+            }
+            TPPrintLine(dot);
+
+        }
+
+        //TPPrintCmdToBuf(TP_CMD_PRINT_DOTLINE,dot,TotalBit/8);
+}
+
+//第七段，打印全黑
+
+/*
+for(j=0;j<75;j++)
+{
+    memset(dot,0xff,sizeof(dot));
+    TPPrintLine(dot);
+
+}
+
+memset(dot,0xff,sizeof(dot)/4);
+memset(dot+sizeof(dot)/4,0x00,sizeof(dot)/2);
+memset(dot+sizeof(dot)/4+sizeof(dot)/2,0xff,sizeof(dot)/4);
+for(j=0;j<75;j++)
+{
+    TPPrintLine(dot);
+}
+
+memset(dot,0x00,sizeof(dot)/4);
+memset(dot+sizeof(dot)/4,0xff,sizeof(dot)/2);
+memset(dot+sizeof(dot)/4+sizeof(dot)/2,0x00,sizeof(dot)/4);
+
+for(j=0;j<75;j++)
+{
+    TPPrintLine(dot);
+}*/
+
+
+memset(dot, 0x00, sizeof(dot));
+for (i=0; i<64; i++)
+{
+    TPPrintLine(dot);
+}
+
+}
+#endif
+

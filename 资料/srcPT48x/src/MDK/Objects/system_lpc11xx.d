@@ -1,0 +1,5 @@
+.\objects\system_lpc11xx.o: ..\system_LPC11xx.c
+.\objects\system_lpc11xx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\system_lpc11xx.o: ..\LPC11xx.h
+.\objects\system_lpc11xx.o: ..\core_cm0.h
+.\objects\system_lpc11xx.o: ..\system_LPC11xx.h

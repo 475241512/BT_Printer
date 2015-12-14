@@ -1,0 +1,81 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.12.0.0
+Copyright (C) 2014 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: joe Sky123.Org, Sky123.Org, LIC=PE730-BB1LC-T3KMI-T3MD4-WPZ14-1SZSX
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Standard  Version: 5.12.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.05 (build 41)
+Assembler:       Armasm.exe V5.05 (build 41)
+Linker/Locator:  ArmLink.exe V5.05 (build 41)
+Library Manager: ArmAr.exe V5.05 (build 41)
+Hex Converter:   FromElf.exe V5.05 (build 41)
+CPU DLL:         SARMCM3.DLL V5.12.0.0
+Dialog DLL:      DARMP1.DLL V1.25.0.0
+Target DLL:      UL2CM3.DLL V1.153.0.0
+Dialog DLL:      TARMP1.DLL V1.24.0.0
+ 
+<h2>Project:</h2>
+E:\BT Printer\×ÊÁÏ\srcPT48x\src\MDK\PRT486.uvproj
+Project File Date:  10/29/2015
+
+<h2>Output:</h2>
+Build target 'PRT486'
+compiling config-param.c...
+compiling F25L016A.c...
+..\F25L016A.c(136): warning:  #177-D: function "F25L_ShiftOutAddrWrite" was declared but never referenced
+  static void F25L_ShiftOutAddrWrite(uint8_t opcode, uint32_t addr)
+..\F25L016A.c(155): warning:  #177-D: function "F25L_WriteEnable" was declared but never referenced
+  static void F25L_WriteEnable(void)
+..\F25L016A.c(162): warning:  #177-D: function "F25L_WriteDisable" was declared but never referenced
+  static void F25L_WriteDisable(void)
+..\F25L016A.c(191): warning:  #177-D: function "F25L_StatusRegisterWrite" was declared but never referenced
+  static void F25L_StatusRegisterWrite(uint8_t status)
+..\F25L016A.c: 4 warnings, 0 errors
+compiling main.c...
+linking...
+Program Size: Code=17640 RO-data=6368 RW-data=132 ZI-data=7580  
+FromELF: creating hex file...
+".\Objects\PRT486.axf" - 0 Error(s), 4 Warning(s).
+</pre>
+</body>
+</html>
+d 1 error messages.
+".\Objects\PRT486.axf" - 0 Error(s), 0 Warning(s).
+.
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching event.o(.bss).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching paperdetect.o(.bss).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching config-param.o(.bss).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching timer16.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching timer32.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching paperdetect.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching system_lpc11xx.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching config-param.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching uart.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching _printf_s.o(.ARM.Collect$$_printf_percent$$00000014).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching _sputc.o(.text).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching retarget.o(.text).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching __rtentry2.o(.ARM.Collect$$rtentry$$0000000D).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching libspace.o(.text).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching heapauxi.o(.text).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching rtexit2.o(.ARM.Collect$$rtexit$$00000004).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching keyscan.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching dotfill.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching event.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching use_no_semi.o(.text).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching libinit.o(.ARM.Collect$$libinit$$00000000).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching libshutdown.o(.ARM.Collect$$libshutdown$$00000000).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching led.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching tp.o(.data).
+.\Objects\PRT486.axf: Error: L6406E: No space in execution regions with .ANY selector matching startup_lpc11xx.o(HEAP).
+.\Objects\PRT486.axf: Error: L6407E: Sections of aggregate size 0x10dc bytes could not fit into .ANY selector(s).
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 2 information, 0 warning and 30 error messages.
+".\Objects\PRT486.axf" - 30 Error(s), 0 Warning(s).
+Target not created.

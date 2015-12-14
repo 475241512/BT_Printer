@@ -1,0 +1,463 @@
+Dependencies for Project 'PRT486', Target 'PRT486': (DO NOT MODIFY !)
+F (..\clkconfig.c)(0x50C157A4)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\clkconfig.o --omf_browse .\objects\clkconfig.crf --depend .\objects\clkconfig.d)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\clkconfig.h)(0x4EC1B5BC)
+F (..\config-param.c)(0x5631BE1A)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\config-param.o --omf_browse .\objects\config-param.crf --depend .\objects\config-param.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\core_cm0.c)(0x4E155DB0)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\core_cm0.o --omf_browse .\objects\core_cm0.crf --depend .\objects\core_cm0.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+F (..\DotFill.c)(0x51F0C4BB)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\dotfill.o --omf_browse .\objects\dotfill.crf --depend .\objects\dotfill.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\esc_p.c)(0x55F261F1)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\esc_p.o --omf_browse .\objects\esc_p.crf --depend .\objects\esc_p.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\Event.c)(0x54C71EBE)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\event.o --omf_browse .\objects\event.crf --depend .\objects\event.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\F25L016A.c)(0x5631BE9D)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\f25l016a.o --omf_browse .\objects\f25l016a.crf --depend .\objects\f25l016a.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\font.c)(0x5620D159)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\font.o --omf_browse .\objects\font.crf --depend .\objects\font.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+I (..\font8x16.h)(0x54C72413)
+F (..\gpio.c)(0x4E43896A)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\gpio.o --omf_browse .\objects\gpio.crf --depend .\objects\gpio.d)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\gpio.h)(0x4E27E190)
+F (..\KeyScan.c)(0x50F50847)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\keyscan.o --omf_browse .\objects\keyscan.crf --depend .\objects\keyscan.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\LED.c)(0x5365A26F)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\led.o --omf_browse .\objects\led.crf --depend .\objects\led.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\main.c)(0x5631BDF2)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\PaperDetect.c)(0x54ACE2B1)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\paperdetect.o --omf_browse .\objects\paperdetect.crf --depend .\objects\paperdetect.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\Retarget.c)(0x536752C6)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\retarget.o --omf_browse .\objects\retarget.crf --depend .\objects\retarget.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+I (C:\Keil_v5\ARM\ARMCC\include\rt_misc.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x54199D7A)
+F (..\SSP.c)(0x52D4F872)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\ssp.o --omf_browse .\objects\ssp.crf --depend .\objects\ssp.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\system_LPC11xx.c)(0x5625BAB3)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\system_lpc11xx.o --omf_browse .\objects\system_lpc11xx.crf --depend .\objects\system_lpc11xx.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+F (..\ThermalDetect.c)(0x54AB85D1)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\thermaldetect.o --omf_browse .\objects\thermaldetect.crf --depend .\objects\thermaldetect.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x54199D7A)
+F (..\timer16.c)(0x4E0D88DC)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\timer16.o --omf_browse .\objects\timer16.crf --depend .\objects\timer16.d)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\timer16.h)(0x4E0D88DE)
+F (..\timer32.c)(0x4EC0D8F8)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\timer32.o --omf_browse .\objects\timer32.crf --depend .\objects\timer32.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\TP.c)(0x562F52D6)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\tp.o --omf_browse .\objects\tp.crf --depend .\objects\tp.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\uart.c)(0x54C71EBF)(-c --cpu Cortex-M0 -g -O0 --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx-o .\objects\uart.o --omf_browse .\objects\uart.crf --depend .\objects\uart.d)
+I (..\includes.h)(0x54C70B75)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54199D7C)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x54199D7C)
+I (..\LPC11xx.h)(0x536736D0)
+I (..\core_cm0.h)(0x4E954298)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54199D7A)
+I (..\system_LPC11xx.h)(0x54C70C6B)
+I (..\config.h)(0x55F264AA)
+I (..\uart.h)(0x51ECE437)
+I (..\SSP.h)(0x50F50919)
+I (..\Timer32.h)(0x4E4DB900)
+I (..\Gpio.h)(0x4E27E190)
+I (..\PaperDetect.h)(0x5365F45A)
+I (..\KeyScan.h)(0x4E26AB5A)
+I (..\LED.h)(0x53659CE0)
+I (..\config-param.h)(0x536594B6)
+I (..\Type.h)(0x4E0D88E0)
+I (..\TP.h)(0x5541C03E)
+I (..\Event.h)(0x539F9ED5)
+I (..\Esc_p.h)(0x54C71EBE)
+I (..\f25l016a.h)(0x4E3B7CEE)
+I (..\clkconfig.h)(0x4EC1B5BC)
+I (..\dotfill.h)(0x51ECEC8F)
+I (..\font.h)(0x4E391758)
+I (..\ThermalDetect.h)(0x54AB85A9)
+F (..\startup_LPC11xx.s)(0x5625A389)(--cpu Cortex-M0 -g --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC11xx--list .\listings\startup_lpc11xx.lst --xref -o .\objects\startup_lpc11xx.o --depend .\objects\startup_lpc11xx.d)

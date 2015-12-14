@@ -1,0 +1,62 @@
+;#<FEEDBACK># ARM Linker, 5050041: Last Updated: Fri Oct 30 09:54:51 2015
+;VERSION 0.2
+;FILE DotFill.o
+BufFillToPrn_0 <= USED 0
+PictureDotFillToBuf <= USED 0
+PrintCurrentBuffer_0 <= USED 0
+;FILE Event.o
+;FILE F25L016A.o
+F16_PageProgram <= USED 0
+F25L_AAIWordProgram <= USED 0
+F25L_ByteProgram <= USED 0
+F25L_ChipErase <= USED 0
+F25L_FastRead <= USED 0
+F25L_SectorErase <= USED 0
+F25L_StatusRegisterRead <= USED 0
+;FILE KeyScan.o
+;FILE LED.o
+;FILE PaperDetect.o
+;FILE Retarget.o
+_ttywrch <= USED 0
+fputc <= USED 0
+;FILE SSP.o
+;FILE TP.o
+IsPrintBufEmpty <= USED 0
+IsPrinterIdle <= USED 0
+TPCheckBusy <= USED 0
+TPFeedStart <= USED 0
+TPFeedStop <= USED 0
+TPFeedToMark <= USED 0
+TPFeedToMarkStart <= USED 0
+TPReStart <= USED 0
+TPSelfTest2 <= USED 0
+;FILE ThermalDetect.o
+;FILE clkconfig.o
+CLKOUT_INIT <= USED 0
+CLKOUT_Setup <= USED 0
+ResetPrinter <= USED 0
+WDT_CLK_Setup <= USED 0
+;FILE config-param.o
+EraseConfig <= USED 0
+UpdateParaSector <= USED 0
+;FILE esc_p.o
+;FILE font.o
+GetEnglishHRIFont <= USED 0
+;FILE gpio.o
+;FILE main.o
+;FILE startup_LPC11xx.o
+;FILE system_LPC11xx.o
+SysTICs_INIT <= USED 0
+getElapsedSysTICs <= USED 0
+getSysTICs <= USED 0
+;FILE timer16.o
+delayMs <= USED 0
+disable_timer16 <= USED 0
+enable_timer16 <= USED 0
+init_timer16 <= USED 0
+init_timer16PWM <= USED 0
+reset_timer16 <= USED 0
+setMatch_timer16PWM <= USED 0
+;FILE timer32.o
+;FILE uart.o
+PrintBufGetchar <= USED 0

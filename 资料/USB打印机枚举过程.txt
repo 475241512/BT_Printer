@@ -1,0 +1,55 @@
+Bus Hound 5.00 capture. Complements of www.perisoft.net
+
+  Device - Device ID (followed by the endpoint for USB devices)
+            (11) USB Composite Device
+            (12) USB 打印支持
+            (14) 没有连接打印机
+  Phase  - Phase Type
+            CTL   USB control transfer       
+            DI    Data in                    
+            DO    Data out                   
+            USTS  USB status                 
+  Data   - Hex dump of the data transferred
+  Descr  - Description of the phase
+  Cmd... - Position in the captured data
+
+
+Device  Phase  Data                                                                                                    Description       Cmd.Phase.Ofs(rep)
+------  -----  ------------------------------------------------------------------------------------------------------  ----------------  ------------------
+  11.0  CTL    80 06 00 01  00 00 12 00                                                                                GET DESCRIPTOR           1.1.0        
+  11.0  DI     12 01 00 02  00 00 00 40  00 b0 11 04  00 02 01 02  00 01                                               .......@........         1.2.0        
+  11.0  CTL    80 06 00 02  00 00 09 00                                                                                GET DESCRIPTOR           2.1.0        
+  11.0  DI     09 02 39 00  02 01 00 c0  32                                                                            ..9.....2                2.2.0        
+  11.0  CTL    80 06 00 02  00 00 39 00                                                                                GET DESCRIPTOR           3.1.0        
+  11.0  DI     09 02 39 00  02 01 00 c0  32 09 04 00  00 01 07 01  02 00 07 05  01 02 40 00  00 09 04 01  00 02 03 00  ..9.....2.......         3.2.0        
+               00 03 09 21  10 01 00 01  22 1b 00 07  05 82 03 40  00 01 07 05  03 03 40 00  01                        ...!...."......@         3.2.32       
+  11.0  CTL    00 09 01 00  00 00 00 00                                                                                SET CONFIG               4.1.0        
+  11.0  CTL    80 06 02 03  09 04 04 00                                                                                GET DESCRIPTOR           5.1.0        
+  11.0  DI     12 03 50 00                                                                                             ..P.                     5.2.0        
+  11.0  CTL    80 06 02 03  09 04 12 00                                                                                GET DESCRIPTOR           6.1.0        
+  11.0  DI     12 03 50 00  4f 00 53 00  35 00 38 00  39 00 30 00  55 00                                               ..P.O.S.5.8.9.0.         6.2.0        
+  11.0  CTL    80 06 03 03  09 04 04 00                                                                                GET DESCRIPTOR           7.1.0        
+  11.0  DI     10 03 55 00                                                                                             ..U.                     7.2.0        
+  11.0  CTL    80 06 03 03  09 04 10 00                                                                                GET DESCRIPTOR           8.1.0        
+  11.0  DI     10 03 55 00  70 00 67 00  72 00 61 00  64 00 65 00                                                      ..U.p.g.r.a.d.e.         8.2.0        
+  12.0  CTL    80 06 00 02  00 00 09 01                                                                                GET DESCRIPTOR           9.1.0        
+  12.0  DO     09 02 19 00  01 01 00 c0  32 09 04 00  00 01 07 01  02 00 07 05  01 02 40 00  00                        ........2.......         9.2.0        
+  12.0  CTL    00 09 01 00  00 00 00 00                                                                                SET CONFIG              10.1.0        
+  12.0  CTL    80 06 00 01  00 00 12 00                                                                                GET DESCRIPTOR          11.1.0        
+  12.0  DO     12 01 00 02  00 00 00 40  00 b0 11 04  00 02 01 02  00 01                                               .......@........        11.2.0        
+  12.0  CTL    a1 00 00 00  00 00 f1 03                                                                                GET DEVICE ID           12.1.0        
+  11.0  CTL    80 06 00 02  00 00 09 00                                                                                GET DESCRIPTOR          13.1.0        
+  12.0  USTS   00 00 01 c0                                                                                             canceled                12.2.0        
+
+
+device id:
+(1)
+MFG:Hewlett-Packard;MDL:HP LaserJet  P1007;CMD:HBS,PJL,ACL;CLS:PRINTER;DES:HP LaserJet P1007;FWVER:20090916;
+
+(2):
+MFG:EPSON;CMD:EJL,ESCP24J-84,ESCPAGEJ-04,ESCPSUPER-00,PR201-00;MDL:LP-2400;CLS:PRINTER;DES:EPSON LP-2400;
+
+(3)
+MFG:HEWLETT-PACKARD;MDL:DESKJET 970C;CMD:MLC,PCL,PML;CLASS:PRINTER;
+DESCRIPTION:Hewlett-Packard DeskJet 970C;SERN:US970CSEPROF;VSTATUS:
+$HB0$NC0,ff,DN,IDLE,CUT,K1,C0,DP,NR,KP000,CP027;VP:0800,FL,B0;VJ:

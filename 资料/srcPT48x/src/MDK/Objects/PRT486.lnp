@@ -1,0 +1,27 @@
+--cpu Cortex-M0
+".\objects\clkconfig.o"
+".\objects\config-param.o"
+".\objects\core_cm0.o"
+".\objects\dotfill.o"
+".\objects\esc_p.o"
+".\objects\event.o"
+".\objects\f25l016a.o"
+".\objects\font.o"
+".\objects\gpio.o"
+".\objects\keyscan.o"
+".\objects\led.o"
+".\objects\main.o"
+".\objects\paperdetect.o"
+".\objects\retarget.o"
+".\objects\ssp.o"
+".\objects\system_lpc11xx.o"
+".\objects\thermaldetect.o"
+".\objects\timer16.o"
+".\objects\timer32.o"
+".\objects\tp.o"
+".\objects\uart.o"
+".\objects\startup_lpc11xx.o"
+--strict --scatter ".\Objects\PRT486.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\PRT486.map" -o .\Objects\PRT486.axf
