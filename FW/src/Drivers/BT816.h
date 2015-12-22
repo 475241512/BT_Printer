@@ -28,8 +28,10 @@
 
 #define		BT1_MODULE			0
 #define		BT2_MODULE			(BT1_MODULE+SUPPORT_BT(USE_BT1_MODULE))
+#if(HW_VER == HW_VER_DEMO_V11)
 #define		BT3_MODULE			(BT2_MODULE+SUPPORT_BT(USE_BT2_MODULE))
 #define		BT4_MODULE			(BT3_MODULE+SUPPORT_BT(USE_BT3_MODULE))
+#endif
 
 #define		trip1()	do{\
 	GPIO_ResetBits(GPIOB, GPIO_Pin_6);\

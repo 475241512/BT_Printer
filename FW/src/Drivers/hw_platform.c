@@ -15,17 +15,16 @@
 */
 #include "hw_platform.h"
 #include "stm32f10x_lib.h"
-#include "ucos_ii.h"
-#include "TimeBase.h"
+//#include "TimeBase.h"
 #include <assert.h>
 
-static unsigned int	charge_state_cnt;
-static unsigned int	last_charge_detect_io_cnt;
+//static unsigned int	charge_state_cnt;
+//static unsigned int	last_charge_detect_io_cnt;
 
-unsigned int	charge_detect_io_cnt;
+//unsigned int	charge_detect_io_cnt;
 
-static unsigned char	current_led_state;
-static VTIMER_HANDLE	led_timer_h[4];
+//static unsigned char	current_led_state;
+//static VTIMER_HANDLE	led_timer_h[4];
 
 #define		LED_RED_MASK			(0x01<<0)
 #define		LED_GREEN_MASK			(0x01<<1)
@@ -37,21 +36,10 @@ static VTIMER_HANDLE	led_timer_h[4];
 #define		LED_YELLOW_ON_MASK		(0x01<<6)
 #define		LED_BLUE_ON_MASK		(0x01<<7)
 
-//USB_CHK		PA1	  
+//USB_CHK		PA0	  
 
-//LED_RED		PA4   
-//LED_GREEN		PA5   
-//LED_YELLOW	PA6   
-//MOTOR			PA7   
+//LED_BLUE		PB12   
 
-//ADC_IN		PB0	  
-
-//BEEP			PB5   
-//CHARGE		PB6	  
-//RFU_IO1		PB7
-//RFU_IO2		PB8
-
-//TRIG			PB12
 
 /**
 * @brief	初始化用于电池电压检测的ADC模块
@@ -60,6 +48,7 @@ static VTIMER_HANDLE	led_timer_h[4];
 * @return     none
 * @note                    
 */
+#if 0
 static void ADC_Module_Init(void)
 {
 	ADC_InitTypeDef   adc_init;
@@ -100,6 +89,8 @@ static void ADC_Module_Init(void)
 
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);			//开始转换
 }
+#endif
+
 
 /**
 * @brief  Initialize the IO
@@ -113,72 +104,45 @@ static void platform_misc_port_init(void)
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 
-	//USB_CHK -- PA.1
-	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_1;
+	//USB_CHK -- PA.0
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_0;
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IN_FLOATING;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	/* Connect EXTI Line6 to PB.6 */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
+	/* Connect EXTI Line0 to PA.0 */
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
 
-	EXTI_ClearITPendingBit(EXTI_Line1);
-	EXTI_InitStructure.EXTI_Line = EXTI_Line1;
+	EXTI_ClearITPendingBit(EXTI_Line0);
+	EXTI_InitStructure.EXTI_Line = EXTI_Line0;
 	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure); 
-	EXTI_GenerateSWInterrupt(EXTI_Line1);
+	EXTI_GenerateSWInterrupt(EXTI_Line0);
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);      
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQChannel;
+	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);      
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQChannel;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 6;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	//ChargeState detect -- PB.6
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	////LED-Red -- PA.4	LED-Green -- PA.5	LED-Yellow -- PA.6		Motor -- PA.7
+	//GPIO_InitStructure.GPIO_Pin	= GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+	//GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+	//GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//GPIO_SetBits(GPIOA, GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6);
+	//GPIO_ResetBits(GPIOA, GPIO_Pin_7);
 
-	/* Connect EXTI Line6 to PB.6 */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource0);
-
-	EXTI_ClearITPendingBit(EXTI_Line6);
-	EXTI_InitStructure.EXTI_Line = EXTI_Line6;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-	EXTI_Init(&EXTI_InitStructure); 
-	EXTI_GenerateSWInterrupt(EXTI_Line6);
-
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);      
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQChannel;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 6;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-
-	charge_detect_io_cnt = 0;
-	last_charge_detect_io_cnt = 1;
-
-	//LED-Red -- PA.4	LED-Green -- PA.5	LED-Yellow -- PA.6		Motor -- PA.7
-	GPIO_InitStructure.GPIO_Pin	= GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOA, GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6);
-	GPIO_ResetBits(GPIOA, GPIO_Pin_7);
-
-	//Beep -- PB.5	LED-Blue -- PB.7
-	GPIO_InitStructure.GPIO_Pin	= GPIO_Pin_5 | GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,  GPIO_Pin_7);
-	GPIO_ResetBits(GPIOB, GPIO_Pin_5);
+	////Beep -- PB.5	LED-Blue -- PB.7
+	//GPIO_InitStructure.GPIO_Pin	= GPIO_Pin_5 | GPIO_Pin_7;
+	//GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+	//GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//GPIO_SetBits(GPIOB,  GPIO_Pin_7);
+	//GPIO_ResetBits(GPIOB, GPIO_Pin_5);
 
 	//RFU-IO2 -- PB.8		
 	//GPIO_InitStructure.GPIO_Pin	= GPIO_Pin_8;
@@ -193,11 +157,11 @@ static void platform_misc_port_init(void)
 void hw_platform_init(void)
 {
 	platform_misc_port_init();
-	ADC_Module_Init();
-	current_led_state = 0;
+	//ADC_Module_Init();
+	//current_led_state = 0;
 }
 
-
+#if 0
 /**
 * @brief	返回检测到的电压的级别
 * @param[in]  none
@@ -278,6 +242,7 @@ unsigned int  hw_platform_ChargeState_Detect(void)
 	}
 	return 1;
 }
+#endif
 
 /**
 * @brief	检测USB是否插入
@@ -290,10 +255,10 @@ unsigned int  hw_platform_ChargeState_Detect(void)
 unsigned int hw_platform_USBcable_Insert_Detect(void)
 {
 	unsigned int i;
-	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1))
+	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))
 	{
 		for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
-		if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_1))
+		if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0))
 		{
 			return 1;
 		}
@@ -306,6 +271,8 @@ unsigned int hw_platform_USBcable_Insert_Detect(void)
 		return 0;
 }
 
+
+#if 0
 /**
 * @brief	LED控制接口
 * @param[in]  unsigned int led	 LED_RED or  LED_GREEN  or LED_YELLOW
@@ -622,3 +589,4 @@ void hw_platform_led_blink_test(void)
 	hw_platform_stop_led_blink(LED_YELLOW);
 
 }
+#endif

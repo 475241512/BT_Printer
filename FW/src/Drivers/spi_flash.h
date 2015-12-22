@@ -25,14 +25,24 @@
 #include "stm32f10x_lib.h"
 #include "spi_flash_config.h"
 #include "basic_fun.h"
+#include "hw_platform.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
+
+#if(HW_VER == HW_VER_V11)
+//CS  -- PA.15
+#define GPIO_CS                  GPIOA
+#define RCC_APB2Periph_GPIO_CS   RCC_APB2Periph_GPIOA
+#define GPIO_Pin_CS              GPIO_Pin_15
+#else
 //CS  -- PD.10
 #define GPIO_CS                  GPIOD
 #define RCC_APB2Periph_GPIO_CS   RCC_APB2Periph_GPIOD
 #define GPIO_Pin_CS              GPIO_Pin_10
+#endif
+
 #define SPI_FLASH_PageSize		 0x100
 #define SPI_FLASH_PageMsk		 0xFFFFFF00
 

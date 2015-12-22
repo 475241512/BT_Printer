@@ -106,6 +106,7 @@ static void BT816_GPIO_config(unsigned int bt_channel,unsigned int baudrate)
 	USART_InitTypeDef				USART_InitStructure;
 	DMA_InitTypeDef					DMA_InitStructure;
 
+#if(HW_VER == HW_VER_DEMO_V11)
 	//for debug trip
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOB , ENABLE);
@@ -120,6 +121,7 @@ static void BT816_GPIO_config(unsigned int bt_channel,unsigned int baudrate)
 	GPIO_SetBits(GPIOB, GPIO_Pin_4);		//trip3
 	GPIO_ResetBits(GPIOB, GPIO_Pin_5);		//trip2
 	GPIO_SetBits(GPIOB, GPIO_Pin_6);		//trip1
+#endif
 
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	if (bt_channel == BT1_MODULE)
@@ -813,7 +815,8 @@ static void BT816_reset_resVar(unsigned int bt_channel)
 		BT816_res[bt_channel].DataLength = 0;
 		BT816_res[bt_channel].status	 = BT816_RES_INIT;
 		bt_connect_status &= ~(1<<BT1_MODULE);
-		DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN; 
+		//DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN;
+                RESET_BT1_DMA();
 	}
 #endif
 
@@ -824,7 +827,8 @@ static void BT816_reset_resVar(unsigned int bt_channel)
 		BT816_res[bt_channel].DataLength = 0;
 		BT816_res[bt_channel].status	 = BT816_RES_INIT;
 		bt_connect_status &= ~(1<<BT2_MODULE);
-		DMA1_Channel6->CNDTR = BT816_RES_BUFFER_LEN; 
+		//DMA1_Channel6->CNDTR = BT816_RES_BUFFER_LEN; 
+                RESET_BT2_DMA();
 	}
 #endif
 
@@ -835,7 +839,8 @@ static void BT816_reset_resVar(unsigned int bt_channel)
 		BT816_res[bt_channel].DataLength = 0;
 		BT816_res[bt_channel].status	 = BT816_RES_INIT;
 		bt_connect_status &= ~(1<<BT3_MODULE);
-		DMA1_Channel3->CNDTR = BT816_RES_BUFFER_LEN; 
+		//DMA1_Channel3->CNDTR = BT816_RES_BUFFER_LEN; 
+                RESET_BT3_DMA();
 	}
 #endif
 
@@ -846,8 +851,9 @@ static void BT816_reset_resVar(unsigned int bt_channel)
 	BT816_res[bt_channel].DataLength = 0;
 	BT816_res[bt_channel].status	 = BT816_RES_INIT;
 	bt_connect_status &= ~(1<<BT4_MODULE);
-	DMA2_Channel3->CNDTR = BT816_RES_BUFFER_LEN;
-	}
+	//DMA2_Channel3->CNDTR = BT816_RES_BUFFER_LEN;
+	RESET_BT4_DMA();
+        }
 #endif
 }
 
@@ -888,10 +894,10 @@ int BT816_Channel1_RxISRHandler(unsigned char *res, unsigned int res_len)
 				if (BT816_res[BT1_MODULE].status == BT816_RES_INIT)
 				{
 					BT816_res[BT1_MODULE].status = BT816_RES_INVALID_STATE;
-					for (i = 3; i < res_len-2;i++)
+					for (i = 2; i < res_len-2;i++)
 					{
 
-						if ((res[i] == 'o')&&(res[i+1] == 'k'))
+						if (((res[i] == 'o')&&(res[i+1] == 'k'))||((res[i] == 'O')&&(res[i+1] == 'K')))
 						{
 							BT816_res[BT1_MODULE].status = BT816_RES_SUCCESS;
 							break;
@@ -944,10 +950,10 @@ int BT816_Channel2_RxISRHandler(unsigned char *res, unsigned int res_len)
 				if (BT816_res[BT2_MODULE].status == BT816_RES_INIT)
 				{
 					BT816_res[BT2_MODULE].status = BT816_RES_INVALID_STATE;
-					for (i = 3; i < res_len-2;i++)
+					for (i = 2; i < res_len-2;i++)
 					{
 
-						if ((res[i] == 'o')&&(res[i+1] == 'k'))
+						if (((res[i] == 'o')&&(res[i+1] == 'k'))||((res[i] == 'O')&&(res[i+1] == 'K')))
 						{
 							BT816_res[BT2_MODULE].status = BT816_RES_SUCCESS;
 							break;
@@ -999,10 +1005,10 @@ int BT816_Channel3_RxISRHandler(unsigned char *res, unsigned int res_len)
 				if (BT816_res[BT3_MODULE].status == BT816_RES_INIT)
 				{
 					BT816_res[BT3_MODULE].status = BT816_RES_INVALID_STATE;
-					for (i = 3; i < res_len-2;i++)
+					for (i = 2; i < res_len-2;i++)
 					{
 
-						if ((res[i] == 'o')&&(res[i+1] == 'k'))
+						if (((res[i] == 'o')&&(res[i+1] == 'k'))||((res[i] == 'O')&&(res[i+1] == 'K')))
 						{
 							BT816_res[BT3_MODULE].status = BT816_RES_SUCCESS;
 							break;
@@ -1055,10 +1061,10 @@ int BT816_Channel4_RxISRHandler(unsigned char *res, unsigned int res_len)
 				if (BT816_res[BT4_MODULE].status == BT816_RES_INIT)
 				{
 					BT816_res[BT4_MODULE].status = BT816_RES_INVALID_STATE;
-					for (i = 3; i < res_len-2;i++)
+					for (i = 2; i < res_len-2;i++)
 					{
 
-						if ((res[i] == 'o')&&(res[i+1] == 'k'))
+						if (((res[i] == 'o')&&(res[i+1] == 'k'))||((res[i] == 'O')&&(res[i+1] == 'K')))
 						{
 							BT816_res[BT4_MODULE].status = BT816_RES_SUCCESS;
 							break;
@@ -1126,7 +1132,7 @@ static int BT816_write_cmd(unsigned int bt_channel,const unsigned char *pData, u
 
 //const unsigned char	*query_version_cmd="AT+VER=?";
 //const unsigned char	*set_device_name_cmd="AT+DNAME=%s";
-static unsigned char	token[10],token_value[15];
+//static unsigned char	token[10],token_value[15];
 /*
  * @brief À¶ÑÀÄ£¿éBT816S01µÄ¸´Î»
 */
@@ -1555,7 +1561,7 @@ int BT816_init(void)
 		}
 	}
 
-#if 0
+#if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	if (BT816_query_name(BT1_MODULE,str))
 	{
 		return -4;
@@ -1568,7 +1574,9 @@ int BT816_init(void)
 			return -5;
 		}
 	}
+#endif
 
+#if(BT_MODULE_CONFIG & USE_BT2_MODULE)
 	if (BT816_query_name(BT2_MODULE,str))
 	{
 		return -4;
@@ -1581,7 +1589,9 @@ int BT816_init(void)
 			return -5;
 		}
 	}
+#endif
 
+#if(BT_MODULE_CONFIG & USE_BT3_MODULE)
 	if (BT816_query_name(BT3_MODULE,str))
 	{
 		return -4;
@@ -1594,7 +1604,9 @@ int BT816_init(void)
 			return -5;
 		}
 	}
+#endif
 
+#if(BT_MODULE_CONFIG & USE_BT4_MODULE)
 	if (BT816_query_name(BT4_MODULE,str))
 	{
 		return -4;
@@ -1611,10 +1623,19 @@ int BT816_init(void)
 #endif
 
 	MEMSET(spp_rec_buffer,0,MAX_BT_CHANNEL*SPP_BUFFER_LEN);
+#if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	RESET_BT1_DMA();
+#endif
+#if(BT_MODULE_CONFIG & USE_BT2_MODULE)
 	RESET_BT2_DMA();
+#endif
+#if(BT_MODULE_CONFIG & USE_BT4_MODULE)
 	RESET_BT3_DMA();
+#endif
+#if(BT_MODULE_CONFIG & USE_BT4_MODULE)
 	RESET_BT4_DMA();
+#endif
+
 	return 0;
 }
 

@@ -26,6 +26,7 @@
 #include "usb_pwr.h"
 #include "usb_desc.h"
 #include "uart.h"
+#include "hw_platform.h"
 
 
 #if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
@@ -95,7 +96,26 @@ static void usb_Interrupts_Config(void)
 *******************************************************************************/
 bool usb_cable_insert (void)
 {
-	//@todo....
+#if(HW_VER == HW_VER_V11)
+	if(hw_platform_USBcable_Insert_Detect() == 1)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+#else
+
+	if (bDeviceState == CONFIGURED)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+#endif
 }
 
 

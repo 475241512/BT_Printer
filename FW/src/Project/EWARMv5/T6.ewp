@@ -694,7 +694,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabelSelect</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
@@ -1644,6 +1644,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Drivers\data_uart.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\Drivers\hw_platform.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\App\KeyScan.c</name>

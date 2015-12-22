@@ -129,15 +129,15 @@ int main(void)
 	//MEMSET(debug_buffer,0,8000*2);
 	//debug_cnt = 0;
 
-	printf("BTPrinter startup...\r\n");
-	if (HSEStartUpStatus == SUCCESS)
-	{
-		printf("HSE OK!\r\n");
-	}
-	else
-	{
-		printf("HSE Failed!\r\n");
-	}
+	//printf("BTPrinter startup...\r\n");
+	//if (HSEStartUpStatus == SUCCESS)
+	//{
+	//	printf("HSE OK!\r\n");
+	//}
+	//else
+	//{
+	//	printf("HSE Failed!\r\n");
+	//}
 #endif
 
 	//初始化时基函数
@@ -162,6 +162,8 @@ int main(void)
 	//@todo...
 	delay_ms(10);	//for debug
 #endif
+
+	hw_platform_init();
 
 	if (!KEY_FEED())
 	{

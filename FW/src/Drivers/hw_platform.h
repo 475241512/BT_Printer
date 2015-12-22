@@ -1,6 +1,12 @@
 #ifndef _HW_PLATFORM_H_
 #define _HW_PLATFORM_H_
 
+#define		HW_VER_DEMO_V11		0		//主控使用的是F103VET6（100PIN），支持4个硬件蓝牙模块，对应的原理图是《BTPrinter_DemoBoard_V1.10》
+#define		HW_VER_V11			1		//主控使用的是F103RCT6（64PIN）, 只支持2个硬件蓝牙模块，对应的原理图是《BTPrinter_V1.10》
+
+//#define     HW_VER			HW_VER_DEMO_V11
+#define     HW_VER			HW_VER_V11
+
 //蓝牙模块类型
 #define		USE_WBTDS01		1
 #define		USE_BT816		2
@@ -24,5 +30,8 @@
 #include "PaperDetect.h"
 #include  "KeyScan.h"
 #include "basic_fun.h"
+
+void hw_platform_init(void);
+unsigned int hw_platform_USBcable_Insert_Detect(void);
 
 #endif

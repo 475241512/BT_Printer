@@ -2,6 +2,7 @@
 #include "KeyScan.h"
 #include "Event.h"
 #include "stm32f10x_lib.h"
+#include "hw_platform.h"
 
 #define KEY_MODE_DB_SHIFT		(1UL << 0)
 #define KEY_MODE_SHIFT			(1UL << 1)
@@ -69,6 +70,15 @@ void KeyScanInit(void)
 {
 	GPIO_InitTypeDef							GPIO_InitStructure;
 
+#if(HW_VER == HW_VER_V11)
+	//FEED_KEY	-- PA.1
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IPU;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+#else
 	//FEED_KEY	-- PE.2
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
 
@@ -77,9 +87,9 @@ void KeyScanInit(void)
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-	//BOX_CTRL	-- PA.4
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-
+#endif
+	//BOX_CTRL	-- PA.4
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_4;
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;

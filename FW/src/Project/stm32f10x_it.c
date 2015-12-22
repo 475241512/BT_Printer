@@ -23,6 +23,8 @@
 #include "TP.h"
 #include "BT816.h"
 #include "usb_int.h"
+#include "usb_pwr.h"
+#include "usb_istr.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -304,7 +306,16 @@ void RCC_IRQHandler(void)
 *******************************************************************************/
 void EXTI0_IRQHandler(void)
 {
-
+#if(HW_VER == HW_VER_V11)
+	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
+	{   
+		if(hw_platform_USBcable_Insert_Detect() == 0)
+		{
+			bDeviceState = UNCONNECTED;
+		}
+		EXTI_ClearITPendingBit(EXTI_Line0);
+	}
+#endif
 }
 
 /*******************************************************************************

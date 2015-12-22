@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "data_uart.h"
+#include "hw_platform.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -32,6 +33,32 @@ void data_uart_init(void)
 	USART_InitTypeDef						USART_InitStructure;
 	GPIO_InitTypeDef						GPIO_InitStructure;
 	
+#if(HW_VER == HW_VER_V11)
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+
+	/* Configure USART3 Tx (PB.10) as alternate function push-pull */
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	/* Configure USART3 Rx (PB.11) as input floating */
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IN_FLOATING;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	/* 设置串口参数								*/
+	USART_InitStructure.USART_BaudRate		= 115200;
+	USART_InitStructure.USART_WordLength	= USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits		= USART_StopBits_1;
+	USART_InitStructure.USART_Parity		= USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode			= USART_Mode_Tx;
+	USART_Init(USART3, &USART_InitStructure);
+
+	USART_Cmd(USART3, ENABLE);
+#else
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
 
@@ -56,6 +83,7 @@ void data_uart_init(void)
 	USART_Init(UART5, &USART_InitStructure);
 
 	USART_Cmd(UART5, ENABLE);	
+#endif
 }
 
 /**
@@ -63,7 +91,11 @@ void data_uart_init(void)
  */
 void data_uart_sendbyte(unsigned char data)
 {
+#if(HW_VER == HW_VER_V11)
+	USART_SendData(USART3, (unsigned short)data);
+#else
 	USART_SendData(UART5, (unsigned short)data);
+#endif
 }
 
 /**
@@ -71,6 +103,18 @@ void data_uart_sendbyte(unsigned char data)
  */
 unsigned char uart_rec_byte(void)
 {
+#if(HW_VER == HW_VER_V11)
+	int	i = 0;
+	while((USART_GetFlagStatus(USART3,USART_FLAG_RXNE)== RESET)&&(i<400000))
+	{
+		i++;
+	}
+	if (i == 400000) 
+	{
+		return 0x55;
+	}
+	return  USART_ReceiveData(USART3) & 0xFF;              /* Read one byte from the receive data register         */
+#else
 	int	i = 0;
 	while((USART_GetFlagStatus(UART5,USART_FLAG_RXNE)== RESET)&&(i<400000))
 	{
@@ -81,6 +125,7 @@ unsigned char uart_rec_byte(void)
 		return 0x55;
 	}
 	return  USART_ReceiveData(UART5) & 0xFF;              /* Read one byte from the receive data register         */
+#endif
 }
 
 /**
@@ -91,12 +136,19 @@ int fputc(int ch, FILE *f)
 {
 	//ENABLE_DATA_UART();
 	/* Write a character to the USART */
-	
+#if(HW_VER == HW_VER_V11)
+	USART_SendData(USART3, (u8) ch);
+
+	while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET)
+	{
+	}
+#else
 	USART_SendData(UART5, (u8) ch);
 	
 	while(USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET)
 	{
 	}
+#endif
 	//	DISABLE_DATA_UART;
 	return ch;        
 }

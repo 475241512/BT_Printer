@@ -12,6 +12,7 @@
 #include "ThermalDetect.h"
 #include <string.h>
 #include <stdio.h>
+#include "hw_platform.h"
 
 #ifdef DEBUG_VER
 extern unsigned char debug_buffer[];
@@ -84,6 +85,43 @@ enum
 	GPIOB->BRR = GPIO_Pin_2; \
 	}while(0)
 
+#if(HW_VER == HW_VER_V11)
+//PB.6
+#define MOTOR_PHASE_1A_HIGH()  do{ \
+	GPIOB->BSRR = GPIO_Pin_6; \
+	}while(0)
+
+#define MOTOR_PHASE_1A_LOW()   do{ \
+	GPIOB->BRR = GPIO_Pin_6; \
+	}while(0)
+
+//PB.5
+#define MOTOR_PHASE_1B_HIGH()  do{ \
+	GPIOB->BSRR = GPIO_Pin_5; \
+	}while(0)
+
+#define MOTOR_PHASE_1B_LOW()   do{ \
+	GPIOB->BRR = GPIO_Pin_5;  \
+	}while(0)
+
+//PB.4
+#define MOTOR_PHASE_2A_HIGH()  do{ \
+	GPIOB->BSRR = GPIO_Pin_4; \
+	}while(0)
+
+#define MOTOR_PHASE_2A_LOW()   do{ \
+	GPIOB->BRR = GPIO_Pin_4; \
+	}while(0)
+
+//PB.3
+#define MOTOR_PHASE_2B_HIGH()  do{ \
+	GPIOB->BSRR = GPIO_Pin_3; \
+	}while(0)
+
+#define MOTOR_PHASE_2B_LOW()   do{  \
+	GPIOB->BRR = GPIO_Pin_3; \
+	}while(0)
+#else
 //PE.7
 #define MOTOR_PHASE_1A_HIGH()  do{ \
 	GPIOE->BSRR = GPIO_Pin_7; \
@@ -119,6 +157,7 @@ enum
 #define MOTOR_PHASE_2B_LOW()   do{  \
 	GPIOE->BRR = GPIO_Pin_9; \
 	}while(0)
+#endif
 
 //PC.4
 #define STROBE_0_ON()     do{ \
@@ -233,27 +272,45 @@ void TPInit(void)
 	NVIC_InitTypeDef							NVIC_InitStructure;
 
 	//PRN_STROBE0 -- PC.4   PRN_STROBE1 -- PC.5
+#if(HW_VER == HW_VER_V11)
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+#else
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOE, ENABLE);
-
+#endif
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_4 | GPIO_Pin_5;
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
+#if(HW_VER == HW_VER_V11)
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
+	//MOT_PHASE1A -- PB.6  MOT_PHASE1B -- PB.5   MOT_PHASE2B -- PB.4	MOT_PHASE2A -- PB.3  
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_6 | GPIO_Pin_5 | GPIO_Pin_4 | GPIO_Pin_3;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+#else
 	//MOT_PHASE1A -- PE.7   MOT_PHASE1B -- PE.8   MOT_PHASE2B -- PE.9	MOT_PHASE2A -- PE.10  
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
-
+#endif
 	//PRN_LATCH	-- PB.0	 PRN_POWER -- PB.1  MOT_POWER -- PB.2
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+#if(HW_VER == HW_VER_V11)
+	//MOT_STATUS -- PD.2
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IPU;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+#else
 	//MOT_STATUS -- PE.11
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_11;
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
+#endif
 
 	/*开启相应时钟 */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);  
@@ -301,6 +358,7 @@ void TPInit(void)
 extern void WakeUpTP_MODE1(void)
 {
 	volatile uint16_t len;
+	unsigned char tmp[LineDot/8];
 
 	PrintBufToZero();
 	esc_sts[current_channel].bitmap_flag = 0;
@@ -310,10 +368,12 @@ extern void WakeUpTP_MODE1(void)
 	esc_sts[current_channel].dot_minrow = ARRAY_SIZE(esc_sts[current_channel].dot[0]);
 
 	len =  LineDot/8;
-	while (len--)
-	{
-		print_head_spi_send_byte(0);
-	}
+	//while (len--)
+	//{
+	//	print_head_spi_send_byte(0);
+	//}
+	memset(tmp,0,LineDot/8);
+	print_head_spi_send_data(tmp,LineDot/8);
 	LATCH_LOW();
 	len = 100;
 	while (len--);
@@ -979,13 +1039,14 @@ static void TPDataShiftOut(uint8_t *p, uint16_t len)
 {
 
 
-	while (len--)
-	{
-		//Send byte through the SPI1 peripheral
-		print_head_spi_send_byte(*p++);
-		// Loop while DR register in not emplty
+	//while (len--)
+	//{
+	//	//Send byte through the SPI1 peripheral
+	//	print_head_spi_send_byte(*p++);
+	//	// Loop while DR register in not emplty
 
-	}
+	//}
+	print_head_spi_send_data(p,len);
 
 	return;
 
