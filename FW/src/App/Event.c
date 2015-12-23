@@ -58,11 +58,11 @@ extern void event_proc(void)
 		//ESC_POS_test_esc();
 		//ESC_POS_test_esc_special();
 		//TPPrintTestPage();
-		//TPFeedStart();
-          if(TPPrinterReady())
-          {
-            TPSelfTest2();
-          }
+		TPFeedStart();
+          //if(TPPrinterReady())
+          //{
+          //  TPSelfTest2();
+          //}
 		
 		break;
 	case evtKeyUpFeed:

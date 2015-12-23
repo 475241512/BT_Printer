@@ -104,22 +104,22 @@ enum
 	GPIOB->BRR = GPIO_Pin_5;  \
 	}while(0)
 
-//PB.4
-#define MOTOR_PHASE_2A_HIGH()  do{ \
-	GPIOB->BSRR = GPIO_Pin_4; \
-	}while(0)
-
-#define MOTOR_PHASE_2A_LOW()   do{ \
-	GPIOB->BRR = GPIO_Pin_4; \
-	}while(0)
-
 //PB.3
-#define MOTOR_PHASE_2B_HIGH()  do{ \
+#define MOTOR_PHASE_2A_HIGH()  do{ \
 	GPIOB->BSRR = GPIO_Pin_3; \
 	}while(0)
 
-#define MOTOR_PHASE_2B_LOW()   do{  \
+#define MOTOR_PHASE_2A_LOW()   do{ \
 	GPIOB->BRR = GPIO_Pin_3; \
+	}while(0)
+
+//PB.4
+#define MOTOR_PHASE_2B_HIGH()  do{ \
+	GPIOB->BSRR = GPIO_Pin_4; \
+	}while(0)
+
+#define MOTOR_PHASE_2B_LOW()   do{  \
+	GPIOB->BRR = GPIO_Pin_4; \
 	}while(0)
 #else
 //PE.7
@@ -1062,7 +1062,6 @@ static uint8_t TPCheckBuf(void)
 	uint8_t ret;
 	uint16_t feedmax;
 
-	//if(TPPrinterReady_ext() !=  TRUE )
 	if(TPPrinterReady() !=  TRUE )
 	{
 		TPIntSetIdle();

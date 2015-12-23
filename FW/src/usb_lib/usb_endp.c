@@ -95,7 +95,7 @@ void EP2_OUT_Callback(void)
 			ringbuffer_put(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],buffer_out,print_data_len);
 			//SetEPTxStatus(ENDP1, EP_TX_STALL);
 			//SetEPRxStatus(ENDP2, EP_RX_STALL);
-			if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < RING_BUFF_FULL_TH)
+			if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < USB_RING_BUFF_FULL_TH)
 			{
 				SetEPRxStatus(EP2_OUT, EP_RX_VALID);
 			}

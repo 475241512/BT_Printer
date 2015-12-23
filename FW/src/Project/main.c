@@ -27,6 +27,7 @@
 #include "usb_app_config.h"
 #include "res_spi.h"
 #include "Event.h"
+#include "LED.h"
 /* Private define ------------------------------------------------------------*/
 
 // Cortex System Control register address
@@ -39,6 +40,7 @@ unsigned char	debug_buffer[2];
 unsigned int	debug_cnt;
 #endif
 
+#define		IAP_SIZE					(1024*32)	//BootCode Size
 
 /* Global variables ---------------------------------------------------------*/
 ErrorStatus			HSEStartUpStatus;							//Extern crystal OK Flag
@@ -59,8 +61,10 @@ extern	TTerminalPara			g_param;					//Terminal Param
 void system_error_tip(void)
 {
 	//@todo...
-
-	while(1);
+	while(1)
+	{
+		LED_blink(1,60);
+	}
 }
 
 /*******************************************************************************
@@ -76,7 +80,7 @@ void enter_u_disk_mode(void)
 	
 	while(1)
 	{
-		delay_ms(50);
+		LED_blink(1,200);
 		if(!KEY_FEED())
 		{
 			key_state++;
@@ -85,7 +89,7 @@ void enter_u_disk_mode(void)
 		{
 			key_state = 0;
 		}
-		if( key_state == 20)		//退出USB模式，系统复位
+		if( key_state == 5)		//退出USB模式，系统复位
 		{
 			//usb_Cable_Config(DISABLE);
 			NVIC_SETFAULTMASK();
@@ -138,6 +142,7 @@ int main(void)
 	//{
 	//	printf("HSE Failed!\r\n");
 	//}
+        debug_buffer[0] = 0;
 #endif
 
 	//初始化时基函数
@@ -203,11 +208,12 @@ int main(void)
 	{
 		if (key_state == 2)
 		{
-			if (usb_cable_insert())
-			{
-				enter_u_disk_mode();
-			}
-			else
+			//应用在开机时不需要接口进入升级模式，由bootloader负责提供接口强制进入升级模式
+			//if (usb_cable_insert())
+			//{
+			//	enter_u_disk_mode();
+			//}
+			//else
 			{
 				event_post(evtKeyDownHold2000msMode);
 			}
@@ -218,7 +224,10 @@ int main(void)
 	print_head_init();
 
 	//初始化蓝牙模块
-	BT816_init();
+	if(BT816_init())
+	{
+		//system_error_tip();
+	}
 
 	esc_init();
 

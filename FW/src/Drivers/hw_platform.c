@@ -15,6 +15,7 @@
 */
 #include "hw_platform.h"
 #include "stm32f10x_lib.h"
+#include "LED.h"
 //#include "TimeBase.h"
 #include <assert.h>
 
@@ -110,23 +111,23 @@ static void platform_misc_port_init(void)
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	/* Connect EXTI Line0 to PA.0 */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
+	///* Connect EXTI Line0 to PA.0 */
+	//GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
 
-	EXTI_ClearITPendingBit(EXTI_Line0);
-	EXTI_InitStructure.EXTI_Line = EXTI_Line0;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-	EXTI_Init(&EXTI_InitStructure); 
-	EXTI_GenerateSWInterrupt(EXTI_Line0);
+	//EXTI_ClearITPendingBit(EXTI_Line0);
+	//EXTI_InitStructure.EXTI_Line = EXTI_Line0;
+	//EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+	//EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	//EXTI_Init(&EXTI_InitStructure); 
+	//EXTI_GenerateSWInterrupt(EXTI_Line0);
 
-	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);      
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQChannel;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 6;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
+	////NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);      
+	//NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQChannel;
+	//NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	//NVIC_InitStructure.NVIC_IRQChannelSubPriority = 6;
+	//NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	//NVIC_Init(&NVIC_InitStructure);
 
 	////LED-Red -- PA.4	LED-Green -- PA.5	LED-Yellow -- PA.6		Motor -- PA.7
 	//GPIO_InitStructure.GPIO_Pin	= GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
@@ -156,9 +157,8 @@ static void platform_misc_port_init(void)
 */
 void hw_platform_init(void)
 {
-	platform_misc_port_init();
-	//ADC_Module_Init();
-	//current_led_state = 0;
+	LedInit();
+	LED_OFF();
 }
 
 #if 0

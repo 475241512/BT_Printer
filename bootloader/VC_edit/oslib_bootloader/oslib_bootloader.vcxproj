@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{84A1F426-011F-434E-B7C7-E68EAD9E1932}</ProjectGuid>
+    <RootNamespace>oslib_bootloader</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\driver\AsciiLib_6x12.h" />
+    <ClInclude Include="..\..\driver\spi_flash.h" />
+    <ClInclude Include="..\..\FatFs\diskio.h" />
+    <ClInclude Include="..\..\FatFs\ff.h" />
+    <ClInclude Include="..\..\FatFs\ffconf.h" />
+    <ClInclude Include="..\..\FatFs\integer.h" />
+    <ClInclude Include="..\..\uCOS-II\Ports\app_cfg.h" />
+    <ClInclude Include="..\..\library\inc\cortexm3_macro.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-CPU\cpu.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-CPU\cpu_def.h" />
+    <ClInclude Include="..\..\app\des.H" />
+    <ClInclude Include="..\..\fat\diskio.h" />
+    <ClInclude Include="..\..\fat\ff.h" />
+    <ClInclude Include="..\..\fat\ffconf.h" />
+    <ClInclude Include="..\..\driver\hw_misc.H" />
+    <ClInclude Include="..\..\uCOS-II\Ports\includes.h" />
+    <ClInclude Include="..\..\fat\integer.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_ascii.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_def.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_mem.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_str.h" />
+    <ClInclude Include="..\..\driver\MD5.h" />
+    <ClInclude Include="..\..\app\misc.h" />
+    <ClInclude Include="..\..\app\once_mem.H" />
+    <ClInclude Include="..\..\uCOS-II\Ports\os_cfg.h" />
+    <ClInclude Include="..\..\uCOS-II\Source\os_cfg_r.h" />
+    <ClInclude Include="..\..\uCOS-II\Ports\os_cpu.h" />
+    <ClInclude Include="..\..\uCOS-II\uC-Probe\os_probe.h" />
+    <ClInclude Include="..\..\app\rtc.h" />
+    <ClInclude Include="..\..\driver\sd2068.h" />
+    <ClInclude Include="..\..\driver\sdcard.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_adc.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_bkp.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_can.h" />
+    <ClInclude Include="..\..\project\stm32f10x_conf.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_crc.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_dac.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_dbgmcu.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_dma.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_exti.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_flash.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_fsmc.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_gpio.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_i2c.h" />
+    <ClInclude Include="..\..\project\stm32f10x_it.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_iwdg.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_lib.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_map.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_nvic.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_pwr.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_rcc.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_rtc.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_sdio.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_spi.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_systick.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_tim.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_type.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_usart.h" />
+    <ClInclude Include="..\..\library\inc\stm32f10x_wwdg.h" />
+    <ClInclude Include="..\..\driver\TimeBase.h" />
+    <ClInclude Include="..\..\app\timer_manager.H" />
+    <ClInclude Include="..\..\uCOS-II\Source\ucos_ii.h" />
+    <ClInclude Include="..\..\app\xmlParse.H" />
+    <ClInclude Include="..\..\usb_lib\hw_config.h" />
+    <ClInclude Include="..\..\usb_lib\mass_mal.h" />
+    <ClInclude Include="..\..\usb_lib\memory.h" />
+    <ClInclude Include="..\..\usb_lib\usb_app_config.h" />
+    <ClInclude Include="..\..\usb_lib\usb_bot.h" />
+    <ClInclude Include="..\..\usb_lib\usb_conf.h" />
+    <ClInclude Include="..\..\usb_lib\usb_core.h" />
+    <ClInclude Include="..\..\usb_lib\usb_def.h" />
+    <ClInclude Include="..\..\usb_lib\usb_desc.h" />
+    <ClInclude Include="..\..\usb_lib\usb_init.h" />
+    <ClInclude Include="..\..\usb_lib\usb_int.h" />
+    <ClInclude Include="..\..\usb_lib\usb_istr.h" />
+    <ClInclude Include="..\..\usb_lib\usb_lib.h" />
+    <ClInclude Include="..\..\usb_lib\usb_mem.h" />
+    <ClInclude Include="..\..\usb_lib\usb_prop.h" />
+    <ClInclude Include="..\..\usb_lib\usb_pwr.h" />
+    <ClInclude Include="..\..\usb_lib\usb_regs.h" />
+    <ClInclude Include="..\..\usb_lib\usb_scsi.h" />
+    <ClInclude Include="..\..\usb_lib\usb_sil.h" />
+    <ClInclude Include="..\..\usb_lib\usb_type.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\app\des.c" />
+    <ClCompile Include="..\..\driver\spi_flash.c" />
+    <ClCompile Include="..\..\FatFs\diskio.c" />
+    <ClCompile Include="..\..\FatFs\ff.c" />
+    <ClCompile Include="..\..\driver\hw_misc.c" />
+    <ClCompile Include="..\..\project\main.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_adc.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_bkp.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_can.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_crc.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_dac.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_dbgmcu.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_dma.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_exti.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_flash.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_fsmc.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_gpio.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_i2c.c" />
+    <ClCompile Include="..\..\project\stm32f10x_it.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_iwdg.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_lib.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_nvic.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_pwr.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_rcc.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_rtc.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_sdio.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_spi.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_systick.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_tim.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_usart.c" />
+    <ClCompile Include="..\..\project\EWARMv5\stm32f10x_vector.c" />
+    <ClCompile Include="..\..\library\src\stm32f10x_wwdg.c" />
+    <ClCompile Include="..\..\usb_lib\hw_config.c" />
+    <ClCompile Include="..\..\usb_lib\mass_mal.c" />
+    <ClCompile Include="..\..\usb_lib\memory.c" />
+    <ClCompile Include="..\..\usb_lib\scsi_data.c" />
+    <ClCompile Include="..\..\usb_lib\usb_app_config.c" />
+    <ClCompile Include="..\..\usb_lib\usb_bot.c" />
+    <ClCompile Include="..\..\usb_lib\usb_core.c" />
+    <ClCompile Include="..\..\usb_lib\usb_desc.c" />
+    <ClCompile Include="..\..\usb_lib\usb_endp.c" />
+    <ClCompile Include="..\..\usb_lib\usb_init.c" />
+    <ClCompile Include="..\..\usb_lib\usb_int.c" />
+    <ClCompile Include="..\..\usb_lib\usb_istr.c" />
+    <ClCompile Include="..\..\usb_lib\usb_mem.c" />
+    <ClCompile Include="..\..\usb_lib\usb_prop.c" />
+    <ClCompile Include="..\..\usb_lib\usb_pwr.c" />
+    <ClCompile Include="..\..\usb_lib\usb_regs.c" />
+    <ClCompile Include="..\..\usb_lib\usb_scsi.c" />
+    <ClCompile Include="..\..\usb_lib\usb_sil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\project\EWARMv5\EVAL\Exe\Project.bin" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

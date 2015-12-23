@@ -129,11 +129,13 @@ bool usb_cable_insert (void)
 */
 void usb_device_init(unsigned char device_type)
 {
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
 	if (device_type == USB_PRINTER)
 	{
 		MEMSET(usb_rec_buffer,0,USB_BUFFER_LEN);
 		ringbuffer_init(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],usb_rec_buffer,USB_BUFFER_LEN);
 	}
+#endif
 
 	if (g_usb_type != device_type)
 	{

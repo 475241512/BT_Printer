@@ -5,7 +5,7 @@
 define symbol __ICFEDIT_intvec_start__ = 0x08008000;
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ROM_start__ = 0x08008000;
-define symbol __ICFEDIT_region_ROM_end__   = 0x0800FFFF;
+define symbol __ICFEDIT_region_ROM_end__   = 0x0801FFFF;
 define symbol __ICFEDIT_region_RAM_start__ = 0x20000010;
 define symbol __ICFEDIT_region_RAM_end__   = 0x20005000;
 /* vendor information Regions*/
@@ -14,8 +14,8 @@ define symbol __ICFEDIT_region_VENDOR_end__   = 0x20000010;
 
 
 /*-Sizes-*/
-define symbol __ICFEDIT_size_cstack__ = 0x800;
-define symbol __ICFEDIT_size_heap__   = 0x300;
+define symbol __ICFEDIT_size_cstack__ = 0x400;
+define symbol __ICFEDIT_size_heap__   = 0x200;
 /**** End of ICF editor section. ###ICF###*/
 
 

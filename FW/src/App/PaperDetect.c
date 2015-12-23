@@ -259,32 +259,18 @@ uint8_t TPPrinterReady(void)
 
 }
 
-uint8_t TPPrinterReady_ext(void)
-{
-	// return TRUE;
-
-	if(PAPERSNS())
-	{
-		return FALSE;
-	}
-	else
-	{
-		return TRUE;
-	}
-
-}
 
 uint8_t TPPaperReady(void)
  {
 
-	if(printersts & PAPER_READY)
-	{
-		return TRUE;
-	}
-	else
-    {
-	    return FALSE;
-	}
+	 if(PAPERSNS())
+	 {
+		 return FALSE;
+	 }
+	 else
+	 {
+		 return TRUE;
+	 }
 
 }
 
@@ -303,7 +289,7 @@ void SysTick_IRQ_Handle(void)
 #ifdef HW_VER_LCD
 	//LCD_Refresh();
 #else
-	//LedScanProc();
+	LedScanProc();
 
 #endif
 	return;

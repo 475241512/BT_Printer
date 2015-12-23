@@ -50,6 +50,7 @@ void NMIException(void)
 // with stack frame location as input parameter  
 void hard_fault_handler_c(unsigned int * hardfault_args)  
 {  
+#ifdef DEBUG_VER 
 	unsigned int stacked_r0;  
 	unsigned int stacked_r1;  
 	unsigned int stacked_r2;  
@@ -103,7 +104,7 @@ void hard_fault_handler_c(unsigned int * hardfault_args)
 	printf ("HFSR = %x\n", (*((volatile unsigned long *)(0xE000ED2C))));  
 	printf ("DFSR = %x\n", (*((volatile unsigned long *)(0xE000ED30))));  
 	printf ("AFSR = %x\n", (*((volatile unsigned long *)(0xE000ED3C))));  
-
+#endif
 
 	while(1) 
 	{ 
@@ -306,16 +307,7 @@ void RCC_IRQHandler(void)
 *******************************************************************************/
 void EXTI0_IRQHandler(void)
 {
-#if(HW_VER == HW_VER_V11)
-	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
-	{   
-		if(hw_platform_USBcable_Insert_Detect() == 0)
-		{
-			bDeviceState = UNCONNECTED;
-		}
-		EXTI_ClearITPendingBit(EXTI_Line0);
-	}
-#endif
+
 }
 
 /*******************************************************************************

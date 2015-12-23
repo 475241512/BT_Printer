@@ -1,0 +1,622 @@
+###############################################################################
+#                                                                             #
+# IAR ELF Linker V5.50.0.51878/W32 for ARM              03/Mar/2011  17:48:58 #
+# Copyright (C) 2007-2010 IAR Systems AB.                                     #
+#                                                                             #
+#    Output file  =  E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Exe\EVAL.out      #
+#    Map file     =  E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\List\EVAL.map     #
+#    Command line =  E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\MD5.o         #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\TimeBase.o    #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\cortexm3_macr #
+#                    o.o E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\ #
+#                    bootloader\bootloader\project\EWARMv5\EVAL\Obj\des.o     #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\diskio.o      #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\ff.o          #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\hw_misc.o     #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\main.o        #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\misc.o        #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\once_mem.o    #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\sd2068.o      #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\sdcard.o      #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10x_adc #
+#                    .o E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\b #
+#                    ootloader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10x_ #
+#                    bkp.o E:\Project\公交手持刷卡机p100\product_mengniu\T1_f #
+#                    w\bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm32f1 #
+#                    0x_can.o E:\Project\公交手持刷卡机p100\product_mengniu\T #
+#                    1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm3 #
+#                    2f10x_crc.o E:\Project\公交手持刷卡机p100\product_mengni #
+#                    u\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\s #
+#                    tm32f10x_dac.o E:\Project\公交手持刷卡机p100\product_men #
+#                    gniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Ob #
+#                    j\stm32f10x_dbgmcu.o E:\Project\公交手持刷卡机p100\produ #
+#                    ct_mengniu\T1_fw\bootloader\bootloader\project\EWARMv5\E #
+#                    VAL\Obj\stm32f10x_dma.o E:\Project\公交手持刷卡机p100\pr #
+#                    oduct_mengniu\T1_fw\bootloader\bootloader\project\EWARMv #
+#                    5\EVAL\Obj\stm32f10x_exti.o                              #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10x_fla #
+#                    sh.o E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw #
+#                    \bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10 #
+#                    x_fsmc.o E:\Project\公交手持刷卡机p100\product_mengniu\T #
+#                    1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm3 #
+#                    2f10x_gpio.o E:\Project\公交手持刷卡机p100\product_mengn #
+#                    iu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\ #
+#                    stm32f10x_i2c.o E:\Project\公交手持刷卡机p100\product_me #
+#                    ngniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\O #
+#                    bj\stm32f10x_it.o E:\Project\公交手持刷卡机p100\product_ #
+#                    mengniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL #
+#                    \Obj\stm32f10x_iwdg.o E:\Project\公交手持刷卡机p100\prod #
+#                    uct_mengniu\T1_fw\bootloader\bootloader\project\EWARMv5\ #
+#                    EVAL\Obj\stm32f10x_lib.o E:\Project\公交手持刷卡机p100\p #
+#                    roduct_mengniu\T1_fw\bootloader\bootloader\project\EWARM #
+#                    v5\EVAL\Obj\stm32f10x_nvic.o                             #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10x_pwr #
+#                    .o E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\b #
+#                    ootloader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10x_ #
+#                    rcc.o E:\Project\公交手持刷卡机p100\product_mengniu\T1_f #
+#                    w\bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm32f1 #
+#                    0x_rtc.o E:\Project\公交手持刷卡机p100\product_mengniu\T #
+#                    1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm3 #
+#                    2f10x_sdio.o E:\Project\公交手持刷卡机p100\product_mengn #
+#                    iu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\ #
+#                    stm32f10x_spi.o E:\Project\公交手持刷卡机p100\product_me #
+#                    ngniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\O #
+#                    bj\stm32f10x_systick.o E:\Project\公交手持刷卡机p100\pro #
+#                    duct_mengniu\T1_fw\bootloader\bootloader\project\EWARMv5 #
+#                    \EVAL\Obj\stm32f10x_tim.o E:\Project\公交手持刷卡机p100\ #
+#                    product_mengniu\T1_fw\bootloader\bootloader\project\EWAR #
+#                    Mv5\EVAL\Obj\stm32f10x_usart.o                           #
+#                    E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\boot #
+#                    loader\bootloader\project\EWARMv5\EVAL\Obj\stm32f10x_vec #
+#                    tor.o E:\Project\公交手持刷卡机p100\product_mengniu\T1_f #
+#                    w\bootloader\bootloader\project\EWARMv5\EVAL\Obj\stm32f1 #
+#                    0x_wwdg.o E:\Project\公交手持刷卡机p100\product_mengniu\ #
+#                    T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\tim #
+#                    er_manager.o E:\Project\公交手持刷卡机p100\product_mengn #
+#                    iu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj\ #
+#                    xmlParse.o -o E:\Project\公交手持刷卡机p100\product_meng #
+#                    niu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Exe #
+#                    \EVAL.out --map E:\Project\公交手持刷卡机p100\product_me #
+#                    ngniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\L #
+#                    ist\EVAL.map --config E:\Project\公交手持刷卡机p100\prod #
+#                    uct_mengniu\T1_fw\bootloader\bootloader\project\EWARMv5\ #
+#                    app_in0000.icf --semihosting --entry __iar_program_start #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A1":  place at 0x08000000 { ro section .intvec };
+"P1":  place in [from 0x08000000 to 0x0807ffff] { ro };
+"P3":  place in [from 0x20000010 to 0x2000ffff] {
+          rw, block CSTACK, block HEAP };
+
+  Section            Kind        Address    Size  Object
+  -------            ----        -------    ----  ------
+"A1":                                      0x140
+  .intvec            const    0x08000000   0x140  stm32f10x_vector.o [1]
+                            - 0x08000140   0x140
+
+"P1":                                     0x58f0
+  .text              ro code  0x08000140  0x26f4  sdcard.o [1]
+  .text              ro code  0x08002834  0x1368  ff.o [1]
+  .text              ro code  0x08003b9c   0x576  des.o [1]
+  .text              ro code  0x08004114   0x470  main.o [1]
+  .text              ro code  0x08004584   0x2c4  stm32f10x_flash.o [1]
+  .text              ro code  0x08004848   0x278  stm32f10x_rcc.o [1]
+  .text              ro code  0x08004ac0   0x25c  diskio.o [1]
+  .rodata            const    0x08004d1c   0x200  des.o [1]
+  .text              ro code  0x08004f1c   0x1b0  stm32f10x_sdio.o [1]
+  .text              ro code  0x080050cc   0x15c  stm32f10x_gpio.o [1]
+  .text              ro code  0x08005228    0xf0  stm32f10x_nvic.o [1]
+  .text              ro code  0x08005318    0xcc  timer_manager.o [1]
+  .text              ro code  0x080053e4    0xac  stm32f10x_dma.o [1]
+  .text              ro code  0x08005490    0xa0  stm32f10x_usart.o [1]
+  .text              ro code  0x08005530    0x94  stm32f10x_it.o [1]
+  .text              ro code  0x080055c4    0x7a  cortexm3_macro.o [1]
+  .text              ro code  0x08005640    0x74  hw_misc.o [1]
+  .text              ro code  0x080056b4    0x72  stm32f10x_tim.o [1]
+  .text              ro code  0x08005728    0x64  TimeBase.o [1]
+  .rodata            const    0x0800578c    0x40  des.o [1]
+  .rodata            const    0x080057cc    0x40  des.o [1]
+  .rodata            const    0x0800580c    0x38  des.o [1]
+  .rodata            const    0x08005844    0x30  des.o [1]
+  .rodata            const    0x08005874    0x30  des.o [1]
+  .text              ro code  0x080058a4    0x30  copy_init3.o [4]
+  .text              ro code  0x080058d4    0x2c  data_init3.o [4]
+  .text              ro code  0x08005900    0x28  iarttio.o [5]
+  .text              ro code  0x08005928    0x24  zero_init3.o [4]
+  .iar.init_table    const    0x0800594c    0x24  - Linker created -
+  .rodata            const    0x08005970    0x20  des.o [1]
+  .text              ro code  0x08005990    0x16  cmain.o [4]
+  .text              ro code  0x080059a8    0x14  exit.o [5]
+  .rodata            const    0x080059bc    0x10  des.o [1]
+  .rodata            const    0x080059cc     0xc  ff.o [1]
+  .rodata            const    0x080059d8     0xc  main.o [1]
+  .text              ro code  0x080059e4     0xc  cstartup_M.o [4]
+  .text              ro code  0x080059f0     0xa  cexit.o [4]
+  .text              ro code  0x080059fc     0x8  XShttio.o [3]
+  .text              ro code  0x08005a04     0x6  exit.o [3]
+  .text              ro code  0x08005a0a     0x4  low_level_init.o [3]
+  Initializer bytes  ro data  0x08005a10    0x20  <for P3 s0> (used: 0x1d)
+                            - 0x08005a30  0x58f0
+
+"P3", part 1 of 3:                        0x1000
+  CSTACK                      0x20000010  0x1000  <Block>
+    CSTACK           uninit   0x20000010  0x1000  <Block tail>
+                            - 0x20001010  0x1000
+
+"P3", part 2 of 3:                          0x20
+  P3 s0                       0x20001010    0x20  <Init block>
+    .data            inited   0x20001010     0x8  main.o [1]
+    .data            inited   0x20001018     0x8  main.o [1]
+    .data            inited   0x20001020     0x8  XShttio.o [3]
+    .data            inited   0x20001028     0x4  sdcard.o [1]
+    .data            inited   0x2000102c     0x1  sdcard.o [1]
+                            - 0x20001030    0x20
+
+"P3", part 3 of 3:                         0xfa8
+  .bss               zero     0x20001030   0x800  main.o [1]
+  .bss               zero     0x20001830   0x230  main.o [1]
+  .bss               zero     0x20001a60   0x224  main.o [1]
+  .bss               zero     0x20001c84   0x200  main.o [1]
+  .bss               zero     0x20001e84    0x50  diskio.o [1]
+  .bss               zero     0x20001ed4    0x50  timer_manager.o [1]
+  .bss               zero     0x20001f24    0x18  sdcard.o [1]
+  .bss               zero     0x20001f3c    0x18  sdcard.o [1]
+  .bss               zero     0x20001f54    0x14  sdcard.o [1]
+  .bss               zero     0x20001f68    0x10  sdcard.o [1]
+  .bss               zero     0x20001f78    0x10  sdcard.o [1]
+  .bss               zero     0x20001f88     0x4  TimeBase.o [1]
+  .bss               zero     0x20001f8c     0x4  TimeBase.o [1]
+  .bss               zero     0x20001f90     0x4  diskio.o [1]
+  .bss               zero     0x20001f94     0x4  diskio.o [1]
+  .bss               zero     0x20001f98     0x4  diskio.o [1]
+  .bss               zero     0x20001f9c     0x4  diskio.o [1]
+  .bss               zero     0x20001fa0     0x4  ff.o [1]
+  .bss               zero     0x20001fa4     0x4  main.o [1]
+  .bss               zero     0x20001fa8     0x4  main.o [1]
+  .bss               zero     0x20001fac     0x4  main.o [1]
+  .bss               zero     0x20001fb0     0x4  main.o [1]
+  .bss               zero     0x20001fb4     0x4  sdcard.o [1]
+  .bss               zero     0x20001fb8     0x4  sdcard.o [1]
+  .bss               zero     0x20001fbc     0x4  sdcard.o [1]
+  .bss               zero     0x20001fc0     0x4  sdcard.o [1]
+  .bss               zero     0x20001fc4     0x4  sdcard.o [1]
+  .bss               zero     0x20001fc8     0x4  sdcard.o [1]
+  .bss               zero     0x20001fcc     0x4  sdcard.o [1]
+  .bss               zero     0x20001fd0     0x4  sdcard.o [1]
+  .bss               zero     0x20001fd4     0x2  ff.o [1]
+                            - 0x20001fd6   0xfa6
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0xfa6:
+          0x20001030  0xfa6
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x20 (110% of destination):
+          0x08005a10   0x20
+    1 destination range, total size 0x1d:
+          0x20001010   0x1d
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module              ro code  ro data  rw data
+    ------              -------  -------  -------
+E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj: [1]
+    TimeBase.o              100                 8
+    cortexm3_macro.o        122
+    des.o                 1 398      840
+    diskio.o                604                96
+    ff.o                  4 968       12        6
+    hw_misc.o               116
+    main.o                1 136       28    3 700
+    sdcard.o              9 972        5      137
+    stm32f10x_dma.o         172
+    stm32f10x_flash.o       708
+    stm32f10x_gpio.o        348
+    stm32f10x_it.o          148
+    stm32f10x_nvic.o        240
+    stm32f10x_rcc.o         632
+    stm32f10x_sdio.o        432
+    stm32f10x_tim.o         114
+    stm32f10x_usart.o       160
+    stm32f10x_vector.o               320
+    timer_manager.o         204                80
+    ---------------------------------------------
+    Total:               21 574    1 205    4 027
+
+command line: [2]
+    ---------------------------------------------
+    Total:
+
+dl7M_tl_if.a: [3]
+    XShttio.o                 8        8        8
+    exit.o                    6
+    low_level_init.o          4
+    ---------------------------------------------
+    Total:                   18        8        8
+
+rt7M_tl.a: [4]
+    cexit.o                  10
+    cmain.o                  22
+    copy_init3.o             48
+    cstartup_M.o             12
+    data_init3.o             44
+    zero_init3.o             36
+    ---------------------------------------------
+    Total:                  172
+
+shb_l.a: [5]
+    exit.o                   20
+    iarttio.o                40
+    ---------------------------------------------
+    Total:                   60
+
+    Gaps                     10                 3
+    Linker created                    41    4 096
+-------------------------------------------------
+    Grand Total:         21 834    1 254    8 134
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+ADC1_2_IRQHandler       0x08005565    0x2  Code  Gb  stm32f10x_it.o [1]
+ADC3_IRQHandler         0x080055a5    0x2  Code  Gb  stm32f10x_it.o [1]
+BusFaultException       0x08005537    0x2  Code  Gb  stm32f10x_it.o [1]
+CAN_RX1_IRQHandler      0x0800556b    0x2  Code  Gb  stm32f10x_it.o [1]
+CAN_SCE_IRQHandler      0x0800556d    0x2  Code  Gb  stm32f10x_it.o [1]
+CID_Tab                 0x20001f78   0x10  Data  Lc  sdcard.o [1]
+CSD_Tab                 0x20001f68   0x10  Data  Lc  sdcard.o [1]
+CSTACK$$Base            0x20000010          --   Gb  - Linker created -
+CSTACK$$Limit           0x20001010          --   Gb  - Linker created -
+CardType                0x20001fb4    0x4  Data  Lc  sdcard.o [1]
+CmdError                0x08001eaf   0x3a  Code  Lc  sdcard.o [1]
+CmdResp1Error           0x08001f65  0x120  Code  Lc  sdcard.o [1]
+CmdResp2Error           0x080020c9   0x5a  Code  Lc  sdcard.o [1]
+CmdResp3Error           0x08002085   0x44  Code  Lc  sdcard.o [1]
+CmdResp6Error           0x08002129   0xb2  Code  Lc  sdcard.o [1]
+CmdResp7Error           0x08001ee9   0x62  Code  Lc  sdcard.o [1]
+DMA1_Channel1_IRQHandler
+                        0x08005557    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA1_Channel2_IRQHandler
+                        0x08005559    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA1_Channel3_IRQHandler
+                        0x0800555b    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA1_Channel4_IRQHandler
+                        0x0800555d    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA1_Channel5_IRQHandler
+                        0x0800555f    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA1_Channel6_IRQHandler
+                        0x08005561    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA1_Channel7_IRQHandler
+                        0x08005563    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA2_Channel1_IRQHandler
+                        0x080055bd    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA2_Channel2_IRQHandler
+                        0x080055bf    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA2_Channel3_IRQHandler
+                        0x080055c1    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA2_Channel4_5_IRQHandler
+                        0x080055c3    0x2  Code  Gb  stm32f10x_it.o [1]
+DMA_ClearFlag           0x0800546d   0x10  Code  Gb  stm32f10x_dma.o [1]
+DMA_Cmd                 0x08005425   0x1a  Code  Gb  stm32f10x_dma.o [1]
+DMA_GetFlagStatus       0x0800543f   0x2e  Code  Gb  stm32f10x_dma.o [1]
+DMA_Init                0x080053e5   0x40  Code  Gb  stm32f10x_dma.o [1]
+DMA_RxConfiguration     0x080027a3   0x5a  Code  Lc  sdcard.o [1]
+DMA_TxConfiguration     0x08002749   0x5a  Code  Lc  sdcard.o [1]
+DebugMonitor            0x0800553b    0x2  Code  Gb  stm32f10x_it.o [1]
+DestBuffer              0x20001fc8    0x4  Data  Gb  sdcard.o [1]
+DeviceMode              0x20001028    0x4  Data  Lc  sdcard.o [1]
+EXTI0_IRQHandler        0x0800554d    0x2  Code  Gb  stm32f10x_it.o [1]
+EXTI15_10_IRQHandler    0x08005597    0x2  Code  Gb  stm32f10x_it.o [1]
+EXTI1_IRQHandler        0x0800554f    0x2  Code  Gb  stm32f10x_it.o [1]
+EXTI2_IRQHandler        0x08005551    0x2  Code  Gb  stm32f10x_it.o [1]
+EXTI3_IRQHandler        0x08005553    0x2  Code  Gb  stm32f10x_it.o [1]
+EXTI4_IRQHandler        0x08005555    0x2  Code  Gb  stm32f10x_it.o [1]
+EXTI9_5_IRQHandler      0x0800556f    0x2  Code  Gb  stm32f10x_it.o [1]
+FLASH_ErasePage         0x080045e9   0x66  Code  Gb  stm32f10x_flash.o [1]
+FLASH_GetReadOutProtectionStatus
+                        0x0800477f   0x1a  Code  Gb  stm32f10x_flash.o [1]
+FLASH_GetStatus         0x08004799   0x36  Code  Gb  stm32f10x_flash.o [1]
+FLASH_IRQHandler        0x08005549    0x2  Code  Gb  stm32f10x_it.o [1]
+FLASH_Lock              0x080045d7   0x12  Code  Gb  stm32f10x_flash.o [1]
+FLASH_PrefetchBufferCmd
+                        0x080045a5   0x1c  Code  Gb  stm32f10x_flash.o [1]
+FLASH_ProgramWord       0x0800464f   0x7c  Code  Gb  stm32f10x_flash.o [1]
+FLASH_ReadOutProtection
+                        0x080046cb   0xb4  Code  Gb  stm32f10x_flash.o [1]
+FLASH_SetLatency        0x08004585   0x20  Code  Gb  stm32f10x_flash.o [1]
+FLASH_Unlock            0x080045c1   0x16  Code  Gb  stm32f10x_flash.o [1]
+FLASH_WaitForLastOperation
+                        0x080047f9   0x34  Code  Gb  stm32f10x_flash.o [1]
+FSMC_IRQHandler         0x080055a7    0x2  Code  Gb  stm32f10x_it.o [1]
+FatFs                   0x20001fa0    0x4  Data  Lc  ff.o [1]
+FindSCR                 0x08002509  0x1d6  Code  Lc  sdcard.o [1]
+Fsid                    0x20001fd4    0x2  Data  Lc  ff.o [1]
+GPIO_Configuration      0x080026f9   0x50  Code  Lc  sdcard.o [1]
+GPIO_Init               0x080050cd  0x150  Code  Gb  stm32f10x_gpio.o [1]
+GPIO_ResetBits          0x08005223    0x6  Code  Gb  stm32f10x_gpio.o [1]
+GPIO_SetBits            0x0800521d    0x6  Code  Gb  stm32f10x_gpio.o [1]
+HardFaultException      0x08005533    0x2  Code  Gb  stm32f10x_it.o [1]
+I2C1_ER_IRQHandler      0x08005587    0x2  Code  Gb  stm32f10x_it.o [1]
+I2C1_EV_IRQHandler      0x08005585    0x2  Code  Gb  stm32f10x_it.o [1]
+I2C2_ER_IRQHandler      0x0800558b    0x2  Code  Gb  stm32f10x_it.o [1]
+I2C2_EV_IRQHandler      0x08005589    0x2  Code  Gb  stm32f10x_it.o [1]
+IsCardProgramming       0x0800237d  0x184  Code  Lc  sdcard.o [1]
+JumpAddress             0x20001fa4    0x4  Data  Gb  main.o [1]
+Jump_To_Application     0x20001fa8    0x4  Data  Gb  main.o [1]
+MemManageException      0x08005535    0x2  Code  Gb  stm32f10x_it.o [1]
+NMIException            0x08005531    0x2  Code  Gb  stm32f10x_it.o [1]
+NVIC_Init               0x08005237   0xba  Code  Gb  stm32f10x_nvic.o [1]
+NVIC_PriorityGroupConfig
+                        0x08005229    0xe  Code  Gb  stm32f10x_nvic.o [1]
+NVIC_SetVectorTable     0x080052f1    0xc  Code  Gb  stm32f10x_nvic.o [1]
+NumberOfBytes           0x20001fd0    0x4  Data  Gb  sdcard.o [1]
+PVD_IRQHandler          0x08005543    0x2  Code  Gb  stm32f10x_it.o [1]
+ProHBuffer              0x20001030  0x800  Data  Gb  main.o [1]
+RCA                     0x20001fb8    0x4  Data  Lc  sdcard.o [1]
+RCC_AHBPeriphClockCmd   0x080049c3   0x1e  Code  Gb  stm32f10x_rcc.o [1]
+RCC_APB1PeriphResetCmd  0x08004a1d   0x1e  Code  Gb  stm32f10x_rcc.o [1]
+RCC_APB2PeriphClockCmd  0x080049e1   0x1e  Code  Gb  stm32f10x_rcc.o [1]
+RCC_APB2PeriphResetCmd  0x080049ff   0x1e  Code  Gb  stm32f10x_rcc.o [1]
+RCC_Configuration       0x080044d3   0x66  Code  Lc  main.o [1]
+RCC_DeInit              0x08004849   0x5a  Code  Gb  stm32f10x_rcc.o [1]
+RCC_GetFlagStatus       0x08004a3b   0x56  Code  Gb  stm32f10x_rcc.o [1]
+RCC_GetSYSCLKSource     0x08004975    0xa  Code  Gb  stm32f10x_rcc.o [1]
+RCC_HCLKConfig          0x0800497f   0x16  Code  Gb  stm32f10x_rcc.o [1]
+RCC_HSEConfig           0x080048a3   0x4e  Code  Gb  stm32f10x_rcc.o [1]
+RCC_IRQHandler          0x0800554b    0x2  Code  Gb  stm32f10x_it.o [1]
+RCC_PCLK1Config         0x08004995   0x16  Code  Gb  stm32f10x_rcc.o [1]
+RCC_PCLK2Config         0x080049ab   0x18  Code  Gb  stm32f10x_rcc.o [1]
+RCC_PLLCmd              0x08004953    0xa  Code  Gb  stm32f10x_rcc.o [1]
+RCC_PLLConfig           0x08004935   0x1e  Code  Gb  stm32f10x_rcc.o [1]
+RCC_SYSCLKConfig        0x0800495d   0x18  Code  Gb  stm32f10x_rcc.o [1]
+RCC_WaitForHSEStartUp   0x080048f1   0x44  Code  Gb  stm32f10x_rcc.o [1]
+RTCAlarm_IRQHandler     0x08005599    0x2  Code  Gb  stm32f10x_it.o [1]
+RTC_IRQHandler          0x08005547    0x2  Code  Gb  stm32f10x_it.o [1]
+Region$$Table$$Base     0x0800594c          --   Gb  - Linker created -
+Region$$Table$$Limit    0x08005970          --   Gb  - Linker created -
+SDEnWideBus             0x080021e5  0x194  Code  Lc  sdcard.o [1]
+SDIO_Block_Count        0x20001f94    0x4  Data  Gb  diskio.o [1]
+SDIO_Block_Size         0x20001f98    0x4  Data  Gb  diskio.o [1]
+SDIO_ClearFlag          0x08005061    0x6  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_ClearITPendingBit  0x08005083    0x6  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_ClockCmd           0x08004f81    0x8  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_CmdInitStructure   0x20001f54   0x14  Data  Gb  sdcard.o [1]
+SDIO_DMACmd             0x08004fc9    0x8  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_DataConfig         0x08005009   0x30  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_DataInitStructure  0x20001f3c   0x18  Data  Gb  sdcard.o [1]
+SDIO_DeInit             0x08004f1d   0x38  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_GetCommandResponse
+                        0x08004ffb    0x8  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_GetFlagStatus      0x08005045   0x1c  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_GetITStatus        0x08005067   0x1c  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_GetPowerState      0x08004fa1    0xa  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_GetResponse        0x08005003    0x6  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_IRQHandler         0x080055a9    0x8  Code  Gb  stm32f10x_it.o [1]
+SDIO_ITConfig           0x08004fab   0x1e  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_Info               0x20001e84   0x50  Data  Gb  diskio.o [1]
+SDIO_Init               0x08004f55   0x2c  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_InitStructure      0x20001f24   0x18  Data  Gb  sdcard.o [1]
+SDIO_Memory_Size        0x20001f9c    0x4  Data  Gb  diskio.o [1]
+SDIO_ReadData           0x08005039    0x6  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_SendCommand        0x08004fd1   0x2a  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_SetPowerState      0x08004f89   0x18  Code  Gb  stm32f10x_sdio.o [1]
+SDIO_WriteData          0x0800503f    0x6  Code  Gb  stm32f10x_sdio.o [1]
+SD_EnableWideBusOperation
+                        0x08000989   0xda  Code  Gb  sdcard.o [1]
+SD_GetCardInfo          0x080005bd  0x3cc  Code  Gb  sdcard.o [1]
+SD_GetTransferState     0x08001b41   0x16  Code  Gb  sdcard.o [1]
+SD_Init                 0x08000141   0x8a  Code  Gb  sdcard.o [1]
+SD_InitializeCards      0x08000419  0x1a4  Code  Gb  sdcard.o [1]
+SD_PowerCtrl            0x080026f7    0x2  Code  Gb  sdcard.o [1]
+SD_PowerON              0x080001cb  0x24e  Code  Gb  sdcard.o [1]
+SD_ProcessIRQSrc        0x08001c15  0x29a  Code  Gb  sdcard.o [1]
+SD_ReadBlock            0x08000abf  0x2e6  Code  Gb  sdcard.o [1]
+SD_ReadMultiBlocks      0x08000dbd  0x3d0  Code  Gb  sdcard.o [1]
+SD_SelectDeselect       0x08000a85   0x3a  Code  Gb  sdcard.o [1]
+SD_SendStatus           0x08001b9d   0x6e  Code  Gb  sdcard.o [1]
+SD_SetDeviceMode        0x08000a63   0x22  Code  Gb  sdcard.o [1]
+SD_StopTransfer         0x08001b57   0x46  Code  Gb  sdcard.o [1]
+SD_WriteBlock           0x08001199  0x452  Code  Gb  sdcard.o [1]
+SD_WriteMultiBlocks     0x08001615  0x524  Code  Gb  sdcard.o [1]
+SPI1_IRQHandler         0x0800558d    0x2  Code  Gb  stm32f10x_it.o [1]
+SPI2_IRQHandler         0x0800558f    0x2  Code  Gb  stm32f10x_it.o [1]
+SPI3_IRQHandler         0x080055b3    0x2  Code  Gb  stm32f10x_it.o [1]
+SVCHandler              0x0800553d    0x2  Code  Gb  stm32f10x_it.o [1]
+SrcBuffer               0x20001fc4    0x4  Data  Gb  sdcard.o [1]
+StopCondition           0x20001fc0    0x4  Data  Lc  sdcard.o [1]
+SysTickHandler          0x0800553f    0x2  Code  Gb  stm32f10x_it.o [1]
+TAMPER_IRQHandler       0x08005545    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM1_BRK_IRQHandler     0x08005571    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM1_CC_IRQHandler      0x08005577    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM1_TRG_COM_IRQHandler
+                        0x08005575    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM1_UP_IRQHandler      0x08005573    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM2_IRQHandler         0x08005579    0x8  Code  Gb  stm32f10x_it.o [1]
+TIM2_UpdateISRHandler   0x08005751   0x32  Code  Gb  TimeBase.o [1]
+TIM3_IRQHandler         0x08005581    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM4_IRQHandler         0x08005583    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM5_IRQHandler         0x080055b1    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM6_IRQHandler         0x080055b9    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM7_IRQHandler         0x080055bb    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM8_BRK_IRQHandler     0x0800559d    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM8_CC_IRQHandler      0x080055a3    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM8_TRG_COM_IRQHandler
+                        0x080055a1    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM8_UP_IRQHandler      0x0800559f    0x2  Code  Gb  stm32f10x_it.o [1]
+TIM_ClearITPendingBit   0x0800571f    0x8  Code  Gb  stm32f10x_tim.o [1]
+TIM_Cmd                 0x080056b5   0x1c  Code  Gb  stm32f10x_tim.o [1]
+TIM_GetITStatus         0x080056e7   0x38  Code  Gb  stm32f10x_tim.o [1]
+TIM_ITConfig            0x080056d1   0x16  Code  Gb  stm32f10x_tim.o [1]
+TimerStop               0x08005729   0x28  Code  Gb  TimeBase.o [1]
+TimingDelay             0x20001f88    0x4  Data  Lc  TimeBase.o [1]
+TotalNumberOfBytes      0x20001fbc    0x4  Data  Lc  sdcard.o [1]
+TransferEnd             0x20001fcc    0x4  Data  Gb  sdcard.o [1]
+TransferError           0x2000102c    0x1  Data  Gb  sdcard.o [1]
+UART4_IRQHandler        0x080055b5    0x2  Code  Gb  stm32f10x_it.o [1]
+UART5_IRQHandler        0x080055b7    0x2  Code  Gb  stm32f10x_it.o [1]
+USART1_IRQHandler       0x08005591    0x2  Code  Gb  stm32f10x_it.o [1]
+USART2_IRQHandler       0x08005593    0x2  Code  Gb  stm32f10x_it.o [1]
+USART3_IRQHandler       0x08005595    0x2  Code  Gb  stm32f10x_it.o [1]
+USART_DeInit            0x08005491   0x9c  Code  Gb  stm32f10x_usart.o [1]
+USBWakeUp_IRQHandler    0x0800559b    0x2  Code  Gb  stm32f10x_it.o [1]
+USB_HP_CAN_TX_IRQHandler
+                        0x08005567    0x2  Code  Gb  stm32f10x_it.o [1]
+USB_LP_CAN_RX0_IRQHandler
+                        0x08005569    0x2  Code  Gb  stm32f10x_it.o [1]
+UsageFaultException     0x08005539    0x2  Code  Gb  stm32f10x_it.o [1]
+WWDG_IRQHandler         0x08005541    0x2  Code  Gb  stm32f10x_it.o [1]
+__BASEPRICONFIG         0x0800562b         Code  Gb  cortexm3_macro.o [1]
+__DMB                   0x080055dd         Code  Gb  cortexm3_macro.o [1]
+__DSB                   0x080055d7         Code  Gb  cortexm3_macro.o [1]
+__GetBASEPRI            0x08005631         Code  Gb  cortexm3_macro.o [1]
+__ISB                   0x080055d1         Code  Gb  cortexm3_macro.o [1]
+__MRS_CONTROL           0x080055e7         Code  Gb  cortexm3_macro.o [1]
+__MRS_MSP               0x08005603         Code  Gb  cortexm3_macro.o [1]
+__MRS_PSP               0x080055f7         Code  Gb  cortexm3_macro.o [1]
+__MSR_CONTROL           0x080055ed         Code  Gb  cortexm3_macro.o [1]
+__MSR_MSP               0x08005609         Code  Gb  cortexm3_macro.o [1]
+__MSR_PSP               0x080055fd         Code  Gb  cortexm3_macro.o [1]
+__READ_FAULTMASK        0x08005625         Code  Gb  cortexm3_macro.o [1]
+__READ_PRIMASK          0x08005617         Code  Gb  cortexm3_macro.o [1]
+__RESETFAULTMASK        0x0800561d         Code  Gb  cortexm3_macro.o [1]
+__RESETPRIMASK          0x0800560f         Code  Gb  cortexm3_macro.o [1]
+__REV_HalfWord          0x08005637         Code  Gb  cortexm3_macro.o [1]
+__REV_Word              0x0800563b         Code  Gb  cortexm3_macro.o [1]
+__SETFAULTMASK          0x08005621         Code  Gb  cortexm3_macro.o [1]
+__SETPRIMASK            0x08005613         Code  Gb  cortexm3_macro.o [1]
+__SEV                   0x080055cd         Code  Gb  cortexm3_macro.o [1]
+__SVC                   0x080055e3         Code  Gb  cortexm3_macro.o [1]
+__WFE                   0x080055c9         Code  Gb  cortexm3_macro.o [1]
+__WFI                   0x080055c5         Code  Gb  cortexm3_macro.o [1]
+__cmain                 0x08005991         Code  Gb  cmain.o [4]
+__exit                  0x080059a9   0x14  Code  Gb  exit.o [5]
+__iar_close_ttio        0x08005901   0x26  Code  Gb  iarttio.o [5]
+__iar_copy_init3        0x080058a5   0x30  Code  Gb  copy_init3.o [4]
+__iar_data_init3        0x080058d5   0x2c  Code  Gb  data_init3.o [4]
+__iar_lookup_ttioh      0x080059fd    0x8  Code  Gb  XShttio.o [3]
+__iar_program_start     0x080059e5         Code  Gb  cstartup_M.o [4]
+__iar_ttio_handles      0x20001020    0x8  Data  Lc  XShttio.o [3]
+__iar_zero_init3        0x08005929   0x24  Code  Gb  zero_init3.o [4]
+__low_level_init        0x08005a0b    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x08000000  0x140  Data  Gb  stm32f10x_vector.o [1]
+_call_main              0x0800599d         Code  Gb  cmain.o [4]
+_exit                   0x080059f1         Code  Gb  cexit.o [4]
+_main                   0x080059a3         Code  Gb  cmain.o [4]
+bl_ctrl                 0x08005691   0x1c  Code  Gb  hw_misc.o [1]
+buffer_org              0x20001c84  0x200  Data  Gb  main.o [1]
+bus_in_sdio             0x20001f90    0x4  Data  Lc  diskio.o [1]
+check_fs                0x080032a9   0x7a  Code  Lc  ff.o [1]
+check_sdcard            0x08004ac1   0xda  Code  Lc  diskio.o [1]
+check_updatefile        0x0800416f  0x108  Code  Lc  main.o [1]
+chk_chr                 0x08002891   0x1a  Code  Lc  ff.o [1]
+chk_mounted             0x08003323  0x34c  Code  Gb  ff.o [1]
+clust2sect              0x08002d85   0x1a  Code  Gb  ff.o [1]
+code_sector             0x20001fac    0x4  Data  Gb  main.o [1]
+code_xor                0x20001fb0    0x4  Data  Gb  main.o [1]
+comDES                  0x08003e49  0x164  Code  Gb  des.o [1]
+convert_from_bytes_to_power_of_two
+                        0x080026df   0x18  Code  Lc  sdcard.o [1]
+create_chain            0x08002cc3   0xc2  Code  Lc  ff.o [1]
+create_name             0x0800308d  0x15a  Code  Lc  ff.o [1]
+delay                   0x0800482d   0x1c  Code  Lc  stm32f10x_flash.o [1]
+dir_find                0x08002f99   0x68  Code  Lc  ff.o [1]
+dir_next                0x08002e57  0x142  Code  Lc  ff.o [1]
+dir_register            0x08003001   0x8c  Code  Lc  ff.o [1]
+dir_seek                0x08002d9f   0xb8  Code  Lc  ff.o [1]
+disk_initialize         0x08004b9b   0x1a  Code  Gb  diskio.o [1]
+disk_ioctl              0x08004cad   0x70  Code  Gb  diskio.o [1]
+disk_read               0x08004bf9   0x5a  Code  Gb  diskio.o [1]
+disk_status             0x08004bb9   0x2a  Code  Gb  diskio.o [1]
+disk_write              0x08004c53   0x5a  Code  Gb  diskio.o [1]
+e                       0x08005874   0x30  Data  Gb  des.o [1]
+exit                    0x08005a05    0x6  Code  Gb  exit.o [3]
+f_close                 0x08003b81   0x1c  Code  Gb  ff.o [1]
+f_mount                 0x0800369d   0x32  Code  Gb  ff.o [1]
+f_open                  0x080036e9  0x1c2  Code  Gb  ff.o [1]
+f_read                  0x080038ab  0x20c  Code  Gb  ff.o [1]
+f_sync                  0x08003ab7   0xca  Code  Gb  ff.o [1]
+ffat                    0x20001830  0x230  Data  Gb  main.o [1]
+file                    0x20001a60  0x224  Data  Gb  main.o [1]
+follow_path             0x080031e7   0xc2  Code  Lc  ff.o [1]
+genKey                  0x08003c23  0x146  Code  Lc  des.o [1]
+get_fat                 0x080029ff  0x102  Code  Gb  ff.o [1]
+get_fattime             0x08004bb5    0x4  Code  Gb  diskio.o [1]
+init_power              0x08005641   0x50  Code  Gb  hw_misc.o [1]
+ip                      0x0800578c   0x40  Data  Gb  des.o [1]
+ip_1                    0x080057cc   0x40  Data  Gb  des.o [1]
+key1                    0x20001010    0x8  Data  Gb  main.o [1]
+key2                    0x20001018    0x8  Data  Gb  main.o [1]
+main                    0x0800441f   0xb4  Code  Gb  main.o [1]
+mem_cmp                 0x08002867   0x2a  Code  Lc  ff.o [1]
+mem_cpy                 0x08002835   0x1c  Code  Lc  ff.o [1]
+mem_set                 0x08002851   0x16  Code  Lc  ff.o [1]
+move_window             0x080028ab   0x78  Code  Lc  ff.o [1]
+movebit                 0x080059bc   0x10  Data  Gb  des.o [1]
+p                       0x08005970   0x20  Data  Gb  des.o [1]
+pc_1                    0x0800580c   0x38  Data  Gb  des.o [1]
+pc_2                    0x08005844   0x30  Data  Gb  des.o [1]
+prog_data               0x08004115   0x3a  Code  Lc  main.o [1]
+put_fat                 0x08002b01  0x150  Code  Gb  ff.o [1]
+remove_chain            0x08002c51   0x72  Code  Lc  ff.o [1]
+s                       0x08004d1c  0x200  Data  Gb  des.o [1]
+sReplace                0x08003d69   0xe0  Code  Lc  des.o [1]
+sync                    0x08002923   0xdc  Code  Lc  ff.o [1]
+timer_run               0x20001f8c    0x4  Data  Lc  TimeBase.o [1]
+timerlist               0x20001ed4   0x50  Data  Gb  timer_manager.o [1]
+tm_isr                  0x08005319   0xc6  Code  Gb  timer_manager.o [1]
+un3DES                  0x08003fcd  0x146  Code  Gb  des.o [1]
+update_app              0x08004277  0x174  Code  Gb  main.o [1]
+validate                0x0800366f   0x2e  Code  Lc  ff.o [1]
+verify_app              0x080043eb   0x34  Code  Gb  main.o [1]
+verify_data             0x0800414f   0x20  Code  Lc  main.o [1]
+xTran                   0x08003b9d   0x86  Code  Lc  des.o [1]
+
+
+[1] = E:\Project\公交手持刷卡机p100\product_mengniu\T1_fw\bootloader\bootloader\project\EWARMv5\EVAL\Obj
+[2] = command line
+[3] = dl7M_tl_if.a
+[4] = rt7M_tl.a
+[5] = shb_l.a
+
+  21 834 bytes of readonly  code memory
+   1 254 bytes of readonly  data memory
+   8 134 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

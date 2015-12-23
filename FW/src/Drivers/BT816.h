@@ -89,7 +89,11 @@ typedef enum
 
 
 #define RING_BUFF_FULL_TH		(SPP_BUFFER_LEN-256)	//当ringbuffer中接收到的数据大于此值时，实行流控，通知蓝牙模块不要再传数据下来了，此值待调试确定
-#define RING_BUFF_EMPTY_TH		(SPP_BUFFER_LEN/2)	//当ringbuffer中接收到的数据大于此值时，实行流控，通知蓝牙模块不要再传数据下来了，此值待调试确定
+#define RING_BUFF_EMPTY_TH		(SPP_BUFFER_LEN/2)	
+
+#define USB_RING_BUFF_FULL_TH		(USB_BUFFER_LEN-256)	//当ringbuffer中接收到的数据大于此值时，实行流控，通知USB host不要再传数据下来了，此值待调试确定
+#define USB_RING_BUFF_EMPTY_TH		(USB_BUFFER_LEN/2)	
+
 
 #define     set_BT1_BUSY()	do{\
 	GPIO_SetBits(GPIOB, GPIO_Pin_8);\

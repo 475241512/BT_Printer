@@ -294,12 +294,14 @@ void USB_APP_Reset(void)
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
+	  if(g_usb_type == USB_MASSSTORAGE)
   {
 	pInformation->Current_Feature = MASS_ConfigDescriptor[7];
   }
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
+	  if(g_usb_type == USB_PRINTER)
 	  {
 		  pInformation->Current_Interface = 0;
 		  pInformation->Current_Feature = Printer_ConfigDescriptor[7];
@@ -355,6 +357,7 @@ else
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
+	if(g_usb_type == USB_MASSSTORAGE)
 {
 	/* Initialize Endpoint 1 */
 	SetEPType(ENDP1, EP_BULK);
@@ -377,9 +380,11 @@ else
 	CBW.dSignature = BOT_CBW_SIGNATURE;
 	Bot_State = BOT_IDLE;
 }
+	else
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
+	if(g_usb_type == USB_PRINTER)
 {
 	/* Initialize Endpoint 1 */
 	SetEPType(ENDP1, EP_BULK);
@@ -788,7 +793,7 @@ u8 *USB_APP_GetConfigDescriptor(u16 Length)
 u8 *USB_APP_GetStringDescriptor(u16 Length)
 {
   u8 wValue0 = pInformation->USBwValue0;
-  if (wValue0 > 4)
+  if (wValue0 >= 4)
   {
     return NULL;
   }

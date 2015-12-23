@@ -46,10 +46,10 @@ extern void KeyScanProc(void)
 	}
 
 	//for burning test,auto post key event
-        if (IsPrinterFree())
-        {
-			event_post(evtKeyDownFeed);
-        }
+   //     if (IsPrinterFree())
+   //     {
+			//event_post(evtKeyDownFeed);
+   //     }
         
 }
 /*

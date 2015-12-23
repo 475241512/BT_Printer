@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{3c599e9d-bceb-4f47-940b-f9f7a152b98c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="usb_lib">
+      <UniqueIdentifier>{95cbcff5-50bd-41b4-8baa-eb9de0634e48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fatfs">
+      <UniqueIdentifier>{24f564af-b750-4f75-802b-0b55b301333f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\driver\AsciiLib_6x12.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\Ports\app_cfg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\cortexm3_macro.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-CPU\cpu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-CPU\cpu_def.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\app\des.H">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\fat\diskio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\fat\ff.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\fat\ffconf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\driver\hw_misc.H">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\Ports\includes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\fat\integer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_ascii.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_def.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_mem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-LIB\lib_str.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\driver\MD5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\app\misc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\app\once_mem.H">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\Ports\os_cfg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\Source\os_cfg_r.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\Ports\os_cpu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\uC-Probe\os_probe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\app\rtc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\driver\sd2068.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\driver\sdcard.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_adc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_bkp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_can.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\project\stm32f10x_conf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_crc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_dac.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_dbgmcu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_dma.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_exti.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_flash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_fsmc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_gpio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_i2c.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\project\stm32f10x_it.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_iwdg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_lib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_map.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_nvic.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_pwr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_rcc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_rtc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_sdio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_spi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_systick.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_tim.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_type.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_usart.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\library\inc\stm32f10x_wwdg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\driver\TimeBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\app\timer_manager.H">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uCOS-II\Source\ucos_ii.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\app\xmlParse.H">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\hw_config.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\mass_mal.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\memory.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_bot.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_conf.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_core.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_def.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_desc.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_init.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_int.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_istr.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_lib.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_mem.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_prop.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_pwr.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_regs.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_scsi.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_sil.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_type.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\driver\spi_flash.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FatFs\diskio.h">
+      <Filter>fatfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FatFs\ff.h">
+      <Filter>fatfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FatFs\ffconf.h">
+      <Filter>fatfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FatFs\integer.h">
+      <Filter>fatfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\usb_lib\usb_app_config.h">
+      <Filter>usb_lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\app\des.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\driver\hw_misc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\project\main.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_adc.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_bkp.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_can.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_crc.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_dac.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_dbgmcu.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_dma.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_exti.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_flash.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_fsmc.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_gpio.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_i2c.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\project\stm32f10x_it.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_iwdg.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_lib.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_nvic.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_pwr.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_rcc.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_rtc.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_sdio.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_spi.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_systick.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_tim.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_usart.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\project\EWARMv5\stm32f10x_vector.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\library\src\stm32f10x_wwdg.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\hw_config.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\mass_mal.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\memory.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\scsi_data.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_bot.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_core.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_desc.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_endp.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_init.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_int.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_istr.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_mem.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_prop.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_pwr.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_regs.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_scsi.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_sil.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\driver\spi_flash.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\FatFs\diskio.c">
+      <Filter>fatfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\FatFs\ff.c">
+      <Filter>fatfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\usb_lib\usb_app_config.c">
+      <Filter>usb_lib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\project\EWARMv5\EVAL\Exe\Project.bin">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+</Project>

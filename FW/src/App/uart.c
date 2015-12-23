@@ -86,13 +86,16 @@ extern uint8_t Getchar(void)        //接收数据
 			{
 				timeout = 0;
 				//debug_cnt = 0;
-				if (ringbuffer_data_len(&spp_ringbuf[current_channel]) < RING_BUFF_EMPTY_TH)
+				if (current_channel != USB_PRINT_CHANNEL_OFFSET)
 				{
-					if (current_channel != USB_PRINT_CHANNEL_OFFSET)
+					if (ringbuffer_data_len(&spp_ringbuf[current_channel]) < RING_BUFF_EMPTY_TH)
 					{
 						set_BT_free(current_channel);
 					}
-					else
+				}
+				else
+				{
+					if (ringbuffer_data_len(&spp_ringbuf[current_channel]) < USB_RING_BUFF_EMPTY_TH)
 					{
 						SetEPRxStatus(EP2_OUT, EP_RX_VALID);
 					}

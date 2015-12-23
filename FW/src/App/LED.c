@@ -1,5 +1,6 @@
 #include "Type.h"
 #include "LED.h"
+#include "TimeBase.h"
 
 //==========================led=============================
 
@@ -42,7 +43,7 @@ extern void LedScanProc(void)
 	        	{
 	        		if((--led_flash_cnt) == 0)
 	        		{
-	        			Led_Paper_OFF();
+	        			LED_OFF();
 	        			led_flash_cnt = -LED_FAST_FLASH_SPEED;
 	        		}
 	        	}
@@ -50,30 +51,41 @@ extern void LedScanProc(void)
 	        	{
 	        		if((++led_flash_cnt) == 0)
 	        		{
-	        			Led_Paper_ON();
+	        			LED_ON();
 	        			led_flash_cnt = LED_FAST_FLASH_SPEED;
 	        		}
 	        	}
 	        	else
 	        	{
-	        		Led_Paper_ON();
+	        		LED_ON();
 	        		led_flash_cnt = LED_FAST_FLASH_SPEED;
 	        	}
 	        }
-		else
-		{
-			Led_Paper_OFF();
-		}
+			else
+			{
+				LED_OFF();
+			}
 	}
 	else	// 打印机就绪
 	{
-		Led_Paper_OFF();
+		LED_OFF();
         led_flash_cnt = 0;
 	}
 }
 
 
-
+//LED的闪烁控制
+void LED_blink(unsigned int cnt,unsigned int period_ms)
+{
+	unsigned int i;
+	for (i = 0; i < cnt;i++)
+	{
+		LED_ON();
+		delay_ms(period_ms);
+		LED_OFF();
+		delay_ms(period_ms);
+	}
+}
 
 
 

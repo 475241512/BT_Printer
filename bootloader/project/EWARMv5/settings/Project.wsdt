@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>Project/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>252</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      <PreferedWindows><Position>1</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Workspace>
+      <Build>
+        
+        
+        
+        
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>807</ColumnWidth1><ColumnWidth2>215</ColumnWidth2><ColumnWidth3>53</ColumnWidth3></Build>
+      <TerminalIO/>
+    <Breakpoints><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Build</Factory></Window><Window><Factory>Debug-Log</Factory></Window><Window><Factory>Find-in-Files</Factory></Window></Windows></PreferedWindows></Breakpoints><Debug-Log><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Build</Factory></Window></Windows></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1222</ColumnWidth1></Debug-Log><Disassembly><MixedMode>1</MixedMode><CodeCovShow>0</CodeCovShow><InstrProfShow>0</InstrProfShow></Disassembly><Find-in-Files><ColumnWidth0>440</ColumnWidth0><ColumnWidth1>62</ColumnWidth1><ColumnWidth2>754</ColumnWidth2><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Build</Factory></Window><Window><Factory>Breakpoints</Factory></Window><Window><Factory>Debug-Log</Factory></Window></Windows></PreferedWindows></Find-in-Files></Static>
+    <Windows>
+      
+      
+    <Wnd2><Tabs><Tab><Identity>TabID-29220-3056</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-4412-18554</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd2><Wnd3><Tabs><Tab><Identity>TabID-30971-18285</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>Project</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\usb_lib\usb_app_config.c</Filename><XPos>0</XPos><YPos>126</YPos><SelStart>3777</SelStart><SelEnd>3777</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\driver\spi_flash.c</Filename><XPos>0</XPos><YPos>89</YPos><SelStart>3804</SelStart><SelEnd>3804</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\FatFs\diskio.c</Filename><XPos>0</XPos><YPos>220</YPos><SelStart>5319</SelStart><SelEnd>5319</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\driver\hw_misc.c</Filename><XPos>0</XPos><YPos>56</YPos><SelStart>1387</SelStart><SelEnd>1387</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\project\main.c</Filename><XPos>0</XPos><YPos>397</YPos><SelStart>7845</SelStart><SelEnd>7845</SelEnd></Tab><ActiveTab>4</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\FatFs\ff.c</Filename><XPos>0</XPos><YPos>2267</YPos><SelStart>82289</SelStart><SelEnd>82289</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\project\EWARMv5\Debug\List\Project.map</Filename><XPos>0</XPos><YPos>748</YPos><SelStart>46325</SelStart><SelEnd>46325</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\usb_lib\usb_prop.c</Filename><XPos>0</XPos><YPos>783</YPos><SelStart>22041</SelStart><SelEnd>22041</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\project\stm32f10x_it.c</Filename><XPos>0</XPos><YPos>365</YPos><SelStart>13323</SelStart><SelEnd>13323</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\library\src\stm32f10x_flash.c</Filename><XPos>0</XPos><YPos>307</YPos><SelStart>11912</SelStart><SelEnd>11912</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>E:\BT_Printer\bootloader\app\des.c</Filename><XPos>0</XPos><YPos>528</YPos><SelStart>13617</SelStart><SelEnd>13617</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-0137c9d8><key>iaridepm.enu1</key></Toolbar-0137c9d8></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>475</Bottom><Right>343</Right><x>-2</x><y>-2</y><xscreen>382</xscreen><yscreen>326</yscreen><sizeHorzCX>279649</sizeHorzCX><sizeHorzCY>475219</sizeHorzCY><sizeVertCX>252562</sizeVertCX><sizeVertCY>695335</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>166</Bottom><Right>1368</Right><x>-2</x><y>-2</y><xscreen>1370</xscreen><yscreen>168</yscreen><sizeHorzCX>1002928</sizeHorzCX><sizeHorzCY>244898</sizeHorzCY><sizeVertCX>144217</sizeVertCX><sizeVertCY>330904</sizeVertCY></Rect></Wnd2></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
