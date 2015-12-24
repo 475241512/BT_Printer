@@ -863,6 +863,28 @@ extern void esc_p(void)
 				//not support
 			}
 			break;
+		case 'P':
+			//GS P x,y 分别设置横向移动单位和纵向移动单位
+			chs[1] = Getchar();
+			chs[2] = Getchar();
+			if (chs[1])
+			{
+				CURRENT_ESC_STS.h_motionunit = 255/chs[1];
+			}
+			else
+			{
+				CURRENT_ESC_STS.h_motionunit = 1;
+			}
+			
+			if (chs[2])
+			{
+				CURRENT_ESC_STS.v_motionunit = 255/chs[2];
+			}
+			else
+			{
+				CURRENT_ESC_STS.v_motionunit = 1;
+			}
+			break;
 		}
 		break;
 #endif

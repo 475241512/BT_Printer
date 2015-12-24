@@ -436,6 +436,7 @@ int main(void)
 	LED_init();
 	key_init();
 	platform_misc_port_init();
+	spi_flash_init();
 
 	if ((if_feed_key_preesed() == 1)&&(hw_platform_USBcable_Insert_Detect() == 1))
 	{
@@ -483,6 +484,10 @@ sys_fail:
         g_mass_storage_device_type = MASSTORAGE_DEVICE_TYPE_SPI_FLASH;
 		usb_device_init(USB_MASSSTORAGE);
 		//USB_Cable_Config(1);
+		while(if_feed_key_preesed())
+		{
+			LED_blink(1,200);
+		}
 		while(1)
 		{
 			LED_blink(1,200);

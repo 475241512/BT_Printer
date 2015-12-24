@@ -11,7 +11,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=-1358960438
+Checksum=1208738565
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -96,5 +96,4 @@ Bp8=_ "STD_CODE" "{E:\H520B\FW\src\App\record_m.c}.583.2@1" 0 0 0 0 "" 0 "" 0
 Bp9=_ "STD_CODE" "{E:\BT_Printer\FW\src\usb_lib\usb_endp.c}.94.4@1" 0 0 0 0 "" 0 "" 0
 Bp10=_ "STD_CODE" "{E:\BT_Printer\FW\src\usb_lib\usb_int.c}.155.3@1" 0 0 0 0 "" 0 "" 0
 Bp11=_ "STD_CODE" "{E:\BT_Printer\FW\src\usb_lib\usb_prop.c}.512.3@1" 0 0 0 0 "" 0 "" 0
-Bp12=_ "STD_CODE" "{E:\BT_Printer\FW\src\usb_lib\usb_int.c}.118.7@1" 1 0 0 0 "" 0 "" 0
-Count=13
+Count=12

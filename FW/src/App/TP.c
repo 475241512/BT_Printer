@@ -1626,7 +1626,7 @@ extern void TPPrintTestPage(void)
 	TPPrintAsciiLine(buf,len);
 #if 1
 #if defined(PT486)
-	len = snprintf(buf, sizeof(buf), "System: HJ_PT486_KT100\n");
+	len = snprintf(buf, sizeof(buf), "System: HJ58B_KT\n");
 #elif defined(PT488)
 	len = snprintf(buf, sizeof(buf), "System: PT488_1MB1\n");
 #elif defined(PT48D)
