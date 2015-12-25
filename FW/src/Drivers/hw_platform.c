@@ -15,7 +15,6 @@
 */
 #include "hw_platform.h"
 #include "stm32f10x_lib.h"
-#include "LED.h"
 //#include "TimeBase.h"
 #include <assert.h>
 
@@ -157,8 +156,12 @@ static void platform_misc_port_init(void)
 */
 void hw_platform_init(void)
 {
+#ifdef LCD_VER
+	Lcd_init();
+#else
 	LedInit();
 	LED_OFF();
+#endif
 }
 
 #if 0

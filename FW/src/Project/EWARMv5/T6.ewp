@@ -146,7 +146,7 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state>RELEASE_VER</state>
+          <state>DEBUG_VER</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -638,7 +638,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\stm32f10x_flash.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_debug.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1622,9 +1622,6 @@
       <name>$PROJ_DIR$\..\..\App\JMemory.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\App\LED.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\App\rec_ecc.c</name>
     </file>
     <file>
@@ -1653,6 +1650,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\App\KeyScan.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\Drivers\lcd.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\App\LED.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\App\PaperDetect.c</name>

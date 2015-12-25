@@ -71,8 +71,8 @@ extern uint8_t Getchar(void)        //接收数据
 					//debug_cnt = 0;
 					current_channel = i;
 #ifdef DEBUG_VER
-					debug_buffer[0] = c;
-					debug_cnt = 1;
+					//debug_buffer[0] = c;
+					//debug_cnt = 1;
 #endif
 					//trip1();
 					return c;
@@ -101,8 +101,8 @@ extern uint8_t Getchar(void)        //接收数据
 					}
 				}
 #ifdef DEBUG_VER
-				debug_buffer[debug_cnt%8096] = c;
-				debug_cnt++;
+				//debug_buffer[debug_cnt%8096] = c;
+				//debug_cnt++;
 #endif
 				//trip1();
 				return c;

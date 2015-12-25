@@ -27,7 +27,6 @@
 #include "usb_app_config.h"
 #include "res_spi.h"
 #include "Event.h"
-#include "LED.h"
 /* Private define ------------------------------------------------------------*/
 
 // Cortex System Control register address
@@ -63,7 +62,11 @@ void system_error_tip(void)
 	//@todo...
 	while(1)
 	{
+#ifdef LCD_VER
+		//@todo...
+#else
 		LED_blink(1,60);
+#endif
 	}
 }
 
@@ -80,7 +83,11 @@ void enter_u_disk_mode(void)
 	
 	while(1)
 	{
+#ifdef LCD_VER
+		//@todo...
+#else
 		LED_blink(1,200);
+#endif
 		if(!KEY_FEED())
 		{
 			key_state++;
@@ -159,16 +166,13 @@ int main(void)
 	{
 		key_state = 1;
 	}
-#ifdef HW_VER_LCD
-	//初始化LCD
-	//@todo...		//for debug
-#else
-	//初始化LED
-	//@todo...
-	delay_ms(10);	//for debug
-#endif
 
 	hw_platform_init();
+
+#ifdef LCD_VER
+	//DispBmp1();
+	Lcd_dispLogo();
+#endif
 
 	if (!KEY_FEED())
 	{

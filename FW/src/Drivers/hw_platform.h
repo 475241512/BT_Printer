@@ -7,6 +7,9 @@
 //#define     HW_VER			HW_VER_DEMO_V11
 #define     HW_VER			HW_VER_V11
 
+#define		LCD_VER
+//#define		LED_VER
+
 //¿∂—¿ƒ£øÈ¿‡–Õ
 #define		USE_WBTDS01		1
 #define		USE_BT816		2
@@ -30,7 +33,11 @@
 #include "PaperDetect.h"
 #include  "KeyScan.h"
 #include "basic_fun.h"
-
+#ifdef LCD_VER
+#include "Lcd.h"
+#else
+#include "LED.h"
+#endif
 void hw_platform_init(void);
 unsigned int hw_platform_USBcable_Insert_Detect(void);
 

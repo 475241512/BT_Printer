@@ -7,6 +7,7 @@
 #include "KeyScan.h"
 #include "uart.h"
 #include "config.h"
+#include "hw_platform.h"
 
 uint8_t printersts,papercnt,platencnt,bm_cnt;
 
@@ -286,8 +287,8 @@ void SysTick_IRQ_Handle(void)
 	{
 		BT816_connect_status(i);
 	}
-#ifdef HW_VER_LCD
-	//LCD_Refresh();
+#ifdef LCD_VER
+	Lcd_Refresh();
 #else
 	LedScanProc();
 

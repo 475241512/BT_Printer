@@ -1,3 +1,5 @@
+#include "hw_platform.h"
+#ifdef LED_VER
 #include "Type.h"
 #include "LED.h"
 #include "TimeBase.h"
@@ -86,6 +88,7 @@ void LED_blink(unsigned int cnt,unsigned int period_ms)
 		delay_ms(period_ms);
 	}
 }
+#endif
 
 
 
