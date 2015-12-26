@@ -803,7 +803,7 @@ void Lcd_disp_BT_info(void)
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	if (BT1_CONNECT)
 	{
-		sprintf(str,"HJ1_%s  *",&BT_mac[BT1_MODULE][8]);
+		sprintf(str,"HJ1_%s *",&BT_mac[BT1_MODULE][8]);
 	}
 	else
 	{
@@ -815,7 +815,7 @@ void Lcd_disp_BT_info(void)
 #if(BT_MODULE_CONFIG & USE_BT2_MODULE)
 	if (BT2_CONNECT)
 	{
-		sprintf(str,"HJ2_%s  *",&BT_mac[BT2_MODULE][8]);
+		sprintf(str,"HJ2_%s *",&BT_mac[BT2_MODULE][8]);
 	}
 	else
 	{
