@@ -1671,7 +1671,7 @@ extern void TPPrintTestPage(void)
 
 	for (i = 0;i<MAX_BT_CHANNEL;i++)
 	{
-		len = snprintf(buf, sizeof(buf),  "BT Module(%d):|HJ Printer%d | 0000\n",i+1,i+1);
+		len = snprintf(buf, sizeof(buf),  "BT Module(%d):|HJ%d_%s | 0000\n",i+1,i+1,&BT_mac[i][8]);
 		TPPrintAsciiLine(buf,len);
 	}
 

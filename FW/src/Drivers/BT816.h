@@ -112,6 +112,15 @@ typedef enum
 #define     set_BT4_BUSY()	GPIO_SetBits(GPIOD, GPIO_Pin_0)
 #define     set_BT4_FREE()	GPIO_ResetBits(GPIOD, GPIO_Pin_0)
 
+extern unsigned char  bt_connect_status;
+extern unsigned char BT_mac[MAX_BT_CHANNEL][13];
+
+#define		BT1_CONNECT		(bt_connect_status&(1<<BT1_MODULE))
+#define		BT2_CONNECT		(bt_connect_status&(1<<BT2_MODULE))
+#define		BT3_CONNECT		(bt_connect_status&(1<<BT3_MODULE))
+#define		BT4_CONNECT		(bt_connect_status&(1<<BT4_MODULE))
+#define		BT_CONNECT(ch)		(bt_connect_status&(1<<(ch)))
+
 //#define     set_BT_FREE(ch)	do{\
 //	switch(ch)\
 //{\
@@ -138,6 +147,8 @@ int BT816_init(void);
 int BT816_query_version(unsigned int bt_channel,unsigned char *ver_buffer);
 int BT816_query_name(unsigned int bt_channel,unsigned char *name);
 int BT816_set_name(unsigned int bt_channel,unsigned char *name);
+int BT816_query_mac(unsigned int bt_channel,unsigned char *mac);
+int BT816_query_pin(unsigned int bt_channel,unsigned char *pin);
 int BT816_set_pin(unsigned int bt_channel,unsigned char *pin);
 int BT816_connect_status(unsigned int bt_channel);
 void BT816_send_data(unsigned int bt_channel,unsigned char *data,unsigned int len);
@@ -145,4 +156,5 @@ int BT816_Channel1_RxISRHandler(unsigned char *res, unsigned int res_len);
 int BT816_Channel2_RxISRHandler(unsigned char *res, unsigned int res_len);
 int BT816_Channel3_RxISRHandler(unsigned char *res, unsigned int res_len);
 int BT816_Channel4_RxISRHandler(unsigned char *res, unsigned int res_len);
+int BT_reset_PIN(void);
 #endif

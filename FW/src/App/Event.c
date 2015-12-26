@@ -87,6 +87,15 @@ extern void event_proc(void)
 	case evtKeyDownHold5000msMode:
 		break;
     case evtKeyDownHold7000msMode:
+		lcd_refresh_disable = 1;
+		LCD_BACKLIGHT_ON();
+		Lcd_clear(1);
+		Lcd_TextOut(5,14,"Reset PIN");
+        Lcd_TextOut(20,26,"...");
+		BT_reset_PIN();
+		Lcd_disp_BT_info();
+		delay_ms(2000);
+		lcd_refresh_disable = 0;
         break;
 	case evtPaperOut:
 		ESC_STS_STATUS_SET_FLAG(0x03,5);

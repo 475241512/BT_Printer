@@ -29,6 +29,9 @@ extern unsigned char debug_buffer[];
 extern unsigned int debug_cnt;
 #endif
 
+unsigned char BT_current_pin[MAX_BT_CHANNEL][5];
+unsigned char BT_mac[MAX_BT_CHANNEL][13];
+extern uint32_t systick_cnt;
 #define BT816_RES_INIT				0x00
 
 
@@ -62,14 +65,7 @@ static unsigned char	BT816_send_buff[MAX_BT_CHANNEL][32];
 unsigned char	BT816_recbuffer[MAX_BT_CHANNEL][BT816_RES_BUFFER_LEN];
 
 
-static	unsigned char  bt_connect_status;
-
-#define		BT1_CONNECT		(bt_connect_status&(1<<BT1_MODULE))
-#define		BT2_CONNECT		(bt_connect_status&(1<<BT2_MODULE))
-#define		BT3_CONNECT		(bt_connect_status&(1<<BT3_MODULE))
-#define		BT4_CONNECT		(bt_connect_status&(1<<BT4_MODULE))
-#define		BT_CONNECT(ch)		(bt_connect_status&(1<<(ch)))
-
+unsigned char  bt_connect_status;
 
 
 #define	RESET_BT1_DMA()		do{	\
@@ -1257,8 +1253,8 @@ int BT816_Reset(void)
 			return ret;
 		}
 		//OSTimeDlyHMSM(0,0,0,100);
-                wait_cnt--;
-                delay_ms(100);
+        wait_cnt--;
+        delay_ms(100);
 	}
 
 	return -1;
@@ -1377,7 +1373,84 @@ int BT816_set_name(unsigned int bt_channel,unsigned char *name)
 
 	return BT816_write_cmd(bt_channel,(const unsigned char*)buffer,len,EXPECT_RES_FORMAT1_TYPE); 
 }
+/*
+ * @brief 查询蓝牙模块的MAC地址
+ * @param[out]  unsigned char *addr  MAC,字符串
+ * @return 0: 查询成功		else：查询失败
+ * @note 从手册暂时没有看到支持的名称的最大长度是多少，所以如果设置的名称太长可能会导致缓冲区溢出
+ *       在此接口中将设备MAC限定为最长支持12个字节
+*/
+int BT816_query_mac(unsigned int bt_channel,unsigned char *mac)
+{
+	unsigned char	buffer[15];
+	int		i,ret;
 
+	assert(mac != 0);
+	mac[0] = 0;
+	MEMCPY(buffer,"AT+ADDR\x0d\x0a",9);
+
+	ret = BT816_write_cmd(bt_channel,(const unsigned char*)buffer,9,EXPECT_RES_FORMAT2_TYPE);
+	if (ret)
+	{
+		return ret;
+	}
+
+	if (MEMCMP(&BT816_res[bt_channel].DataBuffer[3],"ADDR",4) == 0)
+	{
+		for (i = 0; i < ((BT816_res[bt_channel].DataLength-10) > 12)?12:(BT816_res[bt_channel].DataLength-10);i++)
+		{
+			if (BT816_res[bt_channel].DataBuffer[8+i] == 0x0d)
+			{
+				break;
+			}
+
+			mac[i] = BT816_res[bt_channel].DataBuffer[8+i];
+		}
+		mac[i] = 0;
+		return 0;
+	}
+
+	return -1; 
+}
+/*
+ * @brief 查询蓝牙模块的PIN码
+ * @param[out]  unsigned char *pin  PIN,字符串
+ * @return 0: 查询成功		else：查询失败
+ * @note 从手册暂时没有看到支持的名称的最大长度是多少，所以如果设置的名称太长可能会导致缓冲区溢出
+ *       在此接口中将设备PIN限定为最长支持4个字节
+*/
+int BT816_query_pin(unsigned int bt_channel,unsigned char *pin)
+{
+	unsigned char	buffer[15];
+	int		i,ret;
+
+	assert(pin != 0);
+	pin[0] = 0;
+	MEMCPY(buffer,"AT+PIN\x0d\x0a",8);
+
+	ret = BT816_write_cmd(bt_channel,(const unsigned char*)buffer,8,EXPECT_RES_FORMAT2_TYPE);
+	if (ret)
+	{
+		return ret;
+	}
+
+	if (MEMCMP(&BT816_res[bt_channel].DataBuffer[3],"PIN",3) == 0)
+	{
+		for (i = 0; i < ((BT816_res[bt_channel].DataLength-10) > 4)?4:(BT816_res[bt_channel].DataLength-10);i++)
+		{
+			if (BT816_res[bt_channel].DataBuffer[7+i] == 0x0d)
+			{
+				break;
+			}
+
+			pin[i] = BT816_res[bt_channel].DataBuffer[7+i];
+		}
+		pin[i] = 0;
+		return 0;
+	}
+
+	return -1; 
+}
 /*
  * @brief 设置蓝牙模块的PIN
  * @param[in]  unsigned char *name  设置的PIN,字符串
@@ -1549,6 +1622,7 @@ int BT816_init(void)
 
 		BT816_GPIO_config(i,115200);		//default波特率
 		BT816_NVIC_config(i);
+		memset(BT_mac[i],0,21);
 	}
 
 	ret = BT816_Reset();
@@ -1567,12 +1641,22 @@ int BT816_init(void)
 		return -4;
 	}
 
-	if (MEMCMP(str,"HJ Pr",5) != 0)
+	if (MEMCMP(str,"HJ1",3) != 0)
 	{
-		if (BT816_set_name(BT1_MODULE,"HJ Printer1"))
+		if (BT816_set_name(BT1_MODULE,"HJ1"))
 		{
 			return -5;
 		}
+	}
+
+	if (BT816_query_mac(BT1_MODULE,BT_mac[BT1_MODULE]))
+	{
+		return -6;
+	}
+
+	if (BT816_query_pin(BT1_MODULE,BT_current_pin[BT1_MODULE]))
+	{
+		return -7;
 	}
 #endif
 
@@ -1582,12 +1666,20 @@ int BT816_init(void)
 		return -4;
 	}
 
-	if (MEMCMP(str,"HJ Pr",5) != 0)
+	if (MEMCMP(str,"HJ2",3) != 0)
 	{
-		if (BT816_set_name(BT2_MODULE,"HJ Printer2"))
+		if (BT816_set_name(BT2_MODULE,"HJ2"))
 		{
 			return -5;
 		}
+	}
+	if (BT816_query_mac(BT2_MODULE,BT_mac[BT2_MODULE]))
+	{
+		return -6;
+	}
+	if (BT816_query_pin(BT2_MODULE,BT_current_pin[BT2_MODULE]))
+	{
+		return -7;
 	}
 #endif
 
@@ -1597,12 +1689,21 @@ int BT816_init(void)
 		return -4;
 	}
 
-	if (MEMCMP(str,"HJ Pr",5) != 0)
+	if (MEMCMP(str,"HJ3",3) != 0)
 	{
-		if (BT816_set_name(BT3_MODULE,"HJ Printer3"))
+		if (BT816_set_name(BT3_MODULE,"HJ3"))
 		{
 			return -5;
 		}
+	}
+	if (BT816_query_mac(BT3_MODULE,BT_mac[BT3_MODULE]))
+	{
+		return -6;
+	}
+
+	if (BT816_query_pin(BT3_MODULE,BT_current_pin[BT3_MODULE]))
+	{
+		return -7;
 	}
 #endif
 
@@ -1612,14 +1713,22 @@ int BT816_init(void)
 		return -4;
 	}
 
-	if (MEMCMP(str,"HJ Pr",5) != 0)
+	if (MEMCMP(str,"HJ4",3) != 0)
 	{
-		if (BT816_set_name(BT4_MODULE,"HJ Printer4"))
+		if (BT816_set_name(BT4_MODULE,"HJ4"))
 		{
 			return -5;
 		}
 	}
+	if (BT816_query_mac(BT4_MODULE,BT_mac[BT4_MODULE]))
+	{
+		return -6;
+	}
 
+	if (BT816_query_pin(BT4_MODULE,BT_current_pin[BT4_MODULE]))
+	{
+		return -7;
+	}
 #endif
 
 	MEMSET(spp_rec_buffer,0,MAX_BT_CHANNEL*SPP_BUFFER_LEN);
@@ -1666,5 +1775,55 @@ void set_BT_free(unsigned char ch)
 	default:
 	break;
 	}
+}
+
+int BT_reset_PIN(void)
+{
+	unsigned char	str[21],pin[5];
+	int ret;
+	ret = BT816_Reset();
+	if(ret < 0)
+	{
+		ret = BT816_Reset();
+		if(ret < 0)
+		{
+			return -1;
+		}
+	}
+	pin[0] = 0x30+(systick_cnt%10);
+	pin[1] = 0x30+(systick_cnt/10)%10;
+	pin[2] = 0x30+(systick_cnt/100)%10;
+	pin[3] = 0x30+(systick_cnt/1000)%10;
+	pin[4] = 0;
+#if(BT_MODULE_CONFIG & USE_BT1_MODULE)
+	if (BT816_set_pin(BT1_MODULE,pin))
+	{
+		return -2;
+	}
+	strcpy(BT_current_pin[BT1_MODULE],pin);
+#endif
+
+#if(BT_MODULE_CONFIG & USE_BT2_MODULE)
+	if (BT816_set_pin(BT2_MODULE,pin))
+	{
+		return -3;
+	}
+	strcpy(BT_current_pin[BT2_MODULE],pin);
+#endif
+#if(BT_MODULE_CONFIG & USE_BT3_MODULE)
+	if (BT816_set_pin(BT3_MODULE,pin)
+	{
+		return -4;
+	}
+	strcpy(BT_current_pin[BT3_MODULE],pin);
+#endif
+
+#if(BT_MODULE_CONFIG & USE_BT4_MODULE)
+	if (BT816_set_pin(BT4_MODULE,pin))
+	{
+		return -5;
+	}
+	strcpy(BT_current_pin[BT4_MODULE],pin);
+#endif
 }
 #endif

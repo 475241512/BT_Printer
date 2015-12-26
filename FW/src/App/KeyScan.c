@@ -11,46 +11,111 @@
 
 
 static uint8_t keyStatus;
+static uint16_t keyModeHold;
 
 extern void KeyScanProc(void)
 {
-	if(KEY_FEED())		// FEED key up
+	unsigned char key;
+	key = KEY_FEED();
+	if (TPPaperReady() == 0)
 	{
-		if((keyStatus & KEY_FEED_DB_SHIFT) == 0)	// status no changed
+		key |= 0x10;
+	}
+
+	if(key&0x10)		// mode key up
+	{
+		//缺纸的情况下按进纸键
+		if(key&0x01)
 		{
-			if(keyStatus & KEY_FEED_SHIFT)	// previous mode key up
+			if((keyStatus & KEY_MODE_DB_SHIFT) == 0)	// status no changed
 			{
-				event_post(evtKeyUpFeed); // mode key up
-				keyStatus &= ~KEY_FEED_SHIFT;
+				if(keyStatus & KEY_MODE_SHIFT)	// previous mode key up
+				{
+					event_post(evtKeyUpMode); // mode key up
+					keyStatus &= ~KEY_MODE_SHIFT;
+				}
+			}
+			else
+			{
+				keyStatus &= ~KEY_MODE_DB_SHIFT;//keyStatus = xxx0
 			}
 		}
 		else
 		{
-			keyStatus &= ~KEY_FEED_DB_SHIFT;//keyStatus = xxx0
+			if(keyStatus & KEY_MODE_DB_SHIFT)	// status no changed
+			{
+				if((keyStatus & KEY_MODE_SHIFT) == 0)	// previous mode key down
+				{
+					event_post(evtKeyDownMode);	// mode key down
+					keyModeHold = 700;			// 7 seconds
+					keyStatus |= KEY_MODE_SHIFT;//
+				}
+				else if(keyModeHold)
+				{
+					keyModeHold--;
+					switch(keyModeHold)
+					{
+					case 700-50:
+						event_post(evtKeyDownHold500msMode);
+						break;
+					case 700-200:
+						event_post(evtKeyDownHold2000msMode);
+						break;
+					case 700-500:
+						event_post(evtKeyDownHold5000msMode);
+						break;
+					case 0:
+						event_post(evtKeyDownHold7000msMode);
+						break;
+					}
+				}
+			}
+			else
+			{
+				keyStatus |= KEY_MODE_DB_SHIFT;//keyStatus =xxx1
+			}
 		}
 	}
 	else
 	{
-		if(keyStatus & KEY_FEED_DB_SHIFT)	// status no changed
+		if(key&0x01)		// FEED key up
 		{
-			if((keyStatus & KEY_FEED_SHIFT) == 0)	// previous mode key down
+			if((keyStatus & KEY_FEED_DB_SHIFT) == 0)	// status no changed
 			{
-				event_post(evtKeyDownFeed);	// mode key down
-				keyStatus |= KEY_FEED_SHIFT;//
+				if(keyStatus & KEY_FEED_SHIFT)	// previous mode key up
+				{
+					event_post(evtKeyUpFeed); // mode key up
+					keyStatus &= ~KEY_FEED_SHIFT;
+				}
+			}
+			else
+			{
+				keyStatus &= ~KEY_FEED_DB_SHIFT;//keyStatus = xxx0
 			}
 		}
 		else
 		{
-			keyStatus |= KEY_FEED_DB_SHIFT;//keyStatus =xxx1
+			if(keyStatus & KEY_FEED_DB_SHIFT)	// status no changed
+			{
+				if((keyStatus & KEY_FEED_SHIFT) == 0)	// previous mode key down
+				{
+					event_post(evtKeyDownFeed);	// mode key down
+					keyStatus |= KEY_FEED_SHIFT;//
+				}
+			}
+			else
+			{
+				keyStatus |= KEY_FEED_DB_SHIFT;//keyStatus =xxx1
+			}
 		}
 	}
 
 	//for burning test,auto post key event
-   //     if (IsPrinterFree())
-   //     {
-			//event_post(evtKeyDownFeed);
-   //     }
-        
+	//     if (IsPrinterFree())
+	//     {
+	//event_post(evtKeyDownFeed);
+	//     }
+
 }
 /*
 static void PowerOnSelfTest(void)

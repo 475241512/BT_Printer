@@ -57,13 +57,20 @@ extern	TTerminalPara			g_param;					//Terminal Param
 * Function Name  : system_error_tip
 * Description    : 严重的系统错误提示
 *******************************************************************************/
-void system_error_tip(void)
+void system_error_tip(unsigned int err_no)
 {
+	unsigned char str[15];
+#ifdef LCD_VER
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"System Err");
+	sprintf(str,"Code:%d",err_no);
+	Lcd_TextOut(0,24,str);
+#endif
 	//@todo...
 	while(1)
 	{
 #ifdef LCD_VER
-		//@todo...
+		Lcd_blink(1,120);
 #else
 		LED_blink(1,60);
 #endif
@@ -80,11 +87,15 @@ void enter_u_disk_mode(void)
 	g_mass_storage_device_type = MASSTORAGE_DEVICE_TYPE_SPI_FLASH;
 	usb_device_init(USB_MASSSTORAGE);
 	//usb_Cable_Config(ENABLE);
-	
+#ifdef LCD_VER
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"UDisk Mode");
+#endif
+
 	while(1)
 	{
 #ifdef LCD_VER
-		//@todo...
+		Lcd_blink(1,200);
 #else
 		LED_blink(1,200);
 #endif
@@ -170,8 +181,21 @@ int main(void)
 	hw_platform_init();
 
 #ifdef LCD_VER
-	//DispBmp1();
-	Lcd_dispLogo();
+	Lcd_dispBMP(PIC_POWERON);
+	//Lcd_clear(1);
+	//Lcd_DrawLineH(0,12,64,0);
+	//Lcd_DrawLineH(0,12,64,1);
+	//Lcd_DrawLineH(0,16,64,0);
+	//Lcd_DrawLineH(0,16,64,1);
+	//Lcd_DrawLineV(24,0,48,0);
+	//Lcd_DrawLineV(24,0,48,1);
+	//Lcd_DrawLineV(24,4,30,0);
+	//Lcd_DrawLineV(24,4,30,1);
+	//Lcd_TextOut(0,0,"Test01234");
+	//Lcd_setfont(FONT_16x8);
+	//Lcd_TextOut(0,12,"Test0123456");
+	//Lcd_setfont(FONT_12x6);
+	//Lcd_TextOut(2,28,"Test0123456");
 #endif
 
 	if (!KEY_FEED())
@@ -190,12 +214,12 @@ int main(void)
 		{
 			if (DefaultTerminalPara())
 			{
-				system_error_tip();	//严重的错误，系统停止继续运行，可能进入诊断模式
+				system_error_tip(1);	//严重的错误，系统停止继续运行，可能进入诊断模式
 			}
 		}
 		else
 		{
-			system_error_tip();	//严重的错误，系统停止继续运行，可能进入诊断模式
+			system_error_tip(2);	//严重的错误，系统停止继续运行，可能进入诊断模式
 		}
 	}
 
@@ -230,7 +254,7 @@ int main(void)
 	//初始化蓝牙模块
 	if(BT816_init())
 	{
-		//system_error_tip();
+		system_error_tip(3);
 	}
 
 	esc_init();
