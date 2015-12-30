@@ -129,9 +129,20 @@ typedef struct
 /* USB clock source */
 #define RCC_USBCLKSource_PLLCLK_1Div5    ((u8)0x00)
 #define RCC_USBCLKSource_PLLCLK_Div1     ((u8)0x01)
+#ifdef GD_MCU
+#define RCC_USBCLKSource_PLLCLK_2Div5    ((u8)0x02)
+#define RCC_USBCLKSource_PLLCLK_Div2     ((u8)0x03)
 
 #define IS_RCC_USBCLK_SOURCE(SOURCE) (((SOURCE) == RCC_USBCLKSource_PLLCLK_1Div5) || \
-                                      ((SOURCE) == RCC_USBCLKSource_PLLCLK_Div1))
+	((SOURCE) == RCC_USBCLKSource_PLLCLK_Div1) || \
+	((SOURCE) == RCC_USBCLKSource_PLLCLK_2Div5) || \
+	((SOURCE) == RCC_USBCLKSource_PLLCLK_Div2))
+#else
+#define IS_RCC_USBCLK_SOURCE(SOURCE) (((SOURCE) == RCC_USBCLKSource_PLLCLK_1Div5) || \
+	((SOURCE) == RCC_USBCLKSource_PLLCLK_Div1))
+#endif
+
+
 
 /* ADC clock source */
 #define RCC_PCLK2_Div2                   ((u32)0x00000000)

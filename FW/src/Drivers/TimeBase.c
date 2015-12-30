@@ -23,7 +23,11 @@ void delay_us(unsigned int time)
 	unsigned int i=0;  
 	while(time--)
 	{
-		i=8;  
+#ifdef GD_MCU
+		i=11; 
+#else
+		i=8; 
+#endif 
 		while(i--) ;    
 	}
 }
@@ -37,7 +41,11 @@ void delay_ms(unsigned int time)
 	unsigned int i=0;  
 	while(time--)
 	{
+#ifdef GD_MCU
+		i=15380; 
+#else
 		i=10255; 
+#endif
 		while(i--) ;    
 	}
 }

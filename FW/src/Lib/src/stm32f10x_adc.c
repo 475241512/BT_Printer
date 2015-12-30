@@ -265,6 +265,9 @@ void ADC_StructInit(ADC_InitTypeDef* ADC_InitStruct)
 *******************************************************************************/
 void ADC_Cmd(ADC_TypeDef* ADCx, FunctionalState NewState)
 {
+#ifdef GD_MCU
+	int i;	
+#endif
   /* Check the parameters */
   assert_param(IS_ADC_ALL_PERIPH(ADCx));
   assert_param(IS_FUNCTIONAL_STATE(NewState));
@@ -273,6 +276,13 @@ void ADC_Cmd(ADC_TypeDef* ADCx, FunctionalState NewState)
   {
     /* Set the ADON bit to wake up the ADC from power down mode */
     ADCx->CR2 |= CR2_ADON_Set;
+#ifdef GD_MCU
+	//大约20us的延时
+	for (i=0; i<200;i++)
+	{
+		;
+	}
+#endif
   }
   else
   {

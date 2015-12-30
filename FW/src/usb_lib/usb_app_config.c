@@ -55,10 +55,16 @@ extern u32 count_in;
 static void usb_SetClock(void)
 {
 	/* Enable GPIOA, GPIOD and USART1 clock */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOD, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
-	/* USBCLK = PLLCLK / 1.5 */
+	
+#ifdef GD_MCU
+	/* USBCLK = PLLCLK / 2  = 96/2 = 48 */
 	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+#else
+	/* USBCLK = PLLCLK / 1.5 = 72/1.5 = 48*/
+	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+#endif
 	/* Enable USB clock */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
 }

@@ -59,9 +59,14 @@
 #define FLASH_KEY1               ((u32)0x45670123)
 #define FLASH_KEY2               ((u32)0xCDEF89AB)
 
-/* Delay definition */   
+/* Delay definition */ 
+#ifdef GD_MCU
+#define EraseTimeout             ((u32)0x000FFFFF)
+#define ProgramTimeout           ((u32)0x0000FFFF)
+#else
 #define EraseTimeout             ((u32)0x00000FFF)
 #define ProgramTimeout           ((u32)0x0000000F)
+#endif
 #endif
 
 /* Private macro -------------------------------------------------------------*/
@@ -256,6 +261,9 @@ FLASH_Status FLASH_EraseOptionBytes(void)
     /* Authorize the small information block programming */
     FLASH->OPTKEYR = FLASH_KEY1;
     FLASH->OPTKEYR = FLASH_KEY2;
+#ifdef GD_MCU
+	while (!(FLASH->CR & 0x200));
+#endif
     
     /* if the previous operation is completed, proceed to erase the option bytes */
     FLASH->CR |= CR_OPTER_Set;
@@ -420,6 +428,9 @@ FLASH_Status FLASH_ProgramOptionByteData(u32 Address, u8 Data)
     /* Authorize the small information block programming */
     FLASH->OPTKEYR = FLASH_KEY1;
     FLASH->OPTKEYR = FLASH_KEY2;
+#ifdef GD_MCU
+	while (!(FLASH->CR & 0x200));
+#endif
 
     /* Enables the Option Bytes Programming operation */
     FLASH->CR |= CR_OPTPG_Set; 
@@ -478,6 +489,10 @@ FLASH_Status FLASH_EnableWriteProtection(u32 FLASH_Pages)
     /* Authorizes the small information block programming */
     FLASH->OPTKEYR = FLASH_KEY1;
     FLASH->OPTKEYR = FLASH_KEY2;
+#ifdef GD_MCU
+	while (!(FLASH->CR & 0x200));
+#endif
+
     FLASH->CR |= CR_OPTPG_Set;
 
     if(WRP0_Data != 0xFF)
@@ -548,6 +563,9 @@ FLASH_Status FLASH_ReadOutProtection(FunctionalState NewState)
     /* Authorizes the small information block programming */
     FLASH->OPTKEYR = FLASH_KEY1;
     FLASH->OPTKEYR = FLASH_KEY2;
+#ifdef GD_MCU
+	while (!(FLASH->CR & 0x200));
+#endif
 
     FLASH->CR |= CR_OPTER_Set;
     FLASH->CR |= CR_STRT_Set;
@@ -590,6 +608,10 @@ FLASH_Status FLASH_ReadOutProtection(FunctionalState NewState)
       }
     }
   }
+
+#ifdef GD_MCU
+	while (!(FLASH->CR & 0x100));
+#endif
   /* Return the protection operation Status */
   return status;      
 }
@@ -627,7 +649,10 @@ FLASH_Status FLASH_UserOptionByteConfig(u16 OB_IWDG, u16 OB_STOP, u16 OB_STDBY)
   /* Authorize the small information block programming */
   FLASH->OPTKEYR = FLASH_KEY1;
   FLASH->OPTKEYR = FLASH_KEY2;
-  
+#ifdef GD_MCU
+  while (!(FLASH->CR & 0x200));
+#endif
+
   /* Wait for last operation to be completed */
   status = FLASH_WaitForLastOperation(ProgramTimeout);
   

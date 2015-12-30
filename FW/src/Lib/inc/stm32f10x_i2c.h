@@ -182,7 +182,12 @@ typedef struct
 
 /* I2C Events */
 /* EV1 */
+#ifdef GD_MCU
+#define  I2C_EVENT_SLAVE_TRANSMITTER_ADDRESS_MATCHED       ((u32)0x00060002) /* TRA, BUSY, TXE and ADDR flags */
+#else
 #define  I2C_EVENT_SLAVE_TRANSMITTER_ADDRESS_MATCHED       ((u32)0x00060082) /* TRA, BUSY, TXE and ADDR flags */
+#endif
+
 #define  I2C_EVENT_SLAVE_RECEIVER_ADDRESS_MATCHED          ((u32)0x00020002) /* BUSY and ADDR flags */
 #define  I2C_EVENT_SLAVE_TRANSMITTER_SECONDADDRESS_MATCHED ((u32)0x00860080)  /* DUALF, TRA, BUSY and TXE flags */
 #define  I2C_EVENT_SLAVE_RECEIVER_SECONDADDRESS_MATCHED    ((u32)0x00820000)  /* DUALF and BUSY flags */
@@ -201,7 +206,11 @@ typedef struct
 #define  I2C_EVENT_MASTER_MODE_SELECT                      ((u32)0x00030001)  /* BUSY, MSL and SB flag */
 
 /* EV6 */
+#ifdef GD_MCU
+#define  I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED        ((u32)0x00070002)  /* BUSY, MSL, ADDR, TXE and TRA flags */
+#else
 #define  I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED        ((u32)0x00070082)  /* BUSY, MSL, ADDR, TXE and TRA flags */
+#endif
 #define  I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED           ((u32)0x00030002)  /* BUSY, MSL and ADDR flags */
 
 /* EV7 */

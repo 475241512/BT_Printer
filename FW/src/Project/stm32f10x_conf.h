@@ -148,8 +148,11 @@
 //#define HSE_Value    ((u32)8000000) /* Value of the External oscillator in Hz */
 /* In the following line adjust the External High Speed oscillator (HSE) Startup 
    Timeout value */
+#ifdef GD_MCU
+#define HSEStartUp_TimeOut    ((u16)0xFFFF) /* Time out for HSE start up */
+#else
 #define HSEStartUp_TimeOut    ((u16)0x0500) /* Time out for HSE start up */
-
+#endif
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  DEBUG
 /*******************************************************************************

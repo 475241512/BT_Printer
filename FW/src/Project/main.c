@@ -310,9 +310,14 @@ void RCC_Configuration(void)
 		/* PCLK1 = HCLK/2					*/
 		RCC_PCLK1Config(RCC_HCLK_Div2);
 
+		
+#ifdef GD_MCU
+		/* PLLCLK = 12MHz * 8 = 96 MHz	*/
+		RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_6);
+#else
 		/* PLLCLK = 12MHz * 6 = 72 MHz	*/
 		RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_6);
-
+#endif
 		/* PLLCLK = 8MHz * 9 = 72 MHz	*/
 		//RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
 
