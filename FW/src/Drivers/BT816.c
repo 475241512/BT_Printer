@@ -66,6 +66,7 @@ unsigned char	BT816_recbuffer[MAX_BT_CHANNEL][BT816_RES_BUFFER_LEN];
 
 
 unsigned char  bt_connect_status;
+unsigned char  last_bt_connect_status;
 
 
 #define	RESET_BT1_DMA()		do{	\
@@ -101,7 +102,7 @@ static void BT816_GPIO_config(unsigned int bt_channel,unsigned int baudrate)
 	GPIO_InitTypeDef				GPIO_InitStructure;
 	USART_InitTypeDef				USART_InitStructure;
 	DMA_InitTypeDef					DMA_InitStructure;
-
+#ifdef DEBUG_VER
 #if(HW_VER == HW_VER_DEMO_V11)
 	//for debug trip
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
@@ -117,6 +118,20 @@ static void BT816_GPIO_config(unsigned int bt_channel,unsigned int baudrate)
 	GPIO_SetBits(GPIOB, GPIO_Pin_4);		//trip3
 	GPIO_ResetBits(GPIOB, GPIO_Pin_5);		//trip2
 	GPIO_SetBits(GPIOB, GPIO_Pin_6);		//trip1
+#else
+	//for debug trip
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+
+	//trip1	PC.10  trip2  PC.11  trip3  PC.12
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_2MHz;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	GPIO_SetBits(GPIOC, GPIO_Pin_10);		//trip1
+	GPIO_SetBits(GPIOC, GPIO_Pin_11);		//trip2
+	GPIO_SetBits(GPIOC, GPIO_Pin_12);		//trip3
+
+#endif
 #endif
 
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
@@ -851,6 +866,8 @@ static void BT816_reset_resVar(unsigned int bt_channel)
 	RESET_BT4_DMA();
         }
 #endif
+
+	last_bt_connect_status = bt_connect_status;
 }
 
 
@@ -868,6 +885,7 @@ int BT816_Channel1_RxISRHandler(unsigned char *res, unsigned int res_len)
 	{
 		//已经处于连接状态，蓝牙模块进入数据透传模式
 		set_BT1_BUSY();
+		//trip1();
 		ringbuffer_put(&spp_ringbuf[BT1_MODULE],res,res_len);
 #ifdef DEBUG_VER
 		//MEMCPY(debug_buffer+debug_cnt,res,res_len);
@@ -1490,7 +1508,7 @@ int BT816_set_pin(unsigned int bt_channel,unsigned char *pin)
  * @return <0 ：发送失败	0: unkown 	1: connected    2： disconnect
  * @note 此函数需要被不断轮询才能正确反应各个模块的连接状态
 */
-int BT816_connect_status(unsigned int bt_channel)
+void BT816_connect_status(unsigned int bt_channel)
 {
 	unsigned int i;
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
@@ -1498,22 +1516,22 @@ int BT816_connect_status(unsigned int bt_channel)
 	{
 		if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_7))
 		{
-			for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
+			for (i=0;i < 20;i++);		//延时一小段时间，防止是因为抖动造成的
 			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7))
 			{
 				bt_connect_status |= (1<<BT1_MODULE);
-				return BT_MODULE_STATUS_CONNECTED;
+				//return BT_MODULE_STATUS_CONNECTED;
 			}
 			else
 			{
 				bt_connect_status &= ~(1<<BT1_MODULE);
-				return BT_MODULE_STATUS_DISCONNECT;
+				//return BT_MODULE_STATUS_DISCONNECT;
 			}
 		}
 		else
 		{
 			bt_connect_status &= ~(1<<BT1_MODULE);
-			return BT_MODULE_STATUS_DISCONNECT;
+			//return BT_MODULE_STATUS_DISCONNECT;
 		}
 	}
 #endif
@@ -1523,22 +1541,22 @@ int BT816_connect_status(unsigned int bt_channel)
 	{
 		if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2))
 		{
-			for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
+			for (i=0;i < 20;i++);		//延时一小段时间，防止是因为抖动造成的
 			if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_2))
 			{
 				bt_connect_status |= (1<<BT2_MODULE);
-				return BT_MODULE_STATUS_CONNECTED;
+				//return BT_MODULE_STATUS_CONNECTED;
 			}
 			else
 			{
 				bt_connect_status &= ~(1<<BT2_MODULE);
-				return BT_MODULE_STATUS_DISCONNECT;
+				//return BT_MODULE_STATUS_DISCONNECT;
 			}
 		}
 		else
 		{
 			bt_connect_status &= ~(1<<BT2_MODULE);
-			return BT_MODULE_STATUS_DISCONNECT;
+			//return BT_MODULE_STATUS_DISCONNECT;
 		}
 	}
 #endif
@@ -1548,22 +1566,22 @@ int BT816_connect_status(unsigned int bt_channel)
 	{
 		if(GPIO_ReadInputDataBit(GPIOE, GPIO_Pin_14))
 		{
-			for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
+			for (i=0;i < 20;i++);		//延时一小段时间，防止是因为抖动造成的
 			if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_14))
 			{
 				bt_connect_status |= (1<<BT3_MODULE);
-				return BT_MODULE_STATUS_CONNECTED;
+				//return BT_MODULE_STATUS_CONNECTED;
 			}
 			else
 			{
 				bt_connect_status &= ~(1<<BT3_MODULE);
-				return BT_MODULE_STATUS_DISCONNECT;
+				//return BT_MODULE_STATUS_DISCONNECT;
 			}
 		}
 		else
 		{
 			bt_connect_status &= ~(1<<BT3_MODULE);
-			return BT_MODULE_STATUS_DISCONNECT;
+			//return BT_MODULE_STATUS_DISCONNECT;
 		}
 	}
 #endif
@@ -1573,26 +1591,33 @@ int BT816_connect_status(unsigned int bt_channel)
 	{
 		if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_3))
 		{
-			for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
+			for (i=0;i < 20;i++);		//延时一小段时间，防止是因为抖动造成的
 			if(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_3))
 			{
 				bt_connect_status |= (1<<BT4_MODULE);
-				return BT_MODULE_STATUS_CONNECTED;
+				//return BT_MODULE_STATUS_CONNECTED;
 			}
 			else
 			{
 				bt_connect_status &= ~(1<<BT4_MODULE);
-				return BT_MODULE_STATUS_DISCONNECT;
+				//return BT_MODULE_STATUS_DISCONNECT;
 			}
 		}
 		else
 		{
 			bt_connect_status &= ~(1<<BT4_MODULE);
-			return BT_MODULE_STATUS_DISCONNECT;
+			//return BT_MODULE_STATUS_DISCONNECT;
 		}
 	}
 #endif
 
+#ifdef LCD_VER
+	if (bt_connect_status != last_bt_connect_status)
+	{
+		last_bt_connect_status = bt_connect_status;
+		need_update_bt_info_flag = 1;
+	}
+#endif
 }
 
 /*

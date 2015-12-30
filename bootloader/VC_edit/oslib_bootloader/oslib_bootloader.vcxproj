@@ -90,6 +90,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\driver\AsciiLib_6x12.h" />
+    <ClInclude Include="..\..\driver\Lcd.h" />
     <ClInclude Include="..\..\driver\spi_flash.h" />
     <ClInclude Include="..\..\FatFs\diskio.h" />
     <ClInclude Include="..\..\FatFs\ff.h" />
@@ -175,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\app\des.c" />
+    <ClCompile Include="..\..\driver\lcd.c" />
     <ClCompile Include="..\..\driver\spi_flash.c" />
     <ClCompile Include="..\..\FatFs\diskio.c" />
     <ClCompile Include="..\..\FatFs\ff.c" />

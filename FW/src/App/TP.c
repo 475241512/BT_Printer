@@ -387,7 +387,7 @@ extern void WakeUpTP_MODE1(void)
 
 static void TPForwardStep(int direction)
 {
-	//trip4();
+	//trip3();
 	PRN_POWER_DISCHARGE();
 #if defined(PT486) || defined(PT487)||defined(PT48D)||defined(PT1043)|| defined(PT48G)
 #ifdef Half_Step
@@ -847,7 +847,7 @@ static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
 	heat = TPHeatVoltageAdj(tp.heat_setting);
 	heat = TPHeatDotsAdj(heat,max_heat_dots);
 #if defined(TEMP_SNS_ENABLE)
-	heat = TPHeatThermalAdj(heat,TPHTemperature());
+	//heat = TPHeatThermalAdj(heat,TPHTemperature());
 #endif
 	heat = TPHeatPreLineAdj(heat);
 	tp.heat = heat;
@@ -856,6 +856,8 @@ static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
 
 	heat += TpMinWaitTime;
 
+#if 1		//此策略是为了尽量保证在电机的4个步进时间内使每一行能加热足够时间（上面根据每一行的点数和当前温度、加热电压得出得一个综合的时间指标）
+			//但是问题是每行的加热时间可能很不均匀，比如上一行是空的，下一行全是要打印的，那么加热时间就会发生急剧的变化，从而使得电机刹车，产生抖动的感觉
 	while(1)
 	{
 		time_sum = 0;
@@ -900,6 +902,7 @@ static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
 			break;
 		}
 	}
+#endif
 }
 static uint16_t TPGetStepTime(void)
 {
@@ -945,7 +948,6 @@ static uint8_t TPFeedStep(void)
 
 static void TPIntSetPreIdle(void)
 {
-	//trip4();
 	STROBE_0_OFF(); 	// stop heat
 	STROBE_1_OFF(); 	// stop heat
 	tp.feedmax = 60*1;		// 每1ms中断一次
@@ -954,7 +956,6 @@ static void TPIntSetPreIdle(void)
 
 static void TPIntSetIdle(void)
 {
-	//trip3();
 	STROBE_0_OFF(); 	// stop heat
 	STROBE_1_OFF(); 	// stop heat
 	DISABLE_TIMER_INTERRUPT();				// disable interrupt
@@ -1103,6 +1104,7 @@ static uint8_t TPCheckBuf(void)
 			tp.feedmax = TP_dot[tp.tail][1];
 			tp.feedmax <<= 8;
 			tp.feedmax |= TP_dot[tp.tail][0];
+			//trip2();
 			tp.tail = (tp.tail+1) & (ARRAY_SIZE(TP_dot)-1);
 			tp.state = TPSTATE_FEED;
 			ret = 2;
@@ -1141,6 +1143,7 @@ static uint8_t TPCheckBuf(void)
 			ret = 2;
 			break;
 		default:	// 未知类型，属于严重错误
+			//trip2();
 			tp.tail = (tp.tail+1) & (ARRAY_SIZE(TP_dot)-1);
 			TPIntSetIdle();
 			ret = 0;
@@ -1153,6 +1156,15 @@ static uint8_t TPCheckBuf(void)
 		ret = 0;
 	}
 	return ret;
+}
+
+static uint8_t TPCheckBuf_empty(void)
+{
+	if (tp.head != tp.tail)
+	{
+		return 0; 
+	}
+	return 1;
 }
 
 extern void TPISRProc(void)
@@ -1251,6 +1263,7 @@ extern void TPISRProc(void)
 					else	// 当前点行打印完成
 #endif
 					{
+						//trip2();
 						tp.tail = (tp.tail+1) & (ARRAY_SIZE(TP_dot)-1);
 						switch(TPCheckBuf())
 						{
@@ -1344,6 +1357,17 @@ extern void TPISRProc(void)
 			{
 				PRN_POWER_DISCHARGE();
 			}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if(TPCheckBuf_empty() == 0)
+			{
+				////在此期间如果TPbuffer又有新的数据，那么需要重启打印流程
+				tp.state = TPSTATE_START;
+				break;
+			}
+			//注：此段代码是在20151230添加，在测试的时候发现打印有卡顿的现象，最终一直追查到此流程，发现前台构造打印数据速度比中断取数据慢的时候
+			//打印状态机会进入preIDLE的状态，没有添加此段代码之前，会在此状态停留60ms，即使在此期间前台已经有打印数据送入打印缓冲区。
+			//增加这几句代码后，使打印机在preIDLE的状态下也能检测打印缓冲区是否有打印数据送入，从而及时转入处理打印数据的流程。
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 		else
 		{
@@ -1373,7 +1397,6 @@ extern void TPISRProc(void)
 
 void TIM3_IRQ_Handle(void)
 {
-	//trip1();
 	//TIM3->CR1 &= ~0x0001;
 	PRN_POWER_DISCHARGE();
 	PRN_POWER_CHARGE();
@@ -1419,7 +1442,7 @@ extern void SetDesity(void)
 	TPSetSpeed(17);
 #else
 #if defined(HIGH_8V_PRINT)
-	TPSetSpeed(4);
+	TPSetSpeed(7);	//7//4
 #else
 	TPSetSpeed(10);//10
 #endif
@@ -1513,7 +1536,7 @@ static void TPPrintCmdToBuf(uint8_t cmd, uint8_t *dot, uint8_t len)
 		clr_all_dot = 0;
 		return;
 	}
-
+	//trip2();
 	MEMCPY(TP_dot[tp.head & (ARRAY_SIZE(TP_dot)-1)], dot, len);
 	TP_dot[tp.head][LineDot/8] = cmd;
 	tp.head = head;
@@ -1671,7 +1694,7 @@ extern void TPPrintTestPage(void)
 
 	for (i = 0;i<MAX_BT_CHANNEL;i++)
 	{
-		len = snprintf(buf, sizeof(buf),  "BT Module(%d):|HJ%d_%s | 0000\n",i+1,i+1,&BT_mac[i][8]);
+		len = snprintf(buf, sizeof(buf),  "BT Module(%d):|HJ%d_%s | %s\n",i+1,i+1,&BT_mac[i][8],BT_current_pin[i]);
 		TPPrintAsciiLine(buf,len);
 	}
 

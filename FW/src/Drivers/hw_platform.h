@@ -7,7 +7,7 @@
 //#define     HW_VER			HW_VER_DEMO_V11
 #define     HW_VER			HW_VER_V11
 
-#define		LCD_VER
+//#define		LCD_VER
 //#define		LED_VER
 
 //¿∂—¿ƒ£øÈ¿‡–Õ

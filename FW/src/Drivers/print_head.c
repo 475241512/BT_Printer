@@ -107,22 +107,37 @@ void print_head_init(void)
 void print_head_spi_send_data(unsigned char *data,unsigned int len)
 {
 #if(HW_VER == HW_VER_V11)
-	/* disable DMA */
-	DMA_Cmd(DMA1_Channel3, DISABLE);
+	///* disable DMA */
+	//DMA_Cmd(DMA1_Channel3, DISABLE);
 
-	/* set buffer address */
-	//MEMCPY(BT816_send_buff[BT1_MODULE],pData,length);
+	///* set buffer address */
+	////MEMCPY(BT816_send_buff[BT1_MODULE],pData,length);
 
-	DMA1_Channel3->CMAR = (u32)data;
-	/* set size */
-	DMA1_Channel3->CNDTR = len;
+	//DMA1_Channel3->CMAR = (u32)data;
+	///* set size */
+	//DMA1_Channel3->CNDTR = len;
 
-	SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx , ENABLE);
-	/* enable DMA */
-	DMA_Cmd(DMA1_Channel3, ENABLE);
+	//SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx , ENABLE);
+	///* enable DMA */
+	//DMA_Cmd(DMA1_Channel3, ENABLE);
+	//while(DMA1_Channel3->CNDTR);
+	//while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){};
 
-	while(DMA1_Channel3->CNDTR);
-	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){};
+	unsigned int k;
+	volatile short			i = 0;
+	for (k = 0; k < len; k++)
+	{
+		/* Loop while DR register in not emplty */
+		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+
+		/* Send byte through the SPI2 peripheral */
+		SPI_I2S_SendData(SPI1, data[k]);
+
+		/* Wait to receive a byte */
+		//while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
+		//for(i=0; i<10; i++);
+		for(i=0; i<5; i++);
+	}
 #else
 	unsigned int k;
 	volatile short			i = 0;

@@ -80,7 +80,7 @@ static uint8_t double_byte(uint8_t* out,uint8_t c)
 	return 2;
 }
 
-extern void esc_p_init(unsigned int n)
+extern void esc_p_init(unsigned int n,unsigned char mode)
 {
 	uint8_t i;
 	//----chang
@@ -103,10 +103,14 @@ extern void esc_p_init(unsigned int n)
 	esc_sts[n].underline = 0;	// 下划线
 	esc_sts[n].revert = 0;		// 反白显示
 	esc_sts[n].rotate = 0;
-	esc_sts[n].start_dot = 0;
 	esc_sts[n].smoothing_mode = 0;	// 平滑模式
-	esc_sts[n].dot_minrow = ARRAY_SIZE(esc_sts[n].dot[0]);
-	MEMSET(esc_sts[n].dot, 0 ,sizeof(esc_sts[n].dot));
+	
+	if (mode)
+	{
+            esc_sts[n].dot_minrow = ARRAY_SIZE(esc_sts[n].dot[0]);
+          esc_sts[n].start_dot = 0;
+		MEMSET(esc_sts[n].dot, 0 ,sizeof(esc_sts[n].dot));
+	}
 	for(i=0; i<8; i++)
 	{
 		esc_sts[n].tab[i] = 9+8*i;
@@ -139,10 +143,10 @@ extern esc_init(void)
 #ifdef PT_CHANNEL_ISOLATION
 	for (i = 0; i < MAX_PRINT_CHANNEL; i++)
 	{
-		esc_p_init(i);
+		esc_p_init(i,1);
 	}
 #else
-	esc_p_init(0);
+	esc_p_init(0,1);
 #endif
 	current_channel = -1;
 }
@@ -238,7 +242,8 @@ extern void esc_p(void)
 			break;
 		case '@':
 			//ESC @  初始化打印机
-			ESC_P_INIT();
+			//PrintCurrentBuffer(0);
+			ESC_P_INIT(0);
 			//PrintBufToZero();		//这条命令挺奇葩的，小度掌柜经常卡住就是这个原因，不需要清除打印缓冲区
 			break;
 		case 'D':
@@ -315,7 +320,7 @@ extern void esc_p(void)
 			chs[1] = Getchar();
 			CURRENT_ESC_STS.start_dot = 0;
 			PrintCurrentBuffer_0(0);
-			TPFeedLine(chs[1]);
+			TPFeedLine(chs[1]*FONT_CN_A_HEIGHT);
 			break;
 		case 'e':
 			//ESC e n Print and reverse feed n lines
@@ -472,13 +477,14 @@ extern void esc_p(void)
 			break;
 		case 'E':
 			chs[1] = Getchar();
-			//ESC E n
-			//@todo....
+			CURRENT_ESC_STS.larger |= ((chs[1]&0x01)?1:0);
+			CURRENT_ESC_STS.larger |= ((chs[1]&0x01)?1:0)<<4;
 			break;
 		case 'G':
 			chs[1] = Getchar();
 			//ESC G n
-			//@todo....
+			CURRENT_ESC_STS.larger |= ((chs[1]&0x01)?1:0);
+			CURRENT_ESC_STS.larger |= ((chs[1]&0x01)?1:0)<<4;
 			break;
 		case 'M':
 			chs[1] = Getchar();

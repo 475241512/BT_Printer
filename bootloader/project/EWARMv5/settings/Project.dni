@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-1301935511
+Checksum=-1644651461
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -130,5 +130,4 @@ mode=1
 [Breakpoints]
 Bp0=_ "STD_CODE" "{D:\work\finance\oslib\fw\bootloader\project\main.c}.758.1@1" 0 0 0 0 "" 0 "" 0
 Bp1=_ "STD_CODE" "{D:\work\finance\oslib\fw\bootloader\project\main.c}.409.6@1" 0 0 0 0 "" 0 "" 0
-Bp2=_ "STD_CODE" "{E:\BT_Printer\bootloader\project\main.c}.441.7@1" 1 0 0 0 "" 0 "" 0
-Count=3
+Count=2

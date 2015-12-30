@@ -11,6 +11,7 @@
 	}while(0)
 
 extern unsigned char	lcd_refresh_disable;
+extern unsigned char	need_update_bt_info_flag;
 //х╚фа
 #define PIC_POWERON		1
 #define PIC_NOPAPER		2

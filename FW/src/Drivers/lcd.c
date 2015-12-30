@@ -12,6 +12,7 @@ static unsigned char Lcd_RAM_y;
 static unsigned char g_font;
 
 unsigned char	lcd_refresh_disable;
+unsigned char	need_update_bt_info_flag;
 
 #define RST_LOW()		do{\
 	GPIOA->BRR = GPIO_Pin_8;\
@@ -186,6 +187,7 @@ void Lcd_init(void) //write函数，第二参数0表示指令，1表示数据
 
 	Lcd_clear(1);
 	Lcd_setfont(FONT_12x6);
+	need_update_bt_info_flag = 1;
 }
 #if 0
 unsigned char const AA[]= {
@@ -798,6 +800,10 @@ extern unsigned char BT_current_pin[][5];
 void Lcd_disp_BT_info(void)
 {
 	unsigned char str[11];
+	if (need_update_bt_info_flag == 0)
+	{
+		return;
+	}
 
 	//Lcd_TextOut(0,6,"Name PIN S");
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
@@ -825,6 +831,7 @@ void Lcd_disp_BT_info(void)
 #endif
 	sprintf(str,"PIN:%s",BT_current_pin[BT1_MODULE]);
 	Lcd_TextOut(0,30,str);
+	need_update_bt_info_flag = 0;
 	//Lcd_DrawLineH(0,18,64,0);
 	//Lcd_DrawLineV(27,0,48,0);
 	//Lcd_DrawLineH(0,31,64,0);
@@ -843,6 +850,7 @@ void Lcd_Refresh(void)
 		if(TPPaperReady() == 0 )//缺纸
 		{
 			Lcd_dispBMP(PIC_NOPAPER);
+			need_update_bt_info_flag = 1;
 			if(lcd_flash_cnt > 0)
 			{
 				if((--lcd_flash_cnt) == 0)

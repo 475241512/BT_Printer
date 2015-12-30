@@ -228,7 +228,6 @@ int update_app(void)
 	//unsigned char	str[5];
 	//unsigned char	len;
 
-
 	if( f_open(&file, update_file, FA_OPEN_EXISTING | FA_READ ) != FR_OK )
 	{
 		return -1;
@@ -248,7 +247,10 @@ int update_app(void)
 		f_close(&file);
 		return -1;
 	}
-
+#ifdef LCD_VER
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"FW Upgrade");
+#endif
 	//
 	FLASH_Unlock();
 
@@ -257,7 +259,11 @@ int update_app(void)
 		FLASH_ErasePage( ApplicationAddress + i * 512 );
 		if (i%2==0)
 		{
+#ifdef LCD_VER
+			Lcd_process_bar_step();
+#else
 			LED_toggle();
+#endif
 		}
 	}
 
@@ -291,12 +297,19 @@ int update_app(void)
 		{
 			xor						^= *((unsigned int*)&ProHBuffer[i*4]);
 		}
-
-                LED_toggle();
+#ifdef LCD_VER
+		Lcd_process_bar_step();
+#else
+        LED_toggle();
+#endif
 		// 解密
 		un3DES(ProHBuffer, 512, key1, key2, key1, buffer_org, &rd);
 
+#ifdef LCD_VER
+		Lcd_process_bar_step();
+#else
 		LED_toggle();
+#endif
 		// 编程写入
 		if( prog_data( ApplicationAddress + addr_offset, (unsigned int*)buffer_org, 128 ) != 0 )
 		{
@@ -320,7 +333,14 @@ int update_app(void)
 	prog_data(ApplicationAddress + (600 * 512) - 4, &i, 1);
 	FLASH_Lock();
 
+#ifdef LED_VER
 	LED_ON();
+#else
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"FW Upgrade");
+	Lcd_TextOut(26,24,"OK");
+	delay_ms(2000);
+#endif
 	// ==========================================================================================================
 
 	return 0;
@@ -330,7 +350,14 @@ update_fail:
 	// erase first block;
 	FLASH_ErasePage(ApplicationAddress);
 	FLASH_Lock();
+#ifdef LED_VER
 	LED_OFF();
+#else
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"FW Upgrade");
+	Lcd_TextOut(26,24,"Fail");
+	delay_ms(2000);
+#endif
 	return -1;
 }
 
@@ -420,7 +447,7 @@ int main(void)
 	//	NVIC_SetVectorTable(NVIC_VectTab_FLASH+0x20000, 0);
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
 
-#if 0
+#if 1
 	// 检查ROM是否被读保护，没有则执行读保护操作
 	if( FLASH_GetReadOutProtectionStatus() != SET )
 	{
@@ -433,7 +460,11 @@ int main(void)
 	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
 	// 初始化升级指示的硬件资源
+#ifdef LCD_VER
+	Lcd_init();
+#else
 	LED_init();
+#endif
 	key_init();
 	platform_misc_port_init();
 	spi_flash_init();
@@ -474,8 +505,13 @@ recheck:
 	}
 
 sys_fail:
-
+#ifdef LED_VER
 	LED_OFF();
+#else
+	Lcd_clear(1);
+	Lcd_TextOut(4,18,"UDisk Mode");
+#endif
+
 	// ==========================================================================================================
 	// 4,显示错误信息
 	{
@@ -486,11 +522,15 @@ sys_fail:
 		//USB_Cable_Config(1);
 		while(if_feed_key_preesed())
 		{
+#ifdef LED_VER
 			LED_blink(1,200);
+#endif
 		}
 		while(1)
 		{
+#ifdef LED_VER
 			LED_blink(1,200);
+#endif			
 			if (if_feed_key_preesed())
 			{
 				//检测到进纸键被按下

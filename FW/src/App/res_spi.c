@@ -329,7 +329,7 @@ void font_data_read(unsigned char font_type,unsigned char *c,unsigned char *pBuf
 	//{
 	//	return;
 	//}
-	assert(font_type == FNT_CHN_16_16 || font_type == FNT_CHN_24_24);
+	//assert(font_type == FNT_CHN_16_16 || font_type == FNT_CHN_24_24);
 
 	//if(gFontSize == 12)
 	{

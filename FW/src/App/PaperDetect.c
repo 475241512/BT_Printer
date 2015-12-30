@@ -35,7 +35,6 @@ uint32_t		systick_cnt;
 
 
 
-
 //======================================================================================================
 void TPPaperSNSInit(void)
 {
@@ -281,14 +280,17 @@ void SysTick_IRQ_Handle(void)
 	int i;
 	systick_cnt++;
 	KeyScanProc();
-	TPBMSNSDetect();
+	//TPBMSNSDetect();
 	TPPaperSNSDetect( PAPERSNS());
 	for (i = 0; i < MAX_BT_CHANNEL;i++)
 	{
 		BT816_connect_status(i);
 	}
 #ifdef LCD_VER
-	Lcd_Refresh();
+	if((systick_cnt%50 == 0)||(need_update_bt_info_flag == 1))
+	{		
+		Lcd_Refresh();
+	}
 #else
 	LedScanProc();
 

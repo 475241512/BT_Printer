@@ -236,6 +236,7 @@ extern void DotFillToBuf(uint8_t *buf, uint16_t col, uint8_t row, uint8_t underl
 		}
 		while (width++ < (CURRENT_ESC_STS.larger >> 4));//CURRENT_ESC_STS.larger后四位存储放大高度
 	}
+
 	if (underline) FontUnderline(start_dot, CURRENT_ESC_STS.start_dot);
 
 	if (start_row < CURRENT_ESC_STS.dot_minrow)

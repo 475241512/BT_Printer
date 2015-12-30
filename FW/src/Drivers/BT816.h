@@ -31,7 +31,7 @@
 #if(HW_VER == HW_VER_DEMO_V11)
 #define		BT3_MODULE			(BT2_MODULE+SUPPORT_BT(USE_BT2_MODULE))
 #define		BT4_MODULE			(BT3_MODULE+SUPPORT_BT(USE_BT3_MODULE))
-#endif
+
 
 #define		trip1()	do{\
 	GPIO_ResetBits(GPIOB, GPIO_Pin_6);\
@@ -52,6 +52,22 @@
 	GPIO_ResetBits(GPIOB, GPIO_Pin_3);\
 	GPIO_SetBits(GPIOB, GPIO_Pin_3);\
 }while(0)
+#else
+#define		trip1()	do{\
+	GPIO_ResetBits(GPIOC, GPIO_Pin_10);\
+	GPIO_SetBits(GPIOC, GPIO_Pin_10);\
+}while(0)
+
+#define		trip2()	do{\
+	GPIO_ResetBits(GPIOC, GPIO_Pin_11);\
+	GPIO_SetBits(GPIOC, GPIO_Pin_11);\
+}while(0)
+
+#define		trip3()	do{\
+	GPIO_ResetBits(GPIOC, GPIO_Pin_12);\
+	GPIO_SetBits(GPIOC, GPIO_Pin_12);\
+}while(0)
+#endif
 
 extern unsigned char	BT816_recbuffer[][BT816_RES_BUFFER_LEN];
 
@@ -113,7 +129,9 @@ typedef enum
 #define     set_BT4_FREE()	GPIO_ResetBits(GPIOD, GPIO_Pin_0)
 
 extern unsigned char  bt_connect_status;
+extern unsigned char  last_bt_connect_status;
 extern unsigned char BT_mac[MAX_BT_CHANNEL][13];
+extern unsigned char BT_current_pin[MAX_BT_CHANNEL][5];
 
 #define		BT1_CONNECT		(bt_connect_status&(1<<BT1_MODULE))
 #define		BT2_CONNECT		(bt_connect_status&(1<<BT2_MODULE))
@@ -150,7 +168,7 @@ int BT816_set_name(unsigned int bt_channel,unsigned char *name);
 int BT816_query_mac(unsigned int bt_channel,unsigned char *mac);
 int BT816_query_pin(unsigned int bt_channel,unsigned char *pin);
 int BT816_set_pin(unsigned int bt_channel,unsigned char *pin);
-int BT816_connect_status(unsigned int bt_channel);
+void BT816_connect_status(unsigned int bt_channel);
 void BT816_send_data(unsigned int bt_channel,unsigned char *data,unsigned int len);
 int BT816_Channel1_RxISRHandler(unsigned char *res, unsigned int res_len);
 int BT816_Channel2_RxISRHandler(unsigned char *res, unsigned int res_len);

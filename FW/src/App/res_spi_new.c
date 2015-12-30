@@ -469,9 +469,11 @@ void font_data_read(unsigned char font_type,unsigned char *c,unsigned char *pBuf
 	//{
 	//	return;
 	//}
-	assert(font_type == FNT_CHN_16_16 || font_type == FNT_CHN_24_24);
+	//assert(font_type == FNT_CHN_16_16 || font_type == FNT_CHN_24_24);
 
 	//if(gFontSize == 12)
+       // trip1();
+#if 1
 	{
 
 		/*
@@ -483,6 +485,7 @@ void font_data_read(unsigned char font_type,unsigned char *c,unsigned char *pBuf
 
 		*/
 		//offset				= ((c[0] - 0xA1) & 0x7F) * 94 + ((c[1]-0xA1)&0x7F);		//GB2312字符集偏移计算公式
+		
 
 		offset				= (c[0] - 129) * 190 + (c[1]-64) - (c[1]/128);				//GBK字符集偏移计算公式
 		pInfo				= &FontList[font_type];
@@ -508,6 +511,7 @@ void font_data_read(unsigned char font_type,unsigned char *c,unsigned char *pBuf
 			MEMCPY(pBuf,pData,size);
 		}
 	}//12
+#endif
 
 	//MEMSET(pBuf,0x01,size);
 

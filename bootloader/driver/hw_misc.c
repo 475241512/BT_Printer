@@ -24,6 +24,8 @@
 
 
 #define KEY_FEED()  ( GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_1))		//PA.1
+
+#ifdef LED_VER
 /**
 ***************************************************************************
 *@brief	初始化电源维持管脚，管脚输出高电平，维持电源输出
@@ -76,7 +78,7 @@ void LED_toggle(void)
 
 	led_state ^= 0x01;
 }
-
+#endif
 
 void key_init(void)
 {
@@ -109,6 +111,19 @@ int if_feed_key_preesed(void)
 	return 0;
 }
 
+/**
+ * @brief     ms软延时
+ * @param[in] unsigned int time 延时参数
+*/
+void delay_us(unsigned int time)
+{    
+	unsigned int i=0;  
+	while(time--)
+	{
+		i=8;  
+		while(i--) ;    
+	}
+}
 
 /**
  * @brief     ms软延时

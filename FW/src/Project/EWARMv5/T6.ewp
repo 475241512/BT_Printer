@@ -147,6 +147,7 @@
         <option>
           <name>CCDefines</name>
           <state>DEBUG_VER</state>
+          <state>LCD_VER</state>
         </option>
         <option>
           <name>CCPreprocFile</name>

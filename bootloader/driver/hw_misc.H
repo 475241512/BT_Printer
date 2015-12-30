@@ -1,6 +1,7 @@
 #ifndef _HW_MISC_H_
 #define _HW_MISC_H_
 #include "stm32f10x_lib.h"
+#include "Lcd.h"
 
 #define LED_ON()	GPIO_ResetBits(GPIOB, GPIO_Pin_12)
 #define LED_OFF()	GPIO_SetBits(GPIOB, GPIO_Pin_12)

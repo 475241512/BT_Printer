@@ -112,7 +112,7 @@ extern signed char	 current_channel;		//当前正在处理的通道
 
 #ifdef PT_CHANNEL_ISOLATION
 #define CURRENT_ESC_STS				esc_sts[current_channel]
-#define ESC_P_INIT()				esc_p_init(current_channel)
+#define ESC_P_INIT(m)				esc_p_init(current_channel,m)
 #define ESC_STS_STATUS_DEINIT()		do{\
 	for (int i = 0; i<MAX_PRINT_CHANNEL;i++)\
 	{\
@@ -135,7 +135,7 @@ extern signed char	 current_channel;		//当前正在处理的通道
 }while(0)
 #else
 #define CURRENT_ESC_STS				esc_sts[0]
-#define ESC_P_INIT()				esc_p_init(0)
+#define ESC_P_INIT(m)				esc_p_init(0,m)
 #define ESC_STS_STATUS_DEINIT()		esc_sts[0].status4=0
 #define ESC_STS_STATUS_SET_FLAG(bitmask,n)	esc_sts[0].status4 |= ((bitmask)<<(n))
 
@@ -160,7 +160,7 @@ extern signed char	 current_channel;		//当前正在处理的通道
 
 //======================================================================================================
 extern void esc_p(void);
-extern void esc_p_init(unsigned int n);
+extern void esc_p_init(unsigned int n,unsigned char mode);
 extern esc_init(void);
 void Printf_Bitmap (uint8_t n,uint8_t mode);
 

@@ -1024,7 +1024,7 @@ static u8 *Get_Port_status(u16 Length)
 static void print_device_reset(void)
 {
 	current_channel = USB_PRINT_CHANNEL_OFFSET;
-	esc_p_init(USB_PRINT_CHANNEL_OFFSET);
+	esc_p_init(USB_PRINT_CHANNEL_OFFSET,1);
 	PrintBufToZero();
 }
 #endif

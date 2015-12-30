@@ -146,7 +146,7 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state></state>
+          <state>LCD_VER</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1670,6 +1670,9 @@
   </file>
   <file>
     <name>$PROJ_DIR$\..\..\driver\hw_misc.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\..\driver\lcd.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\..\main.c</name>

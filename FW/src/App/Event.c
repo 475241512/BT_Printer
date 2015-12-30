@@ -87,15 +87,23 @@ extern void event_proc(void)
 	case evtKeyDownHold5000msMode:
 		break;
     case evtKeyDownHold7000msMode:
+#ifdef LCD_VER 
 		lcd_refresh_disable = 1;
 		LCD_BACKLIGHT_ON();
 		Lcd_clear(1);
 		Lcd_TextOut(5,14,"Reset PIN");
         Lcd_TextOut(20,26,"...");
 		BT_reset_PIN();
+		need_update_bt_info_flag = 1;
 		Lcd_disp_BT_info();
 		delay_ms(2000);
 		lcd_refresh_disable = 0;
+#else
+                LED_blink(10,100);
+          BT_reset_PIN();
+          if(TPPrinterReady())
+        TPPrintTestPage();
+#endif  
         break;
 	case evtPaperOut:
 		ESC_STS_STATUS_SET_FLAG(0x03,5);

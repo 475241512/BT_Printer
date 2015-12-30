@@ -251,16 +251,17 @@ extern void FontCircumvolve(uint8_t *dot, uint8_t *buf, uint8_t row,uint8_t col,
 	switch(angle)
 	{
 		case ANTITYPE:                                                     //原型
-			for(i=0;i<col;i++)
-	       		{
+			/*for(i=0;i<col;i++)
+			{
 				for(j=0;j<max_rowbyte;j++)
 				{
 					*dot=*buf;
 					dot++;
 					buf++;
 				}
-	      	 	}
-			 break;
+			}*/
+			MEMCPY(dot,buf,max_rowbyte*col);
+			break;
 		case CIR_NINETY_DEGREE:                                    //顺旋转九十度
 			bit=0;
 			for(i=max_rowbyte;i>0;i--)
@@ -316,7 +317,7 @@ extern void FontCircumvolve(uint8_t *dot, uint8_t *buf, uint8_t row,uint8_t col,
 						{
 							dot[bit>>3] |= (1<<(7-(bit&0x07)));
 						}
-                        			bit++;
+						bit++;
 						if(j == 1)
 						{
 							bit=bit+(8-(col&0x07));
@@ -503,14 +504,17 @@ extern void GetEnglishFont(uint8_t ascii)
 		MEMSET(buf1,0,sizeof(buf1));
 		if(CURRENT_ESC_STS.rotate==1||CURRENT_ESC_STS.rotate==3)
 		{
-			FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
-			DotFillToBuf(&buf1[0], FONT_A_HEIGHT,( FONT_A_WIDTH+7)/8*8, 1);
+		FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
+		DotFillToBuf(&buf1[0], FONT_A_HEIGHT,( FONT_A_WIDTH+7)/8*8, 1);
 		}
 		else
 		{
-			FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0],FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
-			DotFillToBuf(&buf1[0], FONT_A_WIDTH,( FONT_A_HEIGHT+7)/8*8, 1);
+		FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0],FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
+		DotFillToBuf(&buf1[0], FONT_A_WIDTH,( FONT_A_HEIGHT+7)/8*8, 1);
 		}
+		//GPIO_ResetBits(GPIOC, GPIO_Pin_10);
+		//DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_HEIGHT, FONT_A_WIDTH, 1);
+		//GPIO_SetBits(GPIOC, GPIO_Pin_10);
 		break;
 	case FONT_B_WIDTH:	// FONT B
 		DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_b[0][0], FONT_B_WIDTH, FONT_B_HEIGHT, 1);
@@ -578,6 +582,7 @@ extern void GetChineseFont(uint8_t *c, uint8_t charset)
 			FontCircumvolve(&buf2[0], &CURRENT_ESC_STS.font_buf.font_cn_a[0][0],FONT_CN_A_HEIGHT,FONT_CN_A_WIDTH,CURRENT_ESC_STS.rotate);
 			DotFillToBuf(&buf2[0], FONT_CN_A_WIDTH, ( FONT_CN_A_HEIGHT+7)/8*8, 1);
 		}
+		//DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_cn_a[0][0], FONT_CN_A_HEIGHT, FONT_CN_A_WIDTH, 1);
 		break;
 	case FONT_CN_B_WIDTH:	// FONT B
 		DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_cn_b[0][0], FONT_CN_B_WIDTH, FONT_CN_B_HEIGHT, 1);

@@ -485,7 +485,12 @@ unsigned char en3DES(unsigned char* indata,unsigned int inlen,unsigned char* key
 }
 #endif
 
+#ifdef LCD_VER
+extern void Lcd_process_bar_step(void);
+#else
 extern void LED_toggle(void);
+#endif
+
 /**
  * @brief 3DES解密
  * @param[in] unsigned char* indata 输入数据
@@ -542,7 +547,11 @@ unsigned char un3DES(unsigned char* indata,unsigned int inlen,unsigned char* key
 
 		p=p+8;p1=p1+8;tlen=tlen-8;
                 if(tlen%64==0)
-                LED_toggle();
+#ifdef LCD_VER
+					Lcd_process_bar_step();
+#else
+					LED_toggle();
+#endif
 	}
 	return 1;
 }
