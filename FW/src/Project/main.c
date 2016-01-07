@@ -57,7 +57,7 @@ extern	TTerminalPara			g_param;					//Terminal Param
 * Function Name  : system_error_tip
 * Description    : 严重的系统错误提示
 *******************************************************************************/
-void system_error_tip(unsigned int err_no)
+void system_error_tip(int err_no)
 {
 	unsigned char str[15];
 #ifdef LCD_VER
@@ -212,14 +212,15 @@ int main(void)
 	{
 		if (ret > 0 || ret == -4)
 		{
-			if (DefaultTerminalPara())
+			ret = DefaultTerminalPara(); 
+			if (ret)
 			{
-				system_error_tip(1);	//严重的错误，系统停止继续运行，可能进入诊断模式
+				system_error_tip(ret);	//严重的错误，系统停止继续运行，可能进入诊断模式
 			}
 		}
 		else
 		{
-			system_error_tip(2);	//严重的错误，系统停止继续运行，可能进入诊断模式
+			system_error_tip(ret);	//严重的错误，系统停止继续运行，可能进入诊断模式
 		}
 	}
 
@@ -254,7 +255,7 @@ int main(void)
 	//初始化蓝牙模块
 	if(BT816_init())
 	{
-		system_error_tip(3);
+		system_error_tip(83);
 	}
 
 	esc_init();

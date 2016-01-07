@@ -49,12 +49,12 @@ int ReadTerminalPara(void)
 				ret = param_format(sizeof(TTerminalPara));
 				if (ret)
 				{
-					return ret;
+					return ((-ret)+0x10);
 				}
 			}
 			else
 			{
-				return ret;
+				return ((-ret)+0x20);
 			}
 		}
 
@@ -64,7 +64,7 @@ int ReadTerminalPara(void)
 	ret = param_read((unsigned char*)&g_param,sizeof(TTerminalPara));
 	if(ret)
 	{
-		return ret;
+		return ((-ret)+0x30);
 	}
 
 

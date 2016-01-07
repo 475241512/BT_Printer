@@ -102,6 +102,15 @@ static void platform_misc_port_init(void)
 	EXTI_InitTypeDef	EXTI_InitStructure;
 	NVIC_InitTypeDef	NVIC_InitStructure;
 
+#if(HW_VER == HW_VER_V12)
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+
+	//USB_CHK -- PC.14
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_14;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+#else
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 
 	//USB_CHK -- PA.0
@@ -109,7 +118,7 @@ static void platform_misc_port_init(void)
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IN_FLOATING;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-
+#endif
 	///* Connect EXTI Line0 to PA.0 */
 	//GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
 
@@ -156,6 +165,13 @@ static void platform_misc_port_init(void)
 */
 void hw_platform_init(void)
 {
+#if(HW_VER == HW_VER_V12)
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+	PWR_BackupAccessCmd(ENABLE);//允许修改RTC 和后备寄存器
+	RCC_LSICmd(DISABLE);//关闭外部低速外部时钟信号功能 后，PC14 PC15 才可以当普通IO用。
+	BKP_TamperPinCmd(DISABLE);//关闭入侵检测功能，也就是 PC13，也可以当普通IO 使用
+#endif
+
 #ifdef LCD_VER
 	Lcd_init();
 #else
@@ -258,6 +274,22 @@ unsigned int  hw_platform_ChargeState_Detect(void)
 unsigned int hw_platform_USBcable_Insert_Detect(void)
 {
 	unsigned int i;
+#if(HW_VER == HW_VER_V12)
+	if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_14))
+	{
+		for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
+		if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_14))
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+		return 0;
+#else
 	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))
 	{
 		for (i=0;i < 2000;i++);		//延时一小段时间，防止是因为抖动造成的
@@ -272,6 +304,7 @@ unsigned int hw_platform_USBcable_Insert_Detect(void)
 	}
 	else
 		return 0;
+#endif
 }
 
 

@@ -8,7 +8,7 @@ echo 正在生成V2版.....
 ::release_V1_chs.bat
 ::先调用相应版本的工程配置文件
 del ..\src\Project\EWARMv5\T6.ewp
-copy ..\src\Project\EWARMv5\T6_LED_release.ewp ..\src\Project\EWARMv5\T6.ewp
+copy ..\src\Project\EWARMv5\T6_ST_LED_release.ewp ..\src\Project\EWARMv5\T6.ewp
 
 
 ::调用IAR集成环境的工具对源码进行编译，此处也可以将此工具直接添加到环境变量

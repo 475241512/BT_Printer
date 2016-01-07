@@ -610,7 +610,7 @@ FLASH_Status FLASH_ReadOutProtection(FunctionalState NewState)
   }
 
 #ifdef GD_MCU
-	while (!(FLASH->CR & 0x100));
+	while (!(FLASH->CR & 0x200));
 #endif
   /* Return the protection operation Status */
   return status;      

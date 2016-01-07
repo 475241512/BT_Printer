@@ -85,7 +85,7 @@ enum
 	GPIOB->BRR = GPIO_Pin_2; \
 	}while(0)
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11) || (HW_VER == HW_VER_V11))
 //PB.6
 #define MOTOR_PHASE_1A_HIGH()  do{ \
 	GPIOB->BSRR = GPIO_Pin_6; \
@@ -159,6 +159,20 @@ enum
 	}while(0)
 #endif
 
+
+#if(HW_VER == HW_VER_V12)
+//PA.8
+#define STROBE_0_ON()     do{ \
+	GPIOA->BSRR = GPIO_Pin_8; \
+	}while(0)
+
+#define STROBE_0_OFF()    do{ \
+	GPIOA->BRR = GPIO_Pin_8; \
+	}while(0)
+
+#define STROBE_1_ON()     
+#define STROBE_1_OFF()
+#else
 //PC.4
 #define STROBE_0_ON()     do{ \
 	GPIOC->BSRR = GPIO_Pin_4; \
@@ -176,6 +190,7 @@ enum
 #define STROBE_1_OFF()    do{ \
 	GPIOC->BRR = GPIO_Pin_5; \
 	}while(0)
+#endif
 //======================================================================
 
 //PB.1
@@ -271,19 +286,31 @@ void TPInit(void)
 	TIM_TimeBaseInitTypeDef						TIM_TimeBaseStructure;
 	NVIC_InitTypeDef							NVIC_InitStructure;
 
-	//PRN_STROBE0 -- PC.4   PRN_STROBE1 -- PC.5
+	
 #if(HW_VER == HW_VER_V11)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+#elif(HW_VER == HW_VER_V12)
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 #else
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOE, ENABLE);
 #endif
+
+#if(HW_VER == HW_VER_V12) 
+	//PRN_STROBE0 & PRN_STROBE0 -- PA.8
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+#else
+	//PRN_STROBE0 -- PC.4   PRN_STROBE1 -- PC.5
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_4 | GPIO_Pin_5;
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
+#endif
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
 	//MOT_PHASE1A -- PB.6  MOT_PHASE1B -- PB.5   MOT_PHASE2B -- PB.4	MOT_PHASE2A -- PB.3  
 	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_6 | GPIO_Pin_5 | GPIO_Pin_4 | GPIO_Pin_3;
@@ -303,6 +330,13 @@ void TPInit(void)
 	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
+#elif(HW_VER == HW_VER_V12)
+	//MOT_STATUS -- PC.13
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_13;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_IPU;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 #else
 	//MOT_STATUS -- PE.11
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
@@ -687,6 +721,7 @@ static uint16_t const TpAccelerationSteps[] =
 	TIMER1_MS_TO_CNT(0.605),
 	TIMER1_MS_TO_CNT(0.603),
 	TIMER1_MS_TO_CNT(0.600),
+#if 0
 #if !defined(LOW_5V_PRINT)
 	TIMER1_MS_TO_CNT(0.597),
 	TIMER1_MS_TO_CNT(0.595),
@@ -745,6 +780,7 @@ static uint16_t const TpAccelerationSteps[] =
 	TIMER1_MS_TO_CNT(0.355),
 	TIMER1_MS_TO_CNT(0.353),
 	TIMER1_MS_TO_CNT(0.350),
+#endif
 #endif
 #endif
 };
@@ -845,7 +881,8 @@ static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
 	uint8_t i;
 
 	heat = TPHeatVoltageAdj(tp.heat_setting);
-	heat = TPHeatDotsAdj(heat,max_heat_dots);
+	//heat = TPHeatDotsAdj(heat,max_heat_dots);
+	heat = heat*80/100;
 #if defined(TEMP_SNS_ENABLE)
 	//heat = TPHeatThermalAdj(heat,TPHTemperature());
 #endif
@@ -1442,7 +1479,7 @@ extern void SetDesity(void)
 	TPSetSpeed(17);
 #else
 #if defined(HIGH_8V_PRINT)
-	TPSetSpeed(7);	//7//4
+	TPSetSpeed(6);	//7//4
 #else
 	TPSetSpeed(10);//10
 #endif

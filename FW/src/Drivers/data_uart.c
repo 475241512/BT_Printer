@@ -58,6 +58,8 @@ void data_uart_init(void)
 	USART_Init(USART3, &USART_InitStructure);
 
 	USART_Cmd(USART3, ENABLE);
+#elif(HW_VER == HW_VER_V12)
+	//no data uart
 #else
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
@@ -93,6 +95,8 @@ void data_uart_sendbyte(unsigned char data)
 {
 #if(HW_VER == HW_VER_V11)
 	USART_SendData(USART3, (unsigned short)data);
+#elif(HW_VER == HW_VER_V12)
+	//no data uart
 #else
 	USART_SendData(UART5, (unsigned short)data);
 #endif
@@ -114,6 +118,8 @@ unsigned char uart_rec_byte(void)
 		return 0x55;
 	}
 	return  USART_ReceiveData(USART3) & 0xFF;              /* Read one byte from the receive data register         */
+#elif(HW_VER == HW_VER_V12)
+	//no data uart
 #else
 	int	i = 0;
 	while((USART_GetFlagStatus(UART5,USART_FLAG_RXNE)== RESET)&&(i<400000))
@@ -142,6 +148,8 @@ int fputc(int ch, FILE *f)
 	while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET)
 	{
 	}
+#elif(HW_VER == HW_VER_V12)
+	//no data uart
 #else
 	USART_SendData(UART5, (u8) ch);
 	

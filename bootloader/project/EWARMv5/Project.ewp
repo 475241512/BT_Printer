@@ -147,6 +147,7 @@
         <option>
           <name>CCDefines</name>
           <state>LCD_VER</state>
+          <state>GD_MCU</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -633,7 +634,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>E:\T5_&#x7CBe;&#x7B80;&#x7248;\bootloader V2.0\project\EWARMv5\stm32f10x_flash.icf</state>
+          <state>E:\BT_Printer\FW\src\Project\EWARMv5\stm32f10x_debug.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>

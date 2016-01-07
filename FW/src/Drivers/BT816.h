@@ -8,24 +8,13 @@
 													//在内存能够允许的情况下尽量开大一下，对打印APP的兼容性会好很多。
 
 													//测试的时候发现会丢数据，就是因为这个DMA缓冲区开小了，导致蓝牙模块传输上来的数据丢掉了一部分。
-													//蓝牙因为流控被阻塞时，会将主机发送的赌赛在其内部的数据一次传输过来。测试的时候发现其一次最多传了384字节
+													//蓝牙因为流控被阻塞时，会将主机发送的堵塞在其内部的数据一次传输过来。测试的时候发现其一次最多传了384字节
 													//
 
 #define		SPP_BUFFER_LEN					2048	//这个是纯粹的串口环形缓冲区大小，通过硬件流控的方式控制缓冲区的溢出
 #define		USB_BUFFER_LEN					1024	//USB接收环形缓冲区的大小
 
-#define USE_BT1_MODULE		(1<<0)
-#define USE_BT2_MODULE		(1<<1)
-#define USE_BT3_MODULE		(1<<2)
-#define USE_BT4_MODULE		(1<<3)
 
-//此宏配置，根据具体的硬件实际使用那几个蓝牙模块来决定的
-//#define BT_MODULE_CONFIG	(USE_BT1_MODULE|USE_BT2_MODULE|USE_BT3_MODULE|USE_BT4_MODULE)		//4个蓝牙模块都同时工作
-#ifdef GD_MCU
-#define BT_MODULE_CONFIG	(USE_BT1_MODULE)		//1个蓝牙模块都同时工作
-#else
-#define BT_MODULE_CONFIG	(USE_BT1_MODULE|USE_BT2_MODULE)		//2个蓝牙模块都同时工作
-#endif
 #define		SUPPORT_BT(ch)		((BT_MODULE_CONFIG&(ch))?1:0)
 #define		MAX_BT_CHANNEL		(SUPPORT_BT(USE_BT1_MODULE)+SUPPORT_BT(USE_BT2_MODULE)+SUPPORT_BT(USE_BT3_MODULE)+SUPPORT_BT(USE_BT4_MODULE))
 
@@ -55,7 +44,7 @@
 	GPIO_ResetBits(GPIOB, GPIO_Pin_3);\
 	GPIO_SetBits(GPIOB, GPIO_Pin_3);\
 }while(0)
-#else
+#elif(HW_VER == HW_VER_V11)
 #define		trip1()	do{\
 	GPIO_ResetBits(GPIOC, GPIO_Pin_10);\
 	GPIO_SetBits(GPIOC, GPIO_Pin_10);\
@@ -70,6 +59,8 @@
 	GPIO_ResetBits(GPIOC, GPIO_Pin_12);\
 	GPIO_SetBits(GPIOC, GPIO_Pin_12);\
 }while(0)
+#else
+//no trip io
 #endif
 
 extern unsigned char	BT816_recbuffer[][BT816_RES_BUFFER_LEN];

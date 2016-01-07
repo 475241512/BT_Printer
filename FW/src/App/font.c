@@ -501,19 +501,19 @@ extern void GetEnglishFont(uint8_t ascii)
 	switch (CURRENT_ESC_STS.font_en)
 	{
 	case FONT_A_WIDTH:	// FONT A
-		MEMSET(buf1,0,sizeof(buf1));
-		if(CURRENT_ESC_STS.rotate==1||CURRENT_ESC_STS.rotate==3)
-		{
-		FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
-		DotFillToBuf(&buf1[0], FONT_A_HEIGHT,( FONT_A_WIDTH+7)/8*8, 1);
-		}
-		else
-		{
-		FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0],FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
-		DotFillToBuf(&buf1[0], FONT_A_WIDTH,( FONT_A_HEIGHT+7)/8*8, 1);
-		}
+		//MEMSET(buf1,0,sizeof(buf1));
+		//if(CURRENT_ESC_STS.rotate==1||CURRENT_ESC_STS.rotate==3)
+		//{
+		//FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
+		//DotFillToBuf(&buf1[0], FONT_A_HEIGHT,( FONT_A_WIDTH+7)/8*8, 1);
+		//}
+		//else
+		//{
+		//FontCircumvolve(&buf1[0], &CURRENT_ESC_STS.font_buf.font_a[0][0],FONT_A_HEIGHT,FONT_A_WIDTH,CURRENT_ESC_STS.rotate);
+		//DotFillToBuf(&buf1[0], FONT_A_WIDTH,( FONT_A_HEIGHT+7)/8*8, 1);
+		//}
 		//GPIO_ResetBits(GPIOC, GPIO_Pin_10);
-		//DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_HEIGHT, FONT_A_WIDTH, 1);
+		DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_a[0][0], FONT_A_WIDTH, FONT_A_HEIGHT, 1);
 		//GPIO_SetBits(GPIOC, GPIO_Pin_10);
 		break;
 	case FONT_B_WIDTH:	// FONT B
@@ -571,18 +571,18 @@ extern void GetChineseFont(uint8_t *c, uint8_t charset)
 	switch (CURRENT_ESC_STS.font_cn)
 	{
 	case FONT_CN_A_WIDTH:	// FONT A
-		MEMSET(buf2,0,sizeof(buf2));
-		if(CURRENT_ESC_STS.rotate==1||CURRENT_ESC_STS.rotate==3)
-		{
-			FontCircumvolve(&buf2[0], &CURRENT_ESC_STS.font_buf.font_cn_a[0][0], FONT_CN_A_HEIGHT,FONT_CN_A_WIDTH,CURRENT_ESC_STS.rotate);
-			DotFillToBuf(&buf2[0], FONT_CN_A_HEIGHT,( FONT_CN_A_WIDTH+7)/8*8, 1);
-		}
-		else
-		{
-			FontCircumvolve(&buf2[0], &CURRENT_ESC_STS.font_buf.font_cn_a[0][0],FONT_CN_A_HEIGHT,FONT_CN_A_WIDTH,CURRENT_ESC_STS.rotate);
-			DotFillToBuf(&buf2[0], FONT_CN_A_WIDTH, ( FONT_CN_A_HEIGHT+7)/8*8, 1);
-		}
-		//DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_cn_a[0][0], FONT_CN_A_HEIGHT, FONT_CN_A_WIDTH, 1);
+		//MEMSET(buf2,0,sizeof(buf2));
+		//if(CURRENT_ESC_STS.rotate==1||CURRENT_ESC_STS.rotate==3)
+		//{
+		//	FontCircumvolve(&buf2[0], &CURRENT_ESC_STS.font_buf.font_cn_a[0][0], FONT_CN_A_HEIGHT,FONT_CN_A_WIDTH,CURRENT_ESC_STS.rotate);
+		//	DotFillToBuf(&buf2[0], FONT_CN_A_HEIGHT,( FONT_CN_A_WIDTH+7)/8*8, 1);
+		//}
+		//else
+		//{
+		//	FontCircumvolve(&buf2[0], &CURRENT_ESC_STS.font_buf.font_cn_a[0][0],FONT_CN_A_HEIGHT,FONT_CN_A_WIDTH,CURRENT_ESC_STS.rotate);
+		//	DotFillToBuf(&buf2[0], FONT_CN_A_WIDTH, ( FONT_CN_A_HEIGHT+7)/8*8, 1);
+		//}
+		DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_cn_a[0][0], FONT_CN_A_WIDTH, FONT_CN_A_HEIGHT, 1);
 		break;
 	case FONT_CN_B_WIDTH:	// FONT B
 		DotFillToBuf(&CURRENT_ESC_STS.font_buf.font_cn_b[0][0], FONT_CN_B_WIDTH, FONT_CN_B_HEIGHT, 1);

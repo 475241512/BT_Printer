@@ -1,0 +1,24 @@
+Bus Hound 5.00 capture. Complements of www.perisoft.net
+
+  Device - Device ID (followed by the endpoint for USB devices)
+            (17) USB 打印支持
+            (19) 没有连接打印机
+  Phase  - Phase Type
+            CTL   USB control transfer       
+            DI    Data in                    
+            DO    Data out                   
+            USTS  USB status                 
+  Data   - Hex dump of the data transferred
+  Descr  - Description of the phase
+  Cmd... - Position in the captured data
+
+
+Device  Phase  Data                                                                                                    Description       Cmd.Phase.Ofs(rep)
+------  -----  ------------------------------------------------------------------------------------------------------  ----------------  ------------------
+  17.0  CTL    80 06 00 02  00 00 09 01                                                                                GET DESCRIPTOR           1.1.0        
+  17.0  DI     09 02 20 00  01 01 00 c0  32 09 04 00  00 02 07 01  02 04 07 05  81 02 40 00  00 07 05 02  02 40 00 00  .. .....2.......         1.2.0        
+  17.0  CTL    00 09 01 00  00 00 00 00                                                                                SET CONFIG               2.1.0        
+  17.0  CTL    80 06 00 01  00 00 12 00                                                                                GET DESCRIPTOR           3.1.0        
+  17.0  DO     12 01 00 02  00 00 00 40  00 b0 11 04  00 02 01 04  03 01                                               .......@........         3.2.0        
+  17.0  CTL    a1 00 00 00  00 00 f1 03                                                                                GET DEVICE ID            4.1.0        
+  17.0  USTS   04 00 00 c0                                                                                             stall pid                4.2.0        

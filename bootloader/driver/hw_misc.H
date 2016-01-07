@@ -3,6 +3,12 @@
 #include "stm32f10x_lib.h"
 #include "Lcd.h"
 
+#define HW_VER_V11	1
+#define HW_VER_V12	2
+
+#define HW_VER		HW_VER_V11
+//#define HW_VER		HW_VER_V12
+
 #define LED_ON()	GPIO_ResetBits(GPIOB, GPIO_Pin_12)
 #define LED_OFF()	GPIO_SetBits(GPIOB, GPIO_Pin_12)
 

@@ -55,11 +55,17 @@ void TPPaperSNSInit(void)
 	gpio_init.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOA, &gpio_init);
 
+#if (HW_VER == HW_VER_V12)
+	gpio_init.GPIO_Pin  = GPIO_Pin_0;
+	gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
+	gpio_init.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_Init(GPIOA, &gpio_init);
+#else
 	gpio_init.GPIO_Pin  = GPIO_Pin_0;
 	gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
 	gpio_init.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOC, &gpio_init);
-
+#endif
 
 	//配置ADC，2个通道
 	adc_init.ADC_Mode               = ADC_Mode_Independent;		//
@@ -69,9 +75,13 @@ void TPPaperSNSInit(void)
 	adc_init.ADC_DataAlign          = ADC_DataAlign_Right;
 	adc_init.ADC_NbrOfChannel       = 2;
 	ADC_Init(ADC1, &adc_init);
-
+#if (HW_VER == HW_VER_V12)
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 2, ADC_SampleTime_239Cycles5);
+#else
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_239Cycles5);
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 2, ADC_SampleTime_239Cycles5);
+#endif
 	ADC_Cmd(ADC1, ENABLE);
 
 	// 下面是ADC自动校准，开机后需执行一次，保证精度
@@ -180,7 +190,6 @@ void TPBMSNSDetect(void)
                     }
                 }
             }
-
         }
 }
 
@@ -191,7 +200,7 @@ void TPPaperSNSDetect(uint8_t c)//488?????,486?????
 		if((printersts & (1 << 0)) == 0)		// previous paper out
 		{
 			printersts |= (1<<0);  //xxx1
-			papercnt = 2;	// 20ms
+			papercnt = 150;		//1500ms = 1.5s 之后再确定有纸开始打印，防止装纸时漏打 //2;	// 20ms
 		}
 		else if(papercnt)
 		{
@@ -201,8 +210,6 @@ void TPPaperSNSDetect(uint8_t c)//488?????,486?????
 				{
 					printersts |= PAPER_READY;	// set paper in //xx1x
 					event_post(evtPaperIn);
-
-
 				}
 			}
 		}

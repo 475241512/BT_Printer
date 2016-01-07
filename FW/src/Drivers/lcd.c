@@ -14,45 +14,116 @@ static unsigned char g_font;
 unsigned char	lcd_refresh_disable;
 unsigned char	need_update_bt_info_flag;
 
+#if(HW_VER == HW_VER_V12)
 #define RST_LOW()		do{\
-	GPIOA->BRR = GPIO_Pin_8;\
+	GPIOC->BRR = GPIO_Pin_15;\
 	}while(0)
 
 #define RST_HIGH()		do{\
-	GPIOA->BSRR = GPIO_Pin_8;\
+	GPIOC->BSRR = GPIO_Pin_15;\
 	}while(0)
 
 #define CS_LOW()		do{\
-	GPIOC->BRR = GPIO_Pin_9;\
+	GPIOA->BRR = GPIO_Pin_2;\
 	}while(0)
 
 #define CS_HIGH()		do{\
-	GPIOC->BSRR = GPIO_Pin_9;\
+	GPIOA->BSRR = GPIO_Pin_2;\
 	}while(0)
 
 #define A0_LOW()		do{\
-	GPIOC->BRR = GPIO_Pin_8;\
+	GPIOA->BRR = GPIO_Pin_3;\
 	}while(0)
 
 #define A0_HIGH()		do{\
-	GPIOC->BSRR = GPIO_Pin_8;\
+	GPIOA->BSRR = GPIO_Pin_3;\
 	}while(0)
 
 #define SCK_LOW()		do{\
-	GPIOC->BRR = GPIO_Pin_7;\
+	GPIOB->BRR = GPIO_Pin_11;\
 	}while(0)
 
 #define SCK_HIGH()		do{\
-	GPIOC->BSRR = GPIO_Pin_7;\
+	GPIOB->BSRR = GPIO_Pin_11;\
 	}while(0)
 
 #define SDA_LOW()		do{\
-	GPIOC->BRR = GPIO_Pin_6;\
+	GPIOB->BRR = GPIO_Pin_10;\
 	}while(0)
 
 #define SDA_HIGH()		do{\
-	GPIOC->BSRR = GPIO_Pin_6;\
+	GPIOB->BSRR = GPIO_Pin_10;\
 	}while(0)
+
+//初始化LCD的IO
+static void Lcd_port_init(void)
+{
+	GPIO_InitTypeDef							GPIO_InitStructure;
+	//LCD_BackLight	-- PB.12
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA| RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC, ENABLE);
+
+	//LCD_DATA -- PB.10  LCD_SCK -- PB.11  
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_10 | GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	//LCD_C/D -- PA.3  LCD_CS -- PA.2
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_2 | GPIO_Pin_3;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	//LCD_Reset -- PC.15
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+	//LCD_BACKLight -- PB.12
+	GPIO_InitStructure.GPIO_Pin				= GPIO_Pin_12;
+	GPIO_InitStructure.GPIO_Mode			= GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+}
+#else
+#define RST_LOW()		do{\
+	GPIOA->BRR = GPIO_Pin_8;\
+}while(0)
+
+#define RST_HIGH()		do{\
+	GPIOA->BSRR = GPIO_Pin_8;\
+}while(0)
+
+#define CS_LOW()		do{\
+	GPIOC->BRR = GPIO_Pin_9;\
+}while(0)
+
+#define CS_HIGH()		do{\
+	GPIOC->BSRR = GPIO_Pin_9;\
+}while(0)
+
+#define A0_LOW()		do{\
+	GPIOC->BRR = GPIO_Pin_8;\
+}while(0)
+
+#define A0_HIGH()		do{\
+	GPIOC->BSRR = GPIO_Pin_8;\
+}while(0)
+
+#define SCK_LOW()		do{\
+	GPIOC->BRR = GPIO_Pin_7;\
+}while(0)
+
+#define SCK_HIGH()		do{\
+	GPIOC->BSRR = GPIO_Pin_7;\
+}while(0)
+
+#define SDA_LOW()		do{\
+	GPIOC->BRR = GPIO_Pin_6;\
+}while(0)
+
+#define SDA_HIGH()		do{\
+	GPIOC->BSRR = GPIO_Pin_6;\
+}while(0)
 
 //初始化LCD的IO
 static void Lcd_port_init(void)
@@ -79,6 +150,7 @@ static void Lcd_port_init(void)
 	GPIO_InitStructure.GPIO_Speed			= GPIO_Speed_10MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
+#endif
 
 //量测V0对地电压为6.4~6.5V
  /*第二套对比度方案

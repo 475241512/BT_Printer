@@ -330,7 +330,7 @@ int update_app(void)
 
 	// 在程序的结尾，写个0x12345678的标号
 	i								= 0x12345678UL;
-	prog_data(ApplicationAddress + (600 * 512) - 4, &i, 1);
+	prog_data(ApplicationAddress + FLASH_SIZE - 4, &i, 1);
 	FLASH_Lock();
 
 #ifdef LED_VER
@@ -379,7 +379,7 @@ int verify_app(void)
 	if( *(unsigned int*)(ApplicationAddress + (79*4)) != 0x12345678uL )
 		return -1;
 
-	if( *(unsigned int*)(ApplicationAddress + (600 * 512) - 4) != 0x12345678 )
+	if( *(unsigned int*)(ApplicationAddress + FLASH_SIZE - 4) != 0x12345678 )
 		return -1;
 
 	return 0;
@@ -447,7 +447,7 @@ int main(void)
 	//	NVIC_SetVectorTable(NVIC_VectTab_FLASH+0x20000, 0);
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
 
-#if 1
+#if 0
 	// 检查ROM是否被读保护，没有则执行读保护操作
 	if( FLASH_GetReadOutProtectionStatus() != SET )
 	{

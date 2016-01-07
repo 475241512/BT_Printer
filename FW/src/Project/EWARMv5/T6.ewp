@@ -147,7 +147,7 @@
         <option>
           <name>CCDefines</name>
           <state>DEBUG_VER</state>
-          <state>LED_VER</state>
+          <state>LCD_VER</state>
           <state>GD_MCU</state>
         </option>
         <option>
@@ -514,7 +514,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>2</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -1624,6 +1624,9 @@
       <name>$PROJ_DIR$\..\..\App\JMemory.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\App\LED.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\App\rec_ecc.c</name>
     </file>
     <file>
@@ -1655,9 +1658,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\Drivers\lcd.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\App\LED.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\App\PaperDetect.c</name>

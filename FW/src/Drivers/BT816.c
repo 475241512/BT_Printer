@@ -1278,7 +1278,8 @@ int BT816_Reset(void)
 	return -1;
 #endif
 
-	delay_ms(2000);
+	//delay_ms(2000);
+	delay_ms(1000);
 	return 0;
 }
 

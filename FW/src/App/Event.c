@@ -99,10 +99,10 @@ extern void event_proc(void)
 		delay_ms(2000);
 		lcd_refresh_disable = 0;
 #else
-                LED_blink(10,100);
-          BT_reset_PIN();
-          if(TPPrinterReady())
-        TPPrintTestPage();
+		LED_blink(10,100);
+		BT_reset_PIN();
+		if(TPPrinterReady())
+			TPPrintTestPage();
 #endif  
         break;
 	case evtPaperOut:
