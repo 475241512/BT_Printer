@@ -98,7 +98,10 @@ u8 *Keyboard_SetReport(u16 Length);
 
 u8 *Virtual_Com_Port_GetLineCoding(u16 Length);
 u8 *Virtual_Com_Port_SetLineCoding(u16 Length);
-
+u8 *Printer_GetHIDDescriptor(u16 Length);
+u8 *Printer_GetReportDescriptor(u16 Length);
+u8 *Printer_SetReport(u16 Length);
+u8 *Printer_GetReport(u16 Length);
 void USB_Set_Descriptor(void);
 //u8 *Get_Max_Lun(u16 Length);
 #endif /* __USB_PROP_H */

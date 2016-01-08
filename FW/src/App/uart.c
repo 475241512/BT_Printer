@@ -28,6 +28,7 @@
 #include "stm32f10x_systick.h"
 #include "stm32f10x_lib.h"
 #include "usb_regs.h"
+#include "usb_app_config.h"
 #define		CHANNEL_TIMEOUT_TH		200		//当某一个串口通道在200ms内没有接收到数据时，认为此通道打印任务结束，此数据待调试	
 
 #ifdef DEBUG_VER
@@ -97,7 +98,11 @@ extern uint8_t Getchar(void)        //接收数据
 				{
 					if (ringbuffer_data_len(&spp_ringbuf[current_channel]) < USB_RING_BUFF_EMPTY_TH)
 					{
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_DEVICE)
 						SetEPRxStatus(EP2_OUT, EP_RX_VALID);
+#elif(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+						SetEPRxStatus(EP1_OUT, EP_RX_VALID);
+#endif
 					}
 				}
 #ifdef DEBUG_VER

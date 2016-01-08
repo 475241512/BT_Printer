@@ -2,17 +2,19 @@
 #define _USB_APP_CONFIG_H_
 #include "usb_lib.h"
 
-#define	 _USE_USB_KEYBOARD_DEVICE		(1<<0)
-#define	 _USE_USB_VIRTUAL_COMM_DEVICE	(1<<1)
-#define	 _USE_USB_MASS_STOARGE_DEVICE	(1<<2)
-#define	 _USE_USB_PRINTER_DEVICE		(1<<3)
+#define	 _USE_USB_KEYBOARD_DEVICE			(1<<0)
+#define	 _USE_USB_VIRTUAL_COMM_DEVICE		(1<<1)
+#define	 _USE_USB_MASS_STOARGE_DEVICE		(1<<2)
+#define	 _USE_USB_PRINTER_DEVICE			(1<<3)
+#define	 _USE_USB_PRINTER_HID_COMP_DEVICE	(1<<4)
 
 //定义USB具体类型
-#define USB_DEVICE_NONE		0	//还没有实现USB设备的状态
-#define USB_VIRTUAL_PORT	1	//虚拟串口
-#define USB_KEYBOARD		2	//USB键盘
-#define USB_MASSSTORAGE		3	//大容量存储设备
-#define USB_PRINTER			4	//USB打印机设备
+#define USB_DEVICE_NONE			0	//还没有实现USB设备的状态
+#define USB_VIRTUAL_PORT		1	//虚拟串口
+#define USB_KEYBOARD			2	//USB键盘
+#define USB_MASSSTORAGE			3	//大容量存储设备
+#define USB_PRINTER				4	//USB打印机设备
+#define USB_PRINTER_HID_COMP	5	//USB打印机+HID复合设备
 
 //定义USB_MASS_STOARGE_DEVICE的子类
 #define MASSTORAGE_DEVICE_TYPE_DUMMY_FAT		0	//虚拟文件系统设备
@@ -28,7 +30,7 @@
 //#define		USB_DEVICE_CONFIG		(_USE_USB_VIRTUAL_COMM_DEVICE)
 //#define		USB_DEVICE_CONFIG		(_USE_USB_MASS_STOARGE_DEVICE)
 //#define		USB_DEVICE_CONFIG		(_USE_USB_MASS_STOARGE_DEVICE | _USE_USB_PRINTER_DEVICE)
-#define		USB_DEVICE_CONFIG		_USE_USB_MASS_STOARGE_DEVICE
+#define		USB_DEVICE_CONFIG		(_USE_USB_PRINTER_HID_COMP_DEVICE)//不可与USB_PRINTER或者HID设备同时打开
 //#define		USB_DEVICE_CONFIG		(_USE_USB_VIRTUAL_COMM_DEVICE | _USE_USB_KEYBOARD_DEVICE | _USE_USB_MASS_STOARGE_DEVICE)//应用中只会使用到USB键盘设备和USB大容量存储设备
 //#define	DUMMY_FAT_FS		//如果需要开启虚拟文件系统，需要打开此宏
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,12 +39,14 @@
 #define		USB_DEVICE_TYPE_NUM		(SUPPORT_USB_TYPE(_USE_USB_KEYBOARD_DEVICE)\
 									+SUPPORT_USB_TYPE(_USE_USB_MASS_STOARGE_DEVICE)\
 									+SUPPORT_USB_TYPE(_USE_USB_VIRTUAL_COMM_DEVICE)\
-									+SUPPORT_USB_TYPE(_USE_USB_PRINTER_DEVICE))
+									+SUPPORT_USB_TYPE(_USE_USB_PRINTER_DEVICE)\
+									+SUPPORT_USB_TYPE(_USE_USB_PRINTER_HID_COMP_DEVICE))
 
 #define		VIRTUAL_COMM_DESC_OFFSET			0
 #define		KEYBOARD_DESC_OFFSET			(VIRTUAL_COMM_DESC_OFFSET+SUPPORT_USB_TYPE(_USE_USB_VIRTUAL_COMM_DEVICE))
 #define		MASS_DESC_OFFSET				(KEYBOARD_DESC_OFFSET+SUPPORT_USB_TYPE(_USE_USB_KEYBOARD_DEVICE))
 #define		PRINTER_DESC_OFFSET				(MASS_DESC_OFFSET+SUPPORT_USB_TYPE(_USE_USB_MASS_STOARGE_DEVICE))
+#define		PRINTER_HID_DESC_OFFSET				(PRINTER_DESC_OFFSET+SUPPORT_USB_TYPE(_USE_USB_PRINTER_DEVICE))
 
 #if(USB_DEVICE_CONFIG & _USE_USB_VIRTUAL_COMM_DEVICE)
 extern unsigned char buffer_out[];
@@ -59,6 +63,15 @@ extern unsigned char	g_send_buff[];
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
 #include "Esc_p.h"
 #include "uart.h"
+
+#endif
+
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+#include "Esc_p.h"
+#include "uart.h"
+
+extern unsigned char hid_buffer_out[];
+//extern unsigned int	hid_buffer_off;
 
 #endif
 

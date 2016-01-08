@@ -21,7 +21,9 @@
 #include "usb_istr.h"
 #include "usb_bot.h"
 #include "usb_app_config.h"
-
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+#include "record_mod.h"
+#endif
 #ifdef DEBUG_VER
 extern unsigned char debug_buffer[];
 extern unsigned int debug_cnt;
@@ -36,9 +38,10 @@ u32 count_out = 0;
 u32 count_in = 0;
 #endif
 
-#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_DEVICE)
+#if((USB_DEVICE_CONFIG &_USE_USB_PRINTER_DEVICE)||(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE))
 u8	buffer_out[PRINTER_USB_PORT_BUF_SIZE];
 u32 print_data_len;
+u32 count_in = 0;
 #endif
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,7 +60,7 @@ void EP3_OUT_Callback(void)
   if (g_usb_type == USB_VIRTUAL_PORT)
   {
 	  count_out = GetEPRxCount(ENDP3);
-	  PMAToUserBufferCopy(buffer_out, ENDP3_RXADDR, count_out);
+	  PMAToUserBufferCopy(buffer_out,  GetEPRxAddr(ENDP3), count_out);
 	  SetEPRxValid(ENDP3);
 
 	  /*for (i = 0; i < count_out; i++)
@@ -68,7 +71,76 @@ void EP3_OUT_Callback(void)
 
 	  //此处应用可以处理虚拟串口接收到的数据，由具体应用来修改。。。。
   }
+  else
 #endif
+
+  #if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+   u16 i;
+  if (g_usb_type == USB_PRINTER_HID_COMP)
+  {
+		i = GetEPRxCount(ENDP3);
+		PMAToUserBufferCopy(hid_buffer_out, GetEPRxAddr(ENDP3), i);
+		SetEPRxValid(ENDP3);
+		if (hid_buffer_out[1] == 0xf9)
+		{
+			strcpy(hid_buffer_out+2,"HJPrinter V1.0.3");
+			//usb_SendData(,64)
+			UserToPMABufferCopy(hid_buffer_out, GetEPTxAddr(ENDP2), 64);
+			SetEPTxCount(ENDP2, 64);
+			SetEPTxValid(ENDP2);
+		}
+		else if (hid_buffer_out[1] == 0x3a)
+		{
+			if ((hid_buffer_out[2] == 0x01)&&(hid_buffer_out[3] == 0x00))	//表示文件下载开始
+			{
+				if (record_count_ext(REC1BLK))
+				{
+					record_delall(REC1BLK);
+				}
+			}
+			else if ((hid_buffer_out[2] == 0x05)&&(hid_buffer_out[3] == 0x00))	//表示文件下载结束
+			{
+#ifdef RELEASE_VER
+				//@todo....
+				//从应用跳转到BootLoader代码，执行应用程序的升级
+
+#endif
+			}
+			else
+			{
+				record_write(REC1BLK,hid_buffer_out+2,62);
+			}       
+		}
+
+  }
+  else
+#endif
+	  ;
+}
+
+/*******************************************************************************
+* Function Name  : EP2_OUT_Callback.
+* Description    : EP2 OUT Callback Routine.
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+void EP1_OUT_Callback(void)
+{
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+		if (g_usb_type == USB_PRINTER_HID_COMP)
+		{
+			//@todo.....//解析打印语言
+			print_data_len = USB_SIL_Read(EP1_OUT, buffer_out);
+			ringbuffer_put(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],buffer_out,print_data_len);
+			if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < USB_RING_BUFF_FULL_TH)
+			{
+				SetEPRxStatus(EP1_OUT, EP_RX_VALID);
+			}
+		}
+		else
+#endif
+			;
 }
 
 /*******************************************************************************
@@ -93,15 +165,10 @@ void EP2_OUT_Callback(void)
 			//@todo.....//解析打印语言
 			print_data_len = USB_SIL_Read(EP2_OUT, buffer_out);
 			ringbuffer_put(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],buffer_out,print_data_len);
-			//SetEPTxStatus(ENDP1, EP_TX_STALL);
-			//SetEPRxStatus(ENDP2, EP_RX_STALL);
-			if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < RING_BUFF_FULL_TH)
+			if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < USB_RING_BUFF_FULL_TH)
 			{
 				SetEPRxStatus(EP2_OUT, EP_RX_VALID);
 			}
-			//SetEPTxCount(ENDP1, BULK_MAX_PACKET_SIZE);
-			//SetEPTxStatus(ENDP1, EP_TX_VALID);
-
 		}
 		else
 #endif
@@ -124,27 +191,29 @@ void EP1_IN_Callback(void)
 	}
 	else
 #endif
-#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_DEVICE)
-		if (g_usb_type == USB_PRINTER)
-		{
-			//Mass_Storage_In();
-			//@todo.....//根据打印语言的解析，返回结果或者状态
-			//if (GetEPRxStatus(EP2_OUT) == EP_RX_STALL)
-			{
-				SetEPRxStatus(EP2_OUT, EP_RX_VALID);/* enable the Endpoint to recive the next cmd*/
-			}
-			
-		}
-		else
-#endif
 
 #if(USB_DEVICE_CONFIG &_USE_USB_VIRTUAL_COMM_DEVICE)
+		if (g_usb_type == USB_VIRTUAL_PORT)
 	{
 		count_in = 0;
 	}
+		else
+#endif
+}
+
+/*******************************************************************************
+* Function Name  : EP1_IN_Callback
+* Description    :
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+void EP2_IN_Callback(void)
+{
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+	count_in = 0;
 #endif
 		;
 }
-
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
 

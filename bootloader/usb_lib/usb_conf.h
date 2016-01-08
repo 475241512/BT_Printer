@@ -16,6 +16,7 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USB_CONF_H
 #define __USB_CONF_H
+#include "usb_app_config.h"
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -44,12 +45,19 @@
 
 /* EP1  */
 /* tx buffer base address */
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+#define ENDP1_RXADDR        (0xC0)			//怎么确定的？？？？？
+#define ENDP2_TXADDR        (0x100)
+#define ENDP2_RXADDR        (0x140)
+
+#define ENDP3_RXADDR        (0x180)
+#else
 #define ENDP1_TXADDR        (0xC0)			//怎么确定的？？？？？
 #define ENDP2_TXADDR        (0x100)
 #define ENDP2_RXADDR        (0x140)
 
 #define ENDP3_RXADDR        (0x180)
-
+#endif
 
 // #define ENDP1_TXADDR        (0xC0)			//怎么确定的？？？？？		//joe 修改
 // #define ENDP2_TXADDR        (0x140)
@@ -68,14 +76,14 @@
 /* CTR service routines */
 /* associated to defined endpoints */
 //#define  EP1_IN_Callback   NOP_Process
-#define  EP2_IN_Callback   NOP_Process
+//#define  EP2_IN_Callback   NOP_Process
 #define  EP3_IN_Callback   NOP_Process
 #define  EP4_IN_Callback   NOP_Process
 #define  EP5_IN_Callback   NOP_Process
 #define  EP6_IN_Callback   NOP_Process
 #define  EP7_IN_Callback   NOP_Process
 
-#define  EP1_OUT_Callback   NOP_Process
+//#define  EP1_OUT_Callback   NOP_Process
 //#define  EP2_OUT_Callback   NOP_Process
 //#define  EP3_OUT_Callback   NOP_Process
 #define  EP4_OUT_Callback   NOP_Process

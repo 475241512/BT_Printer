@@ -27,6 +27,7 @@
 #include "usb_app_config.h"
 #include "res_spi.h"
 #include "Event.h"
+#include "record_mod.h"
 /* Private define ------------------------------------------------------------*/
 
 // Cortex System Control register address
@@ -77,6 +78,7 @@ void system_error_tip(int err_no)
 	}
 }
 
+#if(USB_DEVICE_CONFIG &_USE_USB_MASS_STOARGE_DEVICE)
 /*******************************************************************************
 * Function Name  : enter_u_disk_mode
 * Description    : 进入U盘模式
@@ -115,6 +117,7 @@ void enter_u_disk_mode(void)
 		}
 	}
 }
+#endif
 
 /*******************************************************************************
 * Function Name  : main
@@ -227,11 +230,52 @@ int main(void)
 	event_init();
 	
 	//检查系统的字库资源是否正确
+#if(USB_DEVICE_CONFIG &_USE_USB_MASS_STOARGE_DEVICE)
 	res_upgrade();
+#endif
+
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+	//实现了Printer+HID的复合设备时，采用HID接口将升级文件download到SPI Flash保存起来
+	//利用record_mod驱动来保存下载下来的Intel Hex文件，重新上电后，进入Bootloader再将Intel Hex格式的升级文件解析并编程到相应的FLASH空间
+	ret = record_init(REC1BLK,64,256*1024/64);	//最多支持256K的BIN文件的下载，只开辟这么大的空间来保存HEX文件
+	if (ret != 0)
+	{
+		if (ret == -3 || ret == -4 || ret == -6)
+		{
+			ret = record_format(REC1BLK,64,256*1024/64);
+			if (ret)
+			{
+				system_error_tip(80);
+			}
+		}
+		else
+		{
+			system_error_tip(81);
+		}
+	}
+
+	ret = record_count(REC1BLK);
+	if (ret < 0)
+	{
+		system_error_tip(81);
+	}
+	else if(ret > 0)
+	{
+		if(record_delall(REC1BLK))
+		{
+			system_error_tip(81);
+		}
+	}
+#endif
+
 	ret = res_init();
 	if (ret != 0)
 	{
+#if(USB_DEVICE_CONFIG &_USE_USB_MASS_STOARGE_DEVICE)
 		enter_u_disk_mode();
+#else
+		system_error_tip(82);
+#endif
 	}
 	else
 	{
@@ -260,7 +304,8 @@ int main(void)
 
 	esc_init();
 
-	usb_device_init(USB_PRINTER);
+	usb_device_init(USB_PRINTER_HID_COMP);
+	//usb_device_init(USB_PRINTER);
 	//test_motor();
 
 	PaperStartSns();		//Systick跳动起来

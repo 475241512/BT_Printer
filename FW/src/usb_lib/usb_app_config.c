@@ -42,6 +42,11 @@ unsigned char buffer_out[512];
 unsigned int	count_out;
 #endif
 
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+unsigned char hid_buffer_out[64];
+//unsigned int	hid_buffer_off=0;
+#endif
+
 unsigned char				g_usb_type;
 extern u32 count_in;
 
@@ -143,6 +148,15 @@ void usb_device_init(unsigned char device_type)
 	}
 #endif
 
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+	if (device_type == USB_PRINTER_HID_COMP)
+	{
+		//hid_buffer_off = 0;
+		MEMSET(usb_rec_buffer,0,USB_BUFFER_LEN);
+		ringbuffer_init(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],usb_rec_buffer,USB_BUFFER_LEN);
+	}
+#endif
+
 	if (g_usb_type != device_type)
 	{
 		g_usb_type = device_type;
@@ -225,7 +239,24 @@ void usb_SendData(unsigned char *pData, int length)
 		}
 		MEMCPY(g_send_buff,pData,length);
 	}//USB_Masstorage
+	else 
 #endif
+
+#elif (USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+if(g_usb_type == USB_PRINTER_HID_COMP)
+{
+	count_in	= STRLEN("HJPrinter V1.0.3");
+	UserToPMABufferCopy("HJPrinter V1.0.3", GetEPTxAddr(ENDP2), count_in);
+	SetEPTxCount(ENDP2, count_in);
+	SetEPTxValid(ENDP2);
+	delay_cnt = 300;
+	while (count_in != 0 && delay_cnt != 0 &&(bDeviceState == CONFIGURED))
+	{
+		delay_cnt--;
+		delay_ms(10);
+	}
+}
+
 #endif
         ;
 }

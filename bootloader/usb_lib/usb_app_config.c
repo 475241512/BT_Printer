@@ -25,8 +25,8 @@
 #include "usb_lib.h"
 #include "usb_pwr.h"
 #include "usb_desc.h"
-//#include "uart.h"
-//#include "hw_platform.h"
+#include "uart.h"
+#include "hw_platform.h"
 
 
 #if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
@@ -42,6 +42,11 @@ unsigned char buffer_out[512];
 unsigned int	count_out;
 #endif
 
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+unsigned char hid_buffer_out[64];
+//unsigned int	hid_buffer_off=0;
+#endif
+
 unsigned char				g_usb_type;
 extern u32 count_in;
 
@@ -55,10 +60,16 @@ extern u32 count_in;
 static void usb_SetClock(void)
 {
 	/* Enable GPIOA, GPIOD and USART1 clock */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOD, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
-	/* USBCLK = PLLCLK / 1.5 */
+	
+#ifdef GD_MCU
+	/* USBCLK = PLLCLK / 2  = 96/2 = 48 */
 	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+#else
+	/* USBCLK = PLLCLK / 1.5 = 72/1.5 = 48*/
+	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+#endif
 	/* Enable USB clock */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
 }
@@ -96,7 +107,26 @@ static void usb_Interrupts_Config(void)
 *******************************************************************************/
 bool usb_cable_insert (void)
 {
+#if(HW_VER == HW_VER_V11)
+	if(hw_platform_USBcable_Insert_Detect() == 1)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+#else
 
+	if (bDeviceState == CONFIGURED)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+#endif
 }
 
 
@@ -113,6 +143,15 @@ void usb_device_init(unsigned char device_type)
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
 	if (device_type == USB_PRINTER)
 	{
+		MEMSET(usb_rec_buffer,0,USB_BUFFER_LEN);
+		ringbuffer_init(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],usb_rec_buffer,USB_BUFFER_LEN);
+	}
+#endif
+
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+	if (device_type == USB_PRINTER_HID_COMP)
+	{
+		//hid_buffer_off = 0;
 		MEMSET(usb_rec_buffer,0,USB_BUFFER_LEN);
 		ringbuffer_init(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],usb_rec_buffer,USB_BUFFER_LEN);
 	}
@@ -200,7 +239,24 @@ void usb_SendData(unsigned char *pData, int length)
 		}
 		MEMCPY(g_send_buff,pData,length);
 	}//USB_Masstorage
+	else 
 #endif
+
+#elif (USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+if(g_usb_type == USB_PRINTER_HID_COMP)
+{
+	count_in	= STRLEN("HJPrinter V1.0.3");
+	UserToPMABufferCopy("HJPrinter V1.0.3", GetEPTxAddr(ENDP2), count_in);
+	SetEPTxCount(ENDP2, count_in);
+	SetEPTxValid(ENDP2);
+	delay_cnt = 300;
+	while (count_in != 0 && delay_cnt != 0 &&(bDeviceState == CONFIGURED))
+	{
+		delay_cnt--;
+		delay_ms(10);
+	}
+}
+
 #endif
         ;
 }

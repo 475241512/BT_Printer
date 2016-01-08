@@ -30,7 +30,6 @@ extern void (*pEpInt_OUT[7])(void);   /*  Handles OUT interrupts   */
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
 /*******************************************************************************
 * Function Name  : CTR_LP.
 * Description    : Low priority Endpoint Correct Transfer interrupt's service

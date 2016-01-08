@@ -60,10 +60,21 @@
 #define MASS_SIZ_STRING_INTERFACE         16
 
 #define PRINTER_SIZ_DEVICE_DESC			  18						  
-#define PRINTER_SIZ_CONFIG_DESC			  32
+#define PRINTER_SIZ_CONFIG_DESC			  25
 #define PRINTER_USB_PORT_BUF_SIZE         64
 
+#define PRINTER_HID_SIZ_DEVICE_DESC			  18						  
+#define PRINTER_HID_SIZ_CONFIG_DESC			  57
+#define PRINTER_HID_USB_PORT_BUF_SIZE         64
+#define PRINTER_HID_SIZ_REPORT_DESC			  0x1b
+
+#define PRINTER_OFF_HID_DESC                   0x19
+#define PRINTER_SIZ_HID_DESC                   0x09
 /* Exported functions ------------------------------------------------------- */
+extern const u8 Printer_Hid_DeviceDescriptor[PRINTER_HID_SIZ_DEVICE_DESC];
+extern const u8 Printer_Hid_ConfigDescriptor[PRINTER_HID_SIZ_CONFIG_DESC];
+extern const u8 Printer_Hid_ReportDescriptor[PRINTER_HID_SIZ_REPORT_DESC];
+
 extern const u8 Printer_DeviceDescriptor[PRINTER_SIZ_DEVICE_DESC];
 extern const u8 Printer_ConfigDescriptor[PRINTER_SIZ_CONFIG_DESC];
 
@@ -89,10 +100,10 @@ extern const u8 Keyboard_ReportDescriptor[KEYBOARD_SIZ_REPORT_DESC];
 extern const u8 Virtual_Com_Port_DeviceDescriptor[USB_APP_SIZ_DEVICE_DESC];
 extern const u8 Virtual_Com_Port_ConfigDescriptor[VIRTUAL_COM_PORT_SIZ_CONFIG_DESC];
 
-extern u8 USB_APP_StringSerial[USB_APP_SIZ_STRING_SERIAL];
-extern const u8 USB_APP_StringLangID[USB_APP_SIZ_STRING_LANGID];
-extern const u8 USB_APP_StringVendor[USB_APP_SIZ_STRING_VENDOR];
-extern const u8 USB_APP_StringProduct[USB_APP_SIZ_STRING_PRODUCT];
+extern u8 USB_APP_StringSerial[];
+extern const u8 USB_APP_StringLangID[];
+extern const u8 USB_APP_StringVendor[];
+extern const u8 USB_APP_StringProduct[];
 
 #endif /* __USB_DESC_H */
 

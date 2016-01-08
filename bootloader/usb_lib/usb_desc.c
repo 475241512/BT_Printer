@@ -417,20 +417,12 @@ const u8 Printer_ConfigDescriptor[PRINTER_SIZ_CONFIG_DESC] =
 	/*      Interface descriptor type */
 	0x00,   /* bInterfaceNumber: Number of Interface */
 	0x00,   /* bAlternateSetting: Alternate setting */
-	0x02,   /* bNumEndpoints*/
+	0x01,   /* bNumEndpoints*/
 	0x07,   /* bInterfaceClass: Printer Class */
 	0x01,   /* bInterfaceSubClass : printer*/
 	0x02,   /* nInterfaceProtocol :  01: Unidirectional interface  02£ºBi-directional interface  03£º1284.4 compatible bi-directional interface*/
 	4,          /* iInterface: */
 	/* 18 */
-	0x07,   /*Endpoint descriptor length = 7*/
-	0x05,   /*Endpoint descriptor type */
-	0x81,   /*Endpoint address (IN, address 1) */
-	0x02,   /*Bulk endpoint type */
-	0x40,   /*Maximum packet size (64 bytes) */
-	0x00,
-	0x00,   /*Polling interval in milliseconds */
-	/* 25 */
 	0x07,   /*Endpoint descriptor length = 7 */
 	0x05,   /*Endpoint descriptor type */
 	0x02,   /*Endpoint address (OUT, address 2) */
@@ -439,14 +431,43 @@ const u8 Printer_ConfigDescriptor[PRINTER_SIZ_CONFIG_DESC] =
 	0x00,
 	0x00     /*Polling interval in milliseconds*/
 #endif
+};
+#endif
 
-#if 0
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+const u8 Printer_Hid_DeviceDescriptor[PRINTER_HID_SIZ_DEVICE_DESC] =
+{
+	0x12,   /* bLength  */
+	0x01,   /* bDescriptorType */
+	0x00,   /* bcdUSB, version 2.00 */
+	0x02,
+	0x00,   /* bDeviceClass : each interface define the device class */
+	0x00,   /* bDeviceSubClass */
+	0x00,   /* bDeviceProtocol */
+	0x40,   /* bMaxPacketSize0 0x40 = 64 */
+	0x00,   /* idVendor     (0483) */
+	0xb0,
+	0x11,   /* idProduct */
+	0x04,
+	0x00,   /* bcdDevice 2.00*/
+	0x02,
+	1,              /* index of string Manufacturer  */
+	/**/
+	2,              /* index of string descriptor of product*/
+	/* */
+	0,              /* */
+	/* */
+	/* */
+	0x01    /*bNumConfigurations */
+};
+const u8 Printer_Hid_ConfigDescriptor[PRINTER_HID_SIZ_CONFIG_DESC] =
+{
 	0x09,   /* bLength: Configuation Descriptor size */
 	0x02,   /* bDescriptorType: Configuration */
-	PRINTER_SIZ_CONFIG_DESC,
+	PRINTER_HID_SIZ_CONFIG_DESC,
 
 	0x00,
-	0x02,   /* bNumInterfaces: 1 interface */
+	0x02,   /* bNumInterfaces: 2 interface */
 	0x01,   /* bConfigurationValue: */
 	/*      Configuration value */
 	0x00,   /* iConfiguration: */
@@ -459,7 +480,7 @@ const u8 Printer_ConfigDescriptor[PRINTER_SIZ_CONFIG_DESC] =
 	/******************** Descriptor of Printer interface ********************/
 	/* 09 */
 	0x09,   /* bLength: Interface Descriptor size */
-	0x04,   /* bDescriptorType: */
+	USB_INTERFACE_DESCRIPTOR_TYPE,   /* bDescriptorType: */
 	/*      Interface descriptor type */
 	0x00,   /* bInterfaceNumber: Number of Interface */
 	0x00,   /* bAlternateSetting: Alternate setting */
@@ -467,48 +488,93 @@ const u8 Printer_ConfigDescriptor[PRINTER_SIZ_CONFIG_DESC] =
 	0x07,   /* bInterfaceClass: Printer Class */
 	0x01,   /* bInterfaceSubClass : printer*/
 	0x02,   /* nInterfaceProtocol :  01: Unidirectional interface  02£ºBi-directional interface  03£º1284.4 compatible bi-directional interface*/
-	0,          /* iInterface: */
+	0x00,          /* iInterface: */
 	/* 18 */
-	0x07,   /*Endpoint descriptor length = 7*/
+	0x07,   /*Endpoint descriptor length = 7 */
 	0x05,   /*Endpoint descriptor type */
-	0x02,   /*Endpoint address (IN, address 1) */
+	0x01,   /*Endpoint address (OUT, address 1) */
 	0x02,   /*Bulk endpoint type */
 	0x40,   /*Maximum packet size (64 bytes) */
 	0x00,
-	0x00,   /*Polling interval in milliseconds */
+	0x00,     /*Polling interval in milliseconds*/
+
+	/*25*/
 	0x09,
-	0x04,
+	USB_INTERFACE_DESCRIPTOR_TYPE,
+	0x01, /* bInterfaceNumber: Number of Interface */
+	0x00, /* bAlternateSetting: Alternate setting */
+	0x02, /* bNumEndpoints*/
+	0x03, /* bInterfaceClass: HID Class */
+	0x00,  /* bInterfaceSubClass : none*/
+	0x00,  /* nInterfaceProtocol : none*/
+	0x03,  /* iInterface: */
+	/******************** Descriptor of  HID ********************/
+	/*34*/
+	0x09,	 /*bLength: HID Descriptor size*/
+	HID_DESCRIPTOR_TYPE,/*bDescriptorType: HID*/
+	0x10,		 /*bcdHID: HID Class Spec release number*/
 	0x01,
+	0x00,		/*bCountryCode: Hardware target country*/
+	0x01,		 /*bNumDescriptors: Number of HID class descriptors to follow*/
+	0x22,		 /*bDescriptorType*/
+	PRINTER_HID_SIZ_REPORT_DESC,		/*wItemLength: Total length of Report descriptor*/
 	0x00,
-	0x02,
-	0x03,
+
+	/******************** Descriptor of Joystick Mouse endpoint ********************/
+
+	/*43*/
+	0x07,/*bLength: Endpoint Descriptor size*/
+	USB_ENDPOINT_DESCRIPTOR_TYPE,/*bDescriptorType:*/
+	0x82, /*bEndpointAddress: Endpoint Address (IN)*/
+	0x03,/*bmAttributes: Interrupt endpoint*/
+	0x40, /*wMaxPacketSize: 64 Byte max */
 	0x00,
-	0x00,
-	0x03,
-	0x09,
-	0x21,
-	0x10,
-	0x01,
-	0x00,
-	0x01,
-	0x22,
-	0x1b,
-	0x00,
+	0x01,/*bInterval: Polling Interval (32 ms)*/
+
+	/*50*/
 	0x07,
-	0x05,
-	0x82,
-	0x03,
-	0x40,
-	0x00,
-	0x01,
-	0x07,
-	0x05,
-	0x03,
+	USB_ENDPOINT_DESCRIPTOR_TYPE,
+	0x03,/*bEndpointAddress: Endpoint Address (OUT)*/
 	0x03,
 	0x40,
 	0x00,
 	0x01
-#endif
+};
+
+const u8 Printer_Hid_ReportDescriptor[PRINTER_HID_SIZ_REPORT_DESC] =
+{
+	//05 01 09 00  a1 01 15 00  25 ff 19 01  29 08 95 40  75 08 81 02  19 01 29 08  91 02 c0
+	0x05,
+	0x01,0x09,
+	0x00,0xa1,0x01,0x15,0x00,0x25,0xff,0x19,0x01,0x29,0x08,0x95,0x40,0x75,0x08,0x81,0x02,0x19,0x01,0x29,0x08,0x91,0x02,0xc0
+	/*
+	0x06,
+	0xa0,0xff,
+	0x09,0x01,
+	0xa1,0x01,
+	0x09,0x02,
+	0xa1,0x00,
+	0x06,
+	0xa1,0xff,
+	0x09,0x03,
+	0x15,0x80,
+	0x25,0x7f,
+	0x35,0x00,
+	0x45,0xff,
+	0x75,0x08,
+	0x95,0x08,
+	0x81,0x02,
+	0x09,0x04,
+	0x15,0x80,
+	0x25,0x7f,
+	0x35,0x00,
+	0x45,0xff,
+	0x75,0x08,
+	0x95,0x20,
+	0xb1,0x02,
+	0xc0,
+	0xc0
+	*/
 };
 #endif
 
@@ -532,6 +598,7 @@ const u8 USB_APP_StringVendor[USB_APP_SIZ_STRING_VENDOR] =
     ' ', 0, ' ', 0
   };
 
+
 const u8 USB_APP_StringProduct[USB_APP_SIZ_STRING_PRODUCT] =
   {
     USB_APP_SIZ_STRING_PRODUCT,          /* bLength */
@@ -540,12 +607,22 @@ const u8 USB_APP_StringProduct[USB_APP_SIZ_STRING_PRODUCT] =
     'r', 0, 'i', 0, 'n', 0, 't', 0, 'e', 0, 'r', 0, ' ', 0
   };
 
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+u8 USB_APP_StringSerial[0x10] =
+{
+	0x10,           /* bLength */
+	USB_STRING_DESCRIPTOR_TYPE,        /* bDescriptorType */
+	'U', 0, 'p', 0, 'g', 0, 'r', 0, 'a', 0, 'd', 0, 'e', 0
+	//10 03 55 00  70 00 67 00  72 00 61 00  64 00 65 00
+};
+#else
 u8 USB_APP_StringSerial[USB_APP_SIZ_STRING_SERIAL] =
   {
     USB_APP_SIZ_STRING_SERIAL,           /* bLength */
     USB_STRING_DESCRIPTOR_TYPE,        /* bDescriptorType */
     'K', 0, 'T', 0, '4', 0, '8', 0, '6', 0, '1', 0, '0', 0
   };
+#endif
 
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
 

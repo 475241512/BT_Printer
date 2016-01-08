@@ -27,8 +27,6 @@
 #define MASS_MEMORY_START     0x04002000
 #define BULK_MAX_PACKET_SIZE  0x00000040
 //#define BULK_MAX_PACKET_SIZE  0x00000040		//joe ÐÞ¸Ä
-#define LED_ON                0xF0
-#define LED_OFF               0xFF
 
 /* Exported functions ------------------------------------------------------- */
 void Enter_LowPowerMode(void);
