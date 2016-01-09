@@ -1,6 +1,6 @@
 
 #include "crc32.h"
-
+#if 0
 //unsigned long			Table_CRC[256];
 
 //const unsigned short cnCRC_16 = 0x8005;
@@ -153,4 +153,5 @@ unsigned short CRC(unsigned   char   *info,   DWORD   len)
 	return   acc;  
 }
 */
+#endif
 #endif

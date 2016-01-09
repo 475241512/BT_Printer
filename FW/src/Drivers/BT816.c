@@ -118,7 +118,7 @@ static void BT816_GPIO_config(unsigned int bt_channel,unsigned int baudrate)
 	GPIO_SetBits(GPIOB, GPIO_Pin_4);		//trip3
 	GPIO_ResetBits(GPIOB, GPIO_Pin_5);		//trip2
 	GPIO_SetBits(GPIOB, GPIO_Pin_6);		//trip1
-#else
+#elif(HW_VER == HW_VER_11)
 	//for debug trip
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
@@ -1279,7 +1279,7 @@ int BT816_Reset(void)
 #endif
 
 	//delay_ms(2000);
-	delay_ms(1000);
+	delay_ms(1500);
 	return 0;
 }
 
@@ -1664,6 +1664,10 @@ int BT816_init(void)
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	if (BT816_query_name(BT1_MODULE,str))
 	{
+		if (BT1_CONNECT)
+		{
+			return 0;
+		}
 		return -4;
 	}
 
@@ -1671,17 +1675,29 @@ int BT816_init(void)
 	{
 		if (BT816_set_name(BT1_MODULE,"HJ1"))
 		{
+			if (BT1_CONNECT)
+			{
+				return 0;
+			}
 			return -5;
 		}
 	}
 
 	if (BT816_query_mac(BT1_MODULE,BT_mac[BT1_MODULE]))
 	{
+		if (BT1_CONNECT)
+		{
+			return 0;
+		}
 		return -6;
 	}
 
 	if (BT816_query_pin(BT1_MODULE,BT_current_pin[BT1_MODULE]))
 	{
+		if (BT1_CONNECT)
+		{
+			return 0;
+		}
 		return -7;
 	}
 #endif
@@ -1689,6 +1705,10 @@ int BT816_init(void)
 #if(BT_MODULE_CONFIG & USE_BT2_MODULE)
 	if (BT816_query_name(BT2_MODULE,str))
 	{
+		if (BT2_CONNECT)
+		{
+			return 0;
+		}
 		return -4;
 	}
 
@@ -1696,15 +1716,27 @@ int BT816_init(void)
 	{
 		if (BT816_set_name(BT2_MODULE,"HJ2"))
 		{
+			if (BT2_CONNECT)
+			{
+				return 0;
+			}
 			return -5;
 		}
 	}
 	if (BT816_query_mac(BT2_MODULE,BT_mac[BT2_MODULE]))
 	{
+		if (BT2_CONNECT)
+		{
+			return 0;
+		}
 		return -6;
 	}
 	if (BT816_query_pin(BT2_MODULE,BT_current_pin[BT2_MODULE]))
 	{
+		if (BT2_CONNECT)
+		{
+			return 0;
+		}
 		return -7;
 	}
 #endif
@@ -1712,6 +1744,10 @@ int BT816_init(void)
 #if(BT_MODULE_CONFIG & USE_BT3_MODULE)
 	if (BT816_query_name(BT3_MODULE,str))
 	{
+		if (BT3_CONNECT)
+		{
+			return 0;
+		}
 		return -4;
 	}
 
@@ -1719,16 +1755,28 @@ int BT816_init(void)
 	{
 		if (BT816_set_name(BT3_MODULE,"HJ3"))
 		{
+			if (BT3_CONNECT)
+			{
+				return 0;
+			}
 			return -5;
 		}
 	}
 	if (BT816_query_mac(BT3_MODULE,BT_mac[BT3_MODULE]))
 	{
+		if (BT3_CONNECT)
+		{
+			return 0;
+		}
 		return -6;
 	}
 
 	if (BT816_query_pin(BT3_MODULE,BT_current_pin[BT3_MODULE]))
 	{
+		if (BT3_CONNECT)
+		{
+			return 0;
+		}
 		return -7;
 	}
 #endif
@@ -1736,6 +1784,10 @@ int BT816_init(void)
 #if(BT_MODULE_CONFIG & USE_BT4_MODULE)
 	if (BT816_query_name(BT4_MODULE,str))
 	{
+		if (BT4_CONNECT)
+		{
+			return 0;
+		}
 		return -4;
 	}
 
@@ -1743,16 +1795,28 @@ int BT816_init(void)
 	{
 		if (BT816_set_name(BT4_MODULE,"HJ4"))
 		{
+			if (BT4_CONNECT)
+			{
+				return 0;
+			}
 			return -5;
 		}
 	}
 	if (BT816_query_mac(BT4_MODULE,BT_mac[BT4_MODULE]))
 	{
+		if (BT4_CONNECT)
+		{
+			return 0;
+		}
 		return -6;
 	}
 
 	if (BT816_query_pin(BT4_MODULE,BT_current_pin[BT4_MODULE]))
 	{
+		if (BT4_CONNECT)
+		{
+			return 0;
+		}
 		return -7;
 	}
 #endif

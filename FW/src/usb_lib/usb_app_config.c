@@ -107,7 +107,7 @@ static void usb_Interrupts_Config(void)
 *******************************************************************************/
 bool usb_cable_insert (void)
 {
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	if(hw_platform_USBcable_Insert_Detect() == 1)
 	{
 		return TRUE;

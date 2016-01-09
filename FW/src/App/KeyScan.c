@@ -135,7 +135,7 @@ void KeyScanInit(void)
 {
 	GPIO_InitTypeDef							GPIO_InitStructure;
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	//FEED_KEY	-- PA.1
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 

@@ -3,7 +3,7 @@
 #include "stm32f10x_lib.h"
 #include "hw_platform.h"
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 #define LED_ON()     do{ \
            GPIO_ResetBits(GPIOB, GPIO_Pin_12); \
            }while(0)

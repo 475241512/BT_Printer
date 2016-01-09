@@ -36,7 +36,7 @@
 #define SysCtrl_SLEEPDEEP_Set		((u32)0x00000004)
 
 #ifdef DEBUG_VER
-unsigned char	debug_buffer[8096];
+unsigned char	debug_buffer[2];
 unsigned int	debug_cnt;
 #endif
 
@@ -304,8 +304,11 @@ int main(void)
 
 	esc_init();
 
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
 	usb_device_init(USB_PRINTER_HID_COMP);
-	//usb_device_init(USB_PRINTER);
+#elif(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
+	usb_device_init(USB_PRINTER);
+#endif
 	//test_motor();
 
 	PaperStartSns();		//SystickÌø¶¯ÆðÀ´

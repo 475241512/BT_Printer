@@ -131,12 +131,12 @@ static int verify_rit(unsigned char *pRit)
 	old_crc		= ((TResInfoTable*)pRit)->RIT_CheckSum;
 	((TResInfoTable*)pRit)->RIT_CheckSum	= 0;
 
-	crc								=  crc32(0, pRit, 512);
+	//crc								=  crc32(0, pRit, 512);
 
-	if( crc != old_crc )
-	{
-		return -1;
-	}
+	//if( crc != old_crc )
+	//{
+	//	return -1;
+	//}
 
 	return 0;
 }

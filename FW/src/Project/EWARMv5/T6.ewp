@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>STM32F10xxE	ST STM32F10xxE</state>
+          <state>STM32F10xxB	ST STM32F10xxB</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -696,7 +696,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabelSelect</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>

@@ -10,7 +10,7 @@ extern void LedInit(void)
 {
 	GPIO_InitTypeDef							GPIO_InitStructure;
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	//LED_BLUE	-- PB.12
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 

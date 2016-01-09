@@ -85,7 +85,7 @@ enum
 	GPIOB->BRR = GPIO_Pin_2; \
 	}while(0)
 
-#if((HW_VER == HW_VER_V11) || (HW_VER == HW_VER_V11))
+#if((HW_VER == HW_VER_V11) || (HW_VER == HW_VER_V12))
 //PB.6
 #define MOTOR_PHASE_1A_HIGH()  do{ \
 	GPIOB->BSRR = GPIO_Pin_6; \
@@ -609,6 +609,7 @@ static void TPForwardStep(int direction)
 
 static uint16_t const TpAccelerationSteps[] =
 {
+#if 1
 	TIMER1_MS_TO_CNT(5.579),
 	TIMER1_MS_TO_CNT(4.308),
 	TIMER1_MS_TO_CNT(2.614),
@@ -625,6 +626,7 @@ static uint16_t const TpAccelerationSteps[] =
 	TIMER1_MS_TO_CNT(1.610),
 	TIMER1_MS_TO_CNT(1.561),
 	TIMER1_MS_TO_CNT(1.517),
+#endif
 	TIMER1_MS_TO_CNT(1.477),
 	TIMER1_MS_TO_CNT(1.439),
 	TIMER1_MS_TO_CNT(1.404),

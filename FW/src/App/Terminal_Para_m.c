@@ -71,12 +71,12 @@ int ReadTerminalPara(void)
 
 #if 1
 	//计算校验值是否正确
-	checkvalue = crc32(0,(unsigned char*)&g_param.line_after_mark,sizeof(TTerminalPara) - 4);
-	if (g_param.checkvalue != checkvalue)
-	{
-		//参数的校验值不对
-		return 2;
-	}
+	//checkvalue = crc32(0,(unsigned char*)&g_param.line_after_mark,sizeof(TTerminalPara) - 4);
+	//if (g_param.checkvalue != checkvalue)
+	//{
+	//	//参数的校验值不对
+	//	return 2;
+	//}
 
 	// 检查参数是否正确
 	if ((g_param.endtag[0] != 0x55)||(g_param.endtag[1] != 0xAA)||(g_param.endtag[2] != 0x5A)||(g_param.struct_ver != 1))
@@ -104,7 +104,7 @@ int SaveTerminalPara(void)
 	int					ret;
 
 	// 重新计算校验        
-	g_param.checkvalue = crc32(0,(unsigned char*)&g_param.line_after_mark, sizeof(TTerminalPara)-4);
+	//g_param.checkvalue = crc32(0,(unsigned char*)&g_param.line_after_mark, sizeof(TTerminalPara)-4);
 
 	ret = param_write((unsigned char*)&g_param,sizeof(TTerminalPara));
 	return ret;

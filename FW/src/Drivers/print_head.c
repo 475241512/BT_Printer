@@ -46,7 +46,7 @@ static void print_head_SPI_init(void)
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
 	SPI_Init(SPI1, &SPI_InitStructure);
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	//由于Demo V1.1的SPI接口的DMA通道被串口3占用，而此版本可以用DMA来进行发送。
 	DMA_InitTypeDef					DMA_InitStructure;
 
@@ -106,7 +106,7 @@ void print_head_init(void)
 */
 void print_head_spi_send_data(unsigned char *data,unsigned int len)
 {
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	///* disable DMA */
 	//DMA_Cmd(DMA1_Channel3, DISABLE);
 

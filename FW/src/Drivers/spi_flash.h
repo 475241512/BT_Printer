@@ -31,7 +31,7 @@
 /* Exported constants --------------------------------------------------------*/
 
 
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 //CS  -- PA.15
 #define GPIO_CS                  GPIOA
 #define RCC_APB2Periph_GPIO_CS   RCC_APB2Periph_GPIOA
