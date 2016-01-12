@@ -21,12 +21,14 @@
 
 #define			FLASH_SIZE			(8*1024*1024)			//8M
 
-#define PARAM_FLASH_SIZE		((1024-64)*1024)					//1M 保存参数
+#define PARAM_FLASH_SIZE		((1024-256-64)*1024)					//1M 保存参数
+#define DOWNLOADE_FILE_SIZE		256*1024					//256K用来保存下载下来的文件			
 #define RES_FLASH_SIZE			(5*1024*1024)				//5M 字库等资源文件
 #define FAT_FLASH_SIZE			((2*1024+64)*1024)				//2M  FAT文件系统	
 
-#define PARAM_START_SECT		0									//Param start sector,	
-#define RES_START_SECT			PARAM_FLASH_SIZE							//Resource start sector
+#define PARAM_START_SECT		0									//Param start sector,
+#define DOWNLOAD_FILE_START_SECT		PARAM_FLASH_SIZE			//DownLoad File start sector,
+#define RES_START_SECT			(DOWNLOAD_FILE_START_SECT+DOWNLOADE_FILE_SIZE)		//Resource start sector
 #define FAT_START_SECT			(RES_START_SECT+RES_FLASH_SIZE)
 
 

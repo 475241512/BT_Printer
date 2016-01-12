@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>STM32F10xxE	ST STM32F10xxE</state>
+          <state>STM32F10xx8	ST STM32F10xx8</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -147,7 +147,6 @@
         <option>
           <name>CCDefines</name>
           <state>LCD_VER</state>
-          <state>GD_MCU</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1662,12 +1661,6 @@
   </file>
   <file>
     <name>$PROJ_DIR$\..\..\app\des.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\..\..\FatFs\diskio.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\..\..\FatFs\ff.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\..\..\driver\hw_misc.c</name>

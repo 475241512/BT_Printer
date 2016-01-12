@@ -276,6 +276,9 @@
     <ClInclude Include="..\..\driver\Lcd.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\app\record_mod.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\app\des.c">
@@ -429,6 +432,9 @@
       <Filter>usb_lib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\driver\lcd.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\app\record_mod.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

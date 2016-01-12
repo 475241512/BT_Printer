@@ -1,7 +1,7 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 #include "stm32f10x_lib.h"
-
+#include "Terminal_Para.h"
 #define LCD_BACKLIGHT_ON()	do{\
 	GPIOB->BSRR = GPIO_Pin_12;\
 	}while(0)

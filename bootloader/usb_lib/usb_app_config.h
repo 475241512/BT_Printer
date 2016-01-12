@@ -67,8 +67,8 @@ extern unsigned char	g_send_buff[];
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
-#include "Esc_p.h"
-#include "uart.h"
+//#include "Esc_p.h"
+//#include "uart.h"
 
 extern unsigned char hid_buffer_out[];
 //extern unsigned int	hid_buffer_off;
@@ -77,7 +77,7 @@ extern unsigned char hid_buffer_out[];
 
 extern unsigned char				g_usb_type;
 
-bool usb_cable_insert (void);
+//int usb_cable_insert (void);
 void usb_device_init(unsigned char device_type);
 void usb_SendData(unsigned char *pData, int length);
 void usb_Get_SerialNum(void);

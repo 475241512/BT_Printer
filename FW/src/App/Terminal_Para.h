@@ -6,6 +6,8 @@
 
 #ifndef _TERMINAL_PARA_H_
 #define _TERMINAL_PARA_H_
+#include "hw_platform.h"
+#include "BT816.h"
 
 
 /**
@@ -19,7 +21,9 @@ typedef struct  {
 	unsigned int			line_after_mark;			//4字节		4	B
 	unsigned int 			max_mark_length;			//4字节		8	B
 	unsigned char 			character_code_page;		//1字节		12	B
-	unsigned char			rfu[16+32-1];				//47字节	13  B
+	unsigned char			bt_pin[MAX_BT_CHANNEL][5];	//保存的蓝牙模块当前的PIN
+	unsigned char			bt_mac[MAX_BT_CHANNEL][13];	//保存的蓝牙模块MAC地址的后4位
+	unsigned char			rfu[29];				//47字节	13  B
 	unsigned char			struct_ver;					//1字节		60	B	参数版本号，标识此结构的版本
 	unsigned char			endtag[3];					//0x55,0xAA,0x5A  61      一共64字节
 } TTerminalPara;

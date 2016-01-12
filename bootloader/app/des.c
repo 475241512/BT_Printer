@@ -10,6 +10,7 @@
 #ifndef g_RUN_ON_PC    
 //    #include "release.h"
 //#include "retype.h"
+#include "hw_misc.h"
 #else
     #include <stdlib.h>
     #define bmalloc malloc
@@ -23,7 +24,7 @@
 
 //#define FAIL			1
 //#define SUCCESS			0
-
+#if((ENCRYPT_MODE == ENCRYPT_MODE_3DES)||(ENCRYPT_MODE == ENCRYPT_MODE_DES))
 #define g_ENCRYPT_FLAG 1
 #define g_DECRYPT_FLAG 2
 
@@ -327,7 +328,6 @@ unsigned char comDES(unsigned char in[8],unsigned char out[8],
 	return 1;
 }//单重DES加解密结束
 
-#if 0
 /** 
  * @brief enDES 进行3DES加密运算
  * @param[in] unsigned char* indata 要加密的原文数据
@@ -381,9 +381,9 @@ unsigned char enDES(unsigned char* indata,unsigned int inlen,unsigned char* key,
 	}
 	return 1;
 }
-#endif
 
-#if 0
+
+
 /**
  * @brief 解密
  * @param[in] unsigned char* indata 输入数据
@@ -422,7 +422,7 @@ unsigned char unDES(unsigned char* indata,unsigned int inlen,unsigned char* key,
 	}
 	return 1;
 }
-#endif
+
 
 //================随机生成密钥========================
 //void randKey(unsigned char key[8])
@@ -432,7 +432,6 @@ unsigned char unDES(unsigned char* indata,unsigned int inlen,unsigned char* key,
 //		key[i]=rand() % 0x0100;
 //};
 
-#if 0
 /**
  * @brief 3DES加密
  * @param[in] unsigned char* indata 输入数据
@@ -483,13 +482,7 @@ unsigned char en3DES(unsigned char* indata,unsigned int inlen,unsigned char* key
 	}
 	return 1;
 }
-#endif
 
-#ifdef LCD_VER
-extern void Lcd_process_bar_step(void);
-#else
-extern void LED_toggle(void);
-#endif
 
 /**
  * @brief 3DES解密
@@ -556,6 +549,42 @@ unsigned char un3DES(unsigned char* indata,unsigned int inlen,unsigned char* key
 	return 1;
 }
 
+#endif
 
+#if(ENCRYPT_MODE == ENCRYPT_MODE_KT_XOR)
+
+/** 
+ * @brief en_KT_Xor加密（不能公开的加密方式）
+ * @param[in] unsigned char* indata 要加密的原文数据
+ * @param[in] unsigned int inlen 加密数据的长度
+ * @param[in] unsigned char* key 进行加密的key
+ * @param[in] unsigned int key_index 进行加密的key索引
+ * @param[out] unsigned char* outdata 加密输出结果
+ * @param[out] unsigned int* outlen 加密后的输出数据
+ * @note 加密规则和解密如下：
+ *		 indata与输入的key[key_index]开始的密钥依次xor，直到key循环到最后一个字节，又从key[0]开始，直到所有indata都被key xor一次为止
+ */
+unsigned char decode_KT_Xor(unsigned char* indata,unsigned int inlen,unsigned char* key,unsigned int key_index,
+					unsigned char* outdata,unsigned int* outlen)
+{
+
+		int i,len;
+		if((indata==NULL)||(outdata==NULL)||(key==NULL)||(outlen==NULL)||(inlen<=0))
+		return 0;//传入参数错误
+
+
+		*outlen = inlen;
+		len = strlen((const char*)key);
+		key_index %= len;
+
+		for (i = 0; i < inlen;i++)
+		{
+			outdata[i] = indata[i]^key[(key_index+i)%len]; 
+		}
+
+		return 0;
+}
+
+#endif
 
 

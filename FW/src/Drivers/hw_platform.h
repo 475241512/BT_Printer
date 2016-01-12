@@ -6,8 +6,8 @@
 #define		HW_VER_V12			2		//主控使用的是F103C8/BT6（48PIN）, 只支持1个硬件蓝牙模块+LCD，对应的原理图是《BTPrinter_V1.20》
 
 //#define     HW_VER			HW_VER_DEMO_V11
-#define     HW_VER			HW_VER_V11
-//#define     HW_VER			HW_VER_V12	
+//#define     HW_VER			HW_VER_V11
+#define     HW_VER			HW_VER_V12	
 
 #define USE_BT1_MODULE		(1<<0)
 #define USE_BT2_MODULE		(1<<1)

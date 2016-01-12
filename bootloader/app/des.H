@@ -4,10 +4,16 @@
 unsigned char un3DES(unsigned char* indata,unsigned int inlen,unsigned char* key_1,unsigned char* key_2,
 					 unsigned char* key_3,unsigned char* outdata,unsigned int* outlen);
 
-//unsigned char en3DES(unsigned char* indata,unsigned int inlen,unsigned char* key_1,unsigned char* key_2,
-//					 unsigned char* key_3,unsigned char* outdata,unsigned int* outlen);
+unsigned char en3DES(unsigned char* indata,unsigned int inlen,unsigned char* key_1,unsigned char* key_2,
+					 unsigned char* key_3,unsigned char* outdata,unsigned int* outlen);
 
-//unsigned char enDES(unsigned char* indata,unsigned int inlen,unsigned char* key,
-//					unsigned char* outdata,unsigned int* outlen);
+unsigned char unDES(unsigned char* indata,unsigned int inlen,unsigned char* key,
+	unsigned char* outdata,unsigned int* outlen);
+
+unsigned char enDES(unsigned char* indata,unsigned int inlen,unsigned char* key,
+					unsigned char* outdata,unsigned int* outlen);
+
+unsigned char decode_KT_Xor(unsigned char* indata,unsigned int inlen,unsigned char* key,unsigned int key_index,
+	unsigned char* outdata,unsigned int* outlen);
 
 #endif

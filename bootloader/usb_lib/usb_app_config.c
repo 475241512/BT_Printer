@@ -25,8 +25,8 @@
 #include "usb_lib.h"
 #include "usb_pwr.h"
 #include "usb_desc.h"
-#include "uart.h"
-#include "hw_platform.h"
+//#include "uart.h"
+#include "hw_misc.h"
 
 
 #if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
@@ -43,7 +43,7 @@ unsigned int	count_out;
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
-unsigned char hid_buffer_out[64];
+unsigned char hid_buffer_out[68];
 //unsigned int	hid_buffer_off=0;
 #endif
 
@@ -105,26 +105,26 @@ static void usb_Interrupts_Config(void)
 * Input          : None.
 * Return         : false: not insert true: insert  
 *******************************************************************************/
-bool usb_cable_insert (void)
+int usb_cable_insert (void)
 {
-#if(HW_VER == HW_VER_V11)
+#if((HW_VER == HW_VER_V11)||(HW_VER == HW_VER_V12))
 	if(hw_platform_USBcable_Insert_Detect() == 1)
 	{
-		return TRUE;
+		return 1;
 	}
 	else
 	{
-		return FALSE;
+		return 0;
 	}
 #else
 
 	if (bDeviceState == CONFIGURED)
 	{
-		return TRUE;
+		return 1;
 	}
 	else
 	{
-		return FALSE;
+		return 0;
 	}
 #endif
 }
@@ -152,8 +152,8 @@ void usb_device_init(unsigned char device_type)
 	if (device_type == USB_PRINTER_HID_COMP)
 	{
 		//hid_buffer_off = 0;
-		MEMSET(usb_rec_buffer,0,USB_BUFFER_LEN);
-		ringbuffer_init(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],usb_rec_buffer,USB_BUFFER_LEN);
+		//MEMSET(usb_rec_buffer,0,USB_BUFFER_LEN);
+		//ringbuffer_init(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],usb_rec_buffer,USB_BUFFER_LEN);
 	}
 #endif
 

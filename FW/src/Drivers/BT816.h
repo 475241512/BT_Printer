@@ -1,6 +1,6 @@
 #ifndef _BT816_H_
 #define _BT816_H_
-#include "hw_platform.h"
+//#include "hw_platform.h"
 
 #define		BT816_RES_BUFFER_LEN			1024		//数据帧缓冲大小取决于蓝牙打印机APP拆包的大小
 													//也就是说假如打印机需要通过SPP发送一个很大的数据包下来，应该会拆分成
@@ -11,7 +11,7 @@
 													//蓝牙因为流控被阻塞时，会将主机发送的堵塞在其内部的数据一次传输过来。测试的时候发现其一次最多传了384字节
 													//
 
-#define		SPP_BUFFER_LEN					2048	//这个是纯粹的串口环形缓冲区大小，通过硬件流控的方式控制缓冲区的溢出
+#define		SPP_BUFFER_LEN					4096//2048	//这个是纯粹的串口环形缓冲区大小，通过硬件流控的方式控制缓冲区的溢出
 #define		USB_BUFFER_LEN					1024	//USB接收环形缓冲区的大小
 
 
@@ -124,8 +124,8 @@ typedef enum
 
 extern unsigned char  bt_connect_status;
 extern unsigned char  last_bt_connect_status;
-extern unsigned char BT_mac[MAX_BT_CHANNEL][13];
-extern unsigned char BT_current_pin[MAX_BT_CHANNEL][5];
+//extern unsigned char BT_mac[MAX_BT_CHANNEL][13];
+//extern unsigned char BT_current_pin[MAX_BT_CHANNEL][5];
 
 #define		BT1_CONNECT		(bt_connect_status&(1<<BT1_MODULE))
 #define		BT2_CONNECT		(bt_connect_status&(1<<BT2_MODULE))

@@ -40,7 +40,7 @@ unsigned char	debug_buffer[2];
 unsigned int	debug_cnt;
 #endif
 
-#define		IAP_SIZE					(1024*32)	//BootCode Size
+#define		IAP_SIZE					(1024*16)	//BootCode Size
 
 /* Global variables ---------------------------------------------------------*/
 ErrorStatus			HSEStartUpStatus;							//Extern crystal OK Flag
@@ -64,7 +64,9 @@ void system_error_tip(int err_no)
 #ifdef LCD_VER
 	Lcd_clear(1);
 	Lcd_TextOut(0,12,"System Err");
-	sprintf(str,"Code:%d",err_no);
+	//sprintf(str,"Code:%d",err_no);
+	STRNCPY(str,"Code:",5);
+	hex_to_str(err_no,0x10,0,str+5);
 	Lcd_TextOut(0,24,str);
 #endif
 	//@todo...
@@ -148,6 +150,7 @@ int main(void)
 	// 数据串口(调试口)初始化
 	data_uart_init();
        
+	spi_flash_init();
         //while(1);
 
 #ifdef DEBUG_VER
@@ -237,18 +240,22 @@ int main(void)
 #if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
 	//实现了Printer+HID的复合设备时，采用HID接口将升级文件download到SPI Flash保存起来
 	//利用record_mod驱动来保存下载下来的Intel Hex文件，重新上电后，进入Bootloader再将Intel Hex格式的升级文件解析并编程到相应的FLASH空间
-	ret = record_init(REC1BLK,64,256*1024/64);	//最多支持256K的BIN文件的下载，只开辟这么大的空间来保存HEX文件
+	//每条记录存储了3字节的冗余信息，TAG(1BYTE)+LEN[1BYTE]+[DATA(0),DATA(1)，...,DATA(n)](LEN BYTE)+CHECKSUM[1BYTE]
+	ret = record_init(REC1BLK,67,256*1024/64);	//最多支持256K的BIN文件的下载，只开辟这么大的空间来保存HEX文件
 	if (ret != 0)
 	{
+#ifdef DEBUG_VER
+		//bootloader负责完成此记录的初始化
 		if (ret == -3 || ret == -4 || ret == -6)
 		{
-			ret = record_format(REC1BLK,64,256*1024/64);
+			ret = record_format(REC1BLK,67,256*1024/64);
 			if (ret)
 			{
 				system_error_tip(80);
 			}
 		}
 		else
+#endif
 		{
 			system_error_tip(81);
 		}
@@ -301,6 +308,8 @@ int main(void)
 	{
 		system_error_tip(83);
 	}
+
+	SaveTerminalPara();
 
 	esc_init();
 

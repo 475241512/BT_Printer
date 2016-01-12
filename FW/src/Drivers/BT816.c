@@ -22,6 +22,7 @@
 #include "basic_fun.h"
 #include "TimeBase.h"
 #include "uart.h"
+#include "Terminal_Para.h"
 
 //#define	BT816_DEBUG
 #ifdef DEBUG_VER
@@ -29,8 +30,8 @@ extern unsigned char debug_buffer[];
 extern unsigned int debug_cnt;
 #endif
 
-unsigned char BT_current_pin[MAX_BT_CHANNEL][5];
-unsigned char BT_mac[MAX_BT_CHANNEL][13];
+//unsigned char BT_current_pin[MAX_BT_CHANNEL][5];
+//unsigned char BT_mac[MAX_BT_CHANNEL][13];
 extern uint32_t systick_cnt;
 #define BT816_RES_INIT				0x00
 
@@ -1229,12 +1230,12 @@ int BT816_Reset(void)
 						else if (MEMCMP(token,"BDVER",5)==0)
 						{
 							token_value[j]=0;
-							printf("BlueTooth Module Ver:%s\r\n",token_value);
+							//printf("BlueTooth Module Ver:%s\r\n",token_value);
 						}
 						else if (MEMCMP(token,"BDADDR",6)==0)
 						{
 							token_value[j]=0;
-							printf("BlueTooth Module Addr:%s\r\n",token_value);
+							//printf("BlueTooth Module Addr:%s\r\n",token_value);
 						}
 #endif
 						else if (MEMCMP(token,"BDMODE",6)==0)
@@ -1648,7 +1649,7 @@ int BT816_init(void)
 
 		BT816_GPIO_config(i,115200);		//default²¨ÌØÂÊ
 		BT816_NVIC_config(i);
-		memset(BT_mac[i],0,21);
+		//memset(BT_mac[i],0,21);
 	}
 
 	ret = BT816_Reset();
@@ -1683,7 +1684,7 @@ int BT816_init(void)
 		}
 	}
 
-	if (BT816_query_mac(BT1_MODULE,BT_mac[BT1_MODULE]))
+	if (BT816_query_mac(BT1_MODULE,g_param.bt_mac[BT1_MODULE]))
 	{
 		if (BT1_CONNECT)
 		{
@@ -1692,7 +1693,7 @@ int BT816_init(void)
 		return -6;
 	}
 
-	if (BT816_query_pin(BT1_MODULE,BT_current_pin[BT1_MODULE]))
+	if (BT816_query_pin(BT1_MODULE,g_param.bt_pin[BT1_MODULE]))
 	{
 		if (BT1_CONNECT)
 		{
@@ -1723,7 +1724,7 @@ int BT816_init(void)
 			return -5;
 		}
 	}
-	if (BT816_query_mac(BT2_MODULE,BT_mac[BT2_MODULE]))
+	if (BT816_query_mac(BT2_MODULE,g_param.bt_mac[BT2_MODULE]))
 	{
 		if (BT2_CONNECT)
 		{
@@ -1731,7 +1732,7 @@ int BT816_init(void)
 		}
 		return -6;
 	}
-	if (BT816_query_pin(BT2_MODULE,BT_current_pin[BT2_MODULE]))
+	if (BT816_query_pin(BT2_MODULE,g_param.bt_pin[BT2_MODULE]))
 	{
 		if (BT2_CONNECT)
 		{
@@ -1762,7 +1763,7 @@ int BT816_init(void)
 			return -5;
 		}
 	}
-	if (BT816_query_mac(BT3_MODULE,BT_mac[BT3_MODULE]))
+	if (BT816_query_mac(BT3_MODULE,g_param.bt_mac[BT3_MODULE]))
 	{
 		if (BT3_CONNECT)
 		{
@@ -1771,7 +1772,7 @@ int BT816_init(void)
 		return -6;
 	}
 
-	if (BT816_query_pin(BT3_MODULE,BT_current_pin[BT3_MODULE]))
+	if (BT816_query_pin(BT3_MODULE,g_param.bt_pin[BT3_MODULE]))
 	{
 		if (BT3_CONNECT)
 		{
@@ -1802,7 +1803,7 @@ int BT816_init(void)
 			return -5;
 		}
 	}
-	if (BT816_query_mac(BT4_MODULE,BT_mac[BT4_MODULE]))
+	if (BT816_query_mac(BT4_MODULE,g_param.bt_mac[BT4_MODULE]))
 	{
 		if (BT4_CONNECT)
 		{
@@ -1811,7 +1812,7 @@ int BT816_init(void)
 		return -6;
 	}
 
-	if (BT816_query_pin(BT4_MODULE,BT_current_pin[BT4_MODULE]))
+	if (BT816_query_pin(BT4_MODULE,g_param.bt_pin[BT4_MODULE]))
 	{
 		if (BT4_CONNECT)
 		{
@@ -1890,7 +1891,7 @@ int BT_reset_PIN(void)
 	{
 		return -2;
 	}
-	strcpy(BT_current_pin[BT1_MODULE],pin);
+	strcpy(g_param.bt_pin[BT1_MODULE],pin);
 #endif
 
 #if(BT_MODULE_CONFIG & USE_BT2_MODULE)
@@ -1898,14 +1899,14 @@ int BT_reset_PIN(void)
 	{
 		return -3;
 	}
-	strcpy(BT_current_pin[BT2_MODULE],pin);
+	strcpy(g_param.bt_pin[BT2_MODULE],pin);
 #endif
 #if(BT_MODULE_CONFIG & USE_BT3_MODULE)
 	if (BT816_set_pin(BT3_MODULE,pin)
 	{
 		return -4;
 	}
-	strcpy(BT_current_pin[BT3_MODULE],pin);
+	strcpy(g_param.bt_pin[BT3_MODULE],pin);
 #endif
 
 #if(BT_MODULE_CONFIG & USE_BT4_MODULE)
@@ -1913,7 +1914,8 @@ int BT_reset_PIN(void)
 	{
 		return -5;
 	}
-	strcpy(BT_current_pin[BT4_MODULE],pin);
+	strcpy(g_param.bt_pin[BT4_MODULE],pin);
 #endif
+	SaveTerminalPara();
 }
 #endif

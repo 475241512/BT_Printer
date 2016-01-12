@@ -48,8 +48,9 @@ enum
 #endif
 
 
-#define TP_MAX_HEAT_DOT		(64)		// 每次最多能够加热的点数，必须大等于8
+//#define TP_MAX_HEAT_DOT		(64)		// 每次最多能够加热的点数，必须大等于8
 //#define TP_MAX_HEAT_DOT		(48)		// 每次最多能够加热的点数，必须大等于8
+#define TP_MAX_HEAT_DOT		(128)		// 每次最多能够加热的点数，必须大等于8
 
 #define TpMinWaitTime	(TIMER1_MS_TO_CNT(0.100))
 
@@ -861,10 +862,26 @@ static uint32_t TPHeatDotsAdj(uint32_t tm,uint16_t dots)
 		90, 93, 95, 96,//24-48
 		97, 98,100,100,        //48-64
 	};
+#elif (TP_MAX_HEAT_DOT == 128)
+	const uint8_t dot_ratio_tbl[TP_MAX_HEAT_DOT/8]=
+	{
+		70, 74, 78, 82, 86, 88,//0-24
+		90, 92, 93, 94, 95, 96,//24-48
+		97, 98,100,100,        //48-64
+	};
 #else
 #error("No define dot_ratio_tbl");
 #endif
-
+#if (TP_MAX_HEAT_DOT == 128)
+	if(dots<TP_MAX_HEAT_DOT)
+	{
+		tm = tm * dot_ratio_tbl[dots/8]/100;
+	}
+	else
+	{
+		tm = tm * dot_ratio_tbl[TP_MAX_HEAT_DOT/8-1]/100;
+	}
+#else
 	if(dots<TP_MAX_HEAT_DOT)
 	{
 		tm = tm * dot_ratio_tbl[dots/4]/100;
@@ -873,7 +890,7 @@ static uint32_t TPHeatDotsAdj(uint32_t tm,uint16_t dots)
 	{
 		tm = tm * dot_ratio_tbl[TP_MAX_HEAT_DOT/4-1]/100;
 	}
-
+#endif
 	return tm;
 }
 static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
@@ -883,8 +900,8 @@ static void TPAdjustStepTime(uint8_t heat_cnt,uint16_t max_heat_dots)
 	uint8_t i;
 
 	heat = TPHeatVoltageAdj(tp.heat_setting);
-	//heat = TPHeatDotsAdj(heat,max_heat_dots);
-	heat = heat*80/100;
+	heat = TPHeatDotsAdj(heat,max_heat_dots);
+	//heat = heat*80/100;
 #if defined(TEMP_SNS_ENABLE)
 	//heat = TPHeatThermalAdj(heat,TPHTemperature());
 #endif
@@ -1677,40 +1694,78 @@ extern uint8_t IsPrinterFree(void)
 
 extern void TPPrintTestPage(void)
 {
-
 	uint32_t len,i;
 	char buf[64];
 
 	//debug_cnt = 0;
 	current_channel = 0;
 	PrintBufToZero();
-	len = snprintf(buf, sizeof(buf),  "\n");
-	TPPrintAsciiLine(buf,len);
+	//len = snprintf(buf, sizeof(buf),  "\n");
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
 #if 1
 #if defined(PT486)
-	len = snprintf(buf, sizeof(buf), "System: HJ58B_KT\n");
+	//len = snprintf(buf, sizeof(buf), "System: HJ58B_KT\n");
+	len = STRLEN("System: HJ58B_KT\n");
+	STRNCPY(buf,"System: HJ58B_KT\n",len);
 #elif defined(PT488)
-	len = snprintf(buf, sizeof(buf), "System: PT488_1MB1\n");
+	//len = snprintf(buf, sizeof(buf), "System: PT488_1MB1\n");
+	len = STRLEN("System: PT488_1MB1\n");
+	STRNCPY(buf,"System: PT488_1MB1\n",len);
 #elif defined(PT48D)
-	len = snprintf(buf, sizeof(buf), "System: PT48D\n");
+	//len = snprintf(buf, sizeof(buf), "System: PT48D\n");
+	len = STRLEN("System: PT48D\n");
+	STRNCPY(buf,"System: PT48D\n",len);
 #elif defined(PT48F)
-	len = snprintf(buf, sizeof(buf), "System: PT48F\n");
+	//len = snprintf(buf, sizeof(buf), "System: PT48F\n");
+	len = STRLEN("System: PT48F\n");
+	STRNCPY(buf,"System: PT48F\n",len);
 #elif defined(PT48G)
-	len = snprintf(buf, sizeof(buf), "System: PT48G\n");
+	//len = snprintf(buf, sizeof(buf), "System: PT48G\n");
+	len = STRLEN("System: PT48G\n");
+	STRNCPY(buf,"System: PT48G\n",len);
 #endif
 	TPPrintAsciiLine(buf,len);
 
 
-	len = snprintf(buf, sizeof(buf), "Firmware:%d.%02d.%02d \n", VERSION_MAJOR, VERSION_MINOR,VERSION_TEST);
+	//len = snprintf(buf, sizeof(buf), "Firmware:%d.%02d.%02d \n", VERSION_MAJOR, VERSION_MINOR,VERSION_TEST);
+	len = STRLEN("Firmware:");
+	STRNCPY(buf,"Firmware:",len);
+	STRNCPY(buf+len,"1.01.01 \n",STRLEN("1.01.01 \n"));
+	len = STRLEN("1.01.01 \n");
+	buf[len+0] = HexToAscii(VERSION_MAJOR);
+	buf[len+3] = HexToAscii(VERSION_MINOR);
+	buf[len+6] = HexToAscii(VERSION_TEST);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf), "Build date: %s\n", __DATE__);
+	//len = snprintf(buf, sizeof(buf), "Build date: %s\n", __DATE__);
+	len = STRLEN("Build date: ");
+	STRNCPY(buf,"Build date: ",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf), "Build time: %s\n", __TIME__);
+	len = STRLEN(__DATE__);
+	STRNCPY(buf,__DATE__,len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "\n");
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
+
+	//len = snprintf(buf, sizeof(buf), "Build time: %s\n", __TIME__);
+	//TPPrintAsciiLine(buf,len);
+
+	len = STRLEN("Build time: ");
+	STRNCPY(buf,"Build time: ",len);
+	TPPrintAsciiLine(buf,len);
+
+	len = STRLEN(__TIME__);
+	STRNCPY(buf,__TIME__,len);
+	TPPrintAsciiLine(buf,len);
+
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
+
+	//len = snprintf(buf, sizeof(buf),  "\n");
+	STRNCPY(buf,"\n",1);
 	TPPrintAsciiLine(buf,len);
 
 	//len = snprintf(buf, sizeof(buf),  "[Uart Configure]\n");
@@ -1722,79 +1777,140 @@ extern void TPPrintTestPage(void)
 	//len = snprintf(buf, sizeof(buf),  "flow ctrl : HW Flow Control\n");
 	//TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "[BT Module config]\n");
+	//len = snprintf(buf, sizeof(buf),  "[BT Module config]\n");
+	len = STRLEN("[BT Module config]\n");
+	STRNCPY(buf,"[BT Module config]\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "%d BT Module Support\n",MAX_BT_CHANNEL);
+	//len = snprintf(buf, sizeof(buf),  "%d BT Module Support\n",MAX_BT_CHANNEL);
+	buf[0] = HexToAscii(MAX_BT_CHANNEL);
+	TPPrintAsciiLine(buf,1);
+	len = STRLEN(" BT Module Support\n");
+	STRNCPY(buf," BT Module Support\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "    Seq      |    Name    | Pin\n");
+	//len = snprintf(buf, sizeof(buf),  "    Seq      |    Name    | Pin\n");
+	len = STRLEN("    Seq      |    Name   | Pin\n");
+	STRNCPY(buf,"    Seq      |    Name   | Pin\n",len);
 	TPPrintAsciiLine(buf,len);
 
 	for (i = 0;i<MAX_BT_CHANNEL;i++)
 	{
-		len = snprintf(buf, sizeof(buf),  "BT Module(%d):|HJ%d_%s | %s\n",i+1,i+1,&BT_mac[i][8],BT_current_pin[i]);
+		//len = snprintf(buf, sizeof(buf),  "BT Module(%d):|HJ%d_%s | %s\n",i+1,i+1,&g_param.bt_mac[i][8],g_param.bt_pin[i]);
+		len = STRLEN("BT Module(1):|  HJ1_");
+		STRNCPY(buf,"BT Module(1):|  HJ1_",len);
+		buf[10]=HexToAscii(i+1);
+		buf[16]=HexToAscii(i+1);
 		TPPrintAsciiLine(buf,len);
+
+		len = STRLEN(&g_param.bt_mac[i][8]);
+		STRNCPY(buf,&g_param.bt_mac[i][8],len);
+		TPPrintAsciiLine(buf,len);
+
+		len = STRLEN(" | ");
+		STRNCPY(buf," | ",len);
+		TPPrintAsciiLine(buf,len);
+
+		len = STRLEN(g_param.bt_pin[i]);
+		STRNCPY(buf,g_param.bt_pin[i],len);
+		TPPrintAsciiLine(buf,len);
+
+		STRNCPY(buf,"\n",1);
+		TPPrintAsciiLine(buf,1);
 	}
 
-	len = snprintf(buf, sizeof(buf),  "\n");
+	//len = snprintf(buf, sizeof(buf),  "\n");
+	//TPPrintAsciiLine(buf,len);
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
+	
+
+	//len = snprintf(buf, sizeof(buf),  "[Install Fonts]\n");
+	len = STRLEN("[Install Fonts]\n");
+	STRNCPY(buf,"[Install Fonts]\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "[Install Fonts]\n");
-	TPPrintAsciiLine(buf,len);
-
-	len = snprintf(buf, sizeof(buf),  "ID  Font Name\n");
+	//len = snprintf(buf, sizeof(buf),  "ID  Font Name\n");
+	len = STRLEN("ID  Font Name\n");
+	STRNCPY(buf,"ID  Font Name\n",len);
 	TPPrintAsciiLine(buf,len);
 
 
 	//if(esc_sts[current_channel].font_en == FONT_A_WIDTH)
 	{
-		len = snprintf(buf, sizeof(buf),  " 0  SYSTEM 12x24\n");
+		//len = snprintf(buf, sizeof(buf),  " 0  SYSTEM 12x24\n");
+		len = STRLEN(" 0  SYSTEM 12x24\n");
+		STRNCPY(buf," 0  SYSTEM 12x24\n",len);
 		TPPrintAsciiLine(buf,len);
 	}
 	//else
 	{
 #if defined(FONTB_ASCII9X24)
-		len = snprintf(buf, sizeof(buf),  " 1  SYSTEM 9x24\n");
+		//len = snprintf(buf, sizeof(buf),  " 1  SYSTEM 9x24\n");
+		len = STRLEN(" 1  SYSTEM 9x24\n");
+		STRNCPY(buf," 1  SYSTEM 9x24\n",len);
 #else
-		len = snprintf(buf, sizeof(buf),  " 1  SYSTEM 8x16\n");
+		//len = snprintf(buf, sizeof(buf),  " 1  SYSTEM 8x16\n");
+		len = STRLEN(" 1  SYSTEM 8x16\n");
+		STRNCPY(buf," 1  SYSTEM 8x16\n",len);
 #endif
 		TPPrintAsciiLine(buf,len);
 	}
-	len = snprintf(buf, sizeof(buf),  " 2  GBK 24x24\n");
+	//len = snprintf(buf, sizeof(buf),  " 2  GBK 24x24\n");
+	len = STRLEN(" 2  GBK 24x24\n");
+	STRNCPY(buf," 2  GBK 24x24\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  " 3  GBK 16x16\n");
+	//len = snprintf(buf, sizeof(buf),  " 3  GBK 16x16\n");
+	len = STRLEN(" 3  GBK 16x16\n");
+	STRNCPY(buf," 3  GBK 16x16\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "\n");
-	TPPrintAsciiLine(buf,len);
+	//len = snprintf(buf, sizeof(buf),  "\n");
+	//TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "[ASCII Samples]\n");
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
+
+	//len = snprintf(buf, sizeof(buf),  "[ASCII Samples]\n");
+	len = STRLEN("[ASCII Samples]\n");
+	STRNCPY(buf,"[ASCII Samples]\n",len);
 	TPPrintAsciiLine(buf,len);
 
 	for(i=0x20; i<0x80; i++)
 	{
 		PrintBufPushBytes(i);
 	}
-	len = snprintf(buf, sizeof(buf),  "\n\n");
+	//len = snprintf(buf, sizeof(buf),  "\n\n");
+	//TPPrintAsciiLine(buf,len);
+	STRNCPY(buf,"\n\n",2);
+	TPPrintAsciiLine(buf,2);
+
+	//len = snprintf(buf, sizeof(buf),  "[GBK Samples]\n");
+	len = STRLEN("[GBK Samples]\n");
+	STRNCPY(buf,"[GBK Samples]\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "[GBK Samples]\n");
+	//len = snprintf(buf, sizeof(buf),  "中文字库测试：简体字 繁體字\n");
+	len = STRLEN("中文字库测试：简体字 繁體字\n");
+	STRNCPY(buf,"中文字库测试：简体字 繁體字\n",len);
 	TPPrintAsciiLine(buf,len);
 
-	len = snprintf(buf, sizeof(buf),  "中文字库测试：简体字 繁體字\n");
-	TPPrintAsciiLine(buf,len);
-	len = snprintf(buf, sizeof(buf),  "\n");
-	TPPrintAsciiLine(buf,len);
+	//len = snprintf(buf, sizeof(buf),  "\n");
+	//TPPrintAsciiLine(buf,len);
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
 
-	len = snprintf(buf, sizeof(buf),  "Selftest Finished.\n");
+	//len = snprintf(buf, sizeof(buf),  "Selftest Finished.\n");
+	len = STRLEN("Selftest Finished.\n");
+	STRNCPY(buf,"Selftest Finished.\n",len);
 	TPPrintAsciiLine(buf,len);
 #endif
 
-	len = snprintf(buf, sizeof(buf),  "\n\n\n\n\n");
-	TPPrintAsciiLine(buf,len);
-
+	//len = snprintf(buf, sizeof(buf),  "\n\n\n\n\n");
+	//TPPrintAsciiLine(buf,len);
+	STRNCPY(buf,"\n\n\n\n\n",5);
+	TPPrintAsciiLine(buf,5);
 
 }
 

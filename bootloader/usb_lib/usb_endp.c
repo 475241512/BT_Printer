@@ -22,7 +22,10 @@
 #include "usb_bot.h"
 #include "usb_app_config.h"
 #if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
-#include "record_mod.h"
+//#include "record_mod.h"
+#include "spi_flash.h"
+#include "spi_flash_config.h"
+static unsigned int write_offset = 0;
 #endif
 #ifdef DEBUG_VER
 extern unsigned char debug_buffer[];
@@ -93,22 +96,25 @@ void EP3_OUT_Callback(void)
 		{
 			if ((hid_buffer_out[2] == 0x01)&&(hid_buffer_out[3] == 0x00))	//表示文件下载开始
 			{
-				if (record_count_ext(REC1BLK))
+				//if (record_count_ext(REC1BLK))
+				//{
+				//	record_delall(REC1BLK);
+				//}
+				for (i = 0; i < DOWNLOADE_FILE_SIZE/(BLOCK_ERASE_SIZE*512);i++)
 				{
-					record_delall(REC1BLK);
+					spi_flash_eraseblock(DOWNLOAD_FILE_START_SECT+i*BLOCK_ERASE_SIZE*512);
 				}
+				write_offset = 0;
 			}
 			else if ((hid_buffer_out[2] == 0x05)&&(hid_buffer_out[3] == 0x00))	//表示文件下载结束
 			{
-#ifdef RELEASE_VER
-				//@todo....
-				//从应用跳转到BootLoader代码，执行应用程序的升级
 
-#endif
 			}
-			else
+			else if ((hid_buffer_out[2] == 0x02)||(hid_buffer_out[2] == 0x03)||(hid_buffer_out[2] == 0x04))
 			{
-				record_write(REC1BLK,hid_buffer_out+2,62);
+				//record_write(REC1BLK,hid_buffer_out+2,67);
+				spi_flash_waddr(DOWNLOAD_FILE_START_SECT+write_offset,hid_buffer_out[3],hid_buffer_out+4);
+				write_offset += hid_buffer_out[3];
 			}       
 		}
 
@@ -131,12 +137,12 @@ void EP1_OUT_Callback(void)
 		if (g_usb_type == USB_PRINTER_HID_COMP)
 		{
 			//@todo.....//解析打印语言
-			print_data_len = USB_SIL_Read(EP1_OUT, buffer_out);
-			ringbuffer_put(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],buffer_out,print_data_len);
-			if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < USB_RING_BUFF_FULL_TH)
-			{
-				SetEPRxStatus(EP1_OUT, EP_RX_VALID);
-			}
+			//print_data_len = USB_SIL_Read(EP1_OUT, buffer_out);
+			//ringbuffer_put(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET],buffer_out,print_data_len);
+			//if (ringbuffer_data_len(&spp_ringbuf[USB_PRINT_CHANNEL_OFFSET]) < USB_RING_BUFF_FULL_TH)
+			//{
+			//	SetEPRxStatus(EP1_OUT, EP_RX_VALID);
+			//}
 		}
 		else
 #endif
@@ -199,6 +205,7 @@ void EP1_IN_Callback(void)
 	}
 		else
 #endif
+                  ;
 }
 
 /*******************************************************************************

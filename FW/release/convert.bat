@@ -1,1 +1,1 @@
-File_Convertor.exe update.bin Upgrade.bin 1
+File_Convertor.exe update.bin Upgrade.bin 2

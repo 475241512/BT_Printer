@@ -21,12 +21,46 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_lib.h"
 #include <string.h>
-#include "ff.h"
 #include "stm32f10x_flash.h"
 #include "des.H"
 #include "usb_lib.h"
 #include "usb_app_config.h"
 #include "hw_misc.H"
+
+#if(ENCRYPT_MODE == ENCRYPT_MODE_KT_XOR)
+const char *KT_key="joe3501@foxmail.com";
+#endif
+
+#if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
+#include "ff.h"
+
+#define update_file					"/update.bin"
+FIL									file;
+FATFS								ffat;				// 
+
+#define FLASH_SIZE					(128*1024)				//128K
+#define IAP_SIZE					(32*1024)				// IAP的升级大小
+
+#endif
+
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+//#include "record_mod.h"
+#include "spi_flash_config.h"
+//此种升级方式支持更小容量的主控
+#define FLASH_SIZE					(64*1024)				//64K
+#define IAP_SIZE					(16*1024)				//BootCode的大小,留给应用的空间只有48K了
+
+#define TAG_BIN_DATA	0x02
+#define TAG_FNT_DATA	0x03
+#define TAG_PIC_DATA	0x04
+
+#endif
+
+unsigned char						ProHBuffer[2048];		//最大2048/8 =256个包
+unsigned char						buffer_org[512];
+int									code_sector;			// 代码长度，单位扇区
+unsigned int						code_xor;
+
 
 #define  SUCCESS					1
 #define  FAIL						0
@@ -41,21 +75,12 @@ static void RCC_Configuration(void);
 
 
 unsigned int						JumpAddress;
-#define FLASH_SIZE					(128*1024)				//128K
+
 #define FLASH_START					0x08000000				// Flash起始地址
-#define IAP_SIZE					(32*1024)				// IAP的升级大小
 #define ApplicationAddress			(FLASH_START+IAP_SIZE)
 #define ApplicationSize				(FLASH_SIZE-IAP_SIZE)
 typedef void (*pFunction)(void);
 pFunction							Jump_To_Application;
-
-#define update_file					"/update.bin"
-FIL									file;
-FATFS								ffat;
-unsigned char						ProHBuffer[2048];		//最大2048/8 =256个包
-unsigned char						buffer_org[512];
-int									code_sector;			// 代码长度，单位扇区
-unsigned int						code_xor;				// 
 
 typedef struct  
 {
@@ -67,7 +92,6 @@ typedef struct
 	unsigned char					Version[16];
 	unsigned char					Date[16];
 }TPackHeader;
-
 
 /**
 ***************************************************************************
@@ -130,7 +154,59 @@ static int verify_data(unsigned int addr, unsigned int *pdata, int len)
 
 	return 0;
 }
-
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+//static unsigned int record_offset = 0;
+//static int record_sector_read(unsigned char *read_buf,unsigned int sector_cnt,unsigned int *real_byte_cnt)
+//{
+//	int ret,i,j;
+//	unsigned char buf[67];
+//	unsigned char len,check_value=0;
+//	*real_byte_cnt = 0;
+//	for (i = 0; i < sector_cnt*512/64;i++)
+//	{
+//		ret = sp(REC1BLK,record_offset,buf,0);
+//		if (ret)
+//		{
+//			return ret;
+//		}
+//
+//		if (buf[0] != TAG_BIN_DATA)
+//		{
+//			return 1;
+//		}
+//
+//		len = buf[1];
+//		if ((len == 0)||(len > 64))
+//		{
+//			return 2;
+//		}
+//
+//		//checksum校验，
+//		for (j = 0; j < len+2;j++)
+//		{
+//			check_value += buf[j];
+//		}
+//
+//		check_value %= 256;
+//		check_value = ~check_value;
+//		check_value += 1;
+//
+//		if (check_value != buf[len+2])
+//		{
+//			return 3;
+//		}
+//
+//		memcpy(read_buf+len*i,&buf[2],len);
+//
+//		(*real_byte_cnt) += len;
+//
+//		record_offset++;
+//	}
+//
+//	return 0;
+//}
+static unsigned int read_offset = 0;
+#endif
 /**
 ***************************************************************************
 *@brief	
@@ -143,6 +219,7 @@ static int verify_data(unsigned int addr, unsigned int *pdata, int len)
 */
 static int check_updatefile(void)
 {
+#if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
 	UINT							rd;
 	int								i;
 	int								j;
@@ -203,7 +280,101 @@ static int check_updatefile(void)
 	}
 
 	f_close(&file);
+#endif
 
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+	int i,j,ret,cnt;
+        unsigned int					xor;
+	unsigned int real_byte_cnt;
+	//ret = record_init(REC1BLK,67,256*1024/64);	//最多支持256K的BIN文件的下载，只开辟这么大的空间来保存HEX文件
+	//if (ret != 0)
+	//{
+	//	if (ret == -3 || ret == -4 || ret == -6)
+	//	{
+	//		ret = record_format(REC1BLK,67,256*1024/64);
+	//		if (ret)
+	//		{
+	//			return ret;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		return ret;
+	//	}
+	//}
+
+	//cnt = record_count(REC1BLK); 
+	//if ((cnt < 512/64)||(cnt > (ApplicationSize+512)/64))
+	//{
+	//	return 1;
+	//}
+
+	//if( spi_flash_read(ProHBuffer,1,&real_byte_cnt) != 0)
+	//{
+	//	return 2;
+	//}
+
+	//if (real_byte_cnt != 512)
+	//{
+	//	return 2;
+	//}
+
+	read_offset = 0;
+	if (spi_flash_read(DOWNLOAD_FILE_START_SECT/512,ProHBuffer,1))
+	{
+		return 1;
+	}
+
+	read_offset += 1;
+
+	if( ProHBuffer[0] != 'J' || ProHBuffer[1] != 'B' || ProHBuffer[2] != 'L' )
+	{
+		return 3;
+	}
+
+	//check oem_name 字符串
+	if (strcmp(((TPackHeader*)&ProHBuffer[0])->OEMName,"HJBTPrinter"))
+	{
+		return 4;
+	}
+
+	code_sector						= ((TPackHeader*)ProHBuffer)->length;
+	code_xor						= ((TPackHeader*)ProHBuffer)->xor_data;
+
+	code_sector						/= 512;
+	xor								= 0;
+	for(i=0; i<code_sector; i++)
+	{
+		//if( record_sector_read(ProHBuffer,1,&real_byte_cnt) != 0)
+		//{
+		//	return 5;
+		//}
+
+		//if (real_byte_cnt != 512)
+		//{
+		//	return 5;
+		//}
+
+		if (spi_flash_read(DOWNLOAD_FILE_START_SECT/512+read_offset,ProHBuffer,1))
+		{
+			return 2;
+		}
+
+		read_offset ++;
+
+		for(j=0; j<128; j++)
+		{
+			xor	^= *((unsigned int*)&ProHBuffer[j*4]);
+		}
+	}
+
+
+	if(xor != code_xor)
+	{
+		return 6;
+	}
+
+#endif
 	return 0;
 }
 
@@ -220,14 +391,14 @@ static int check_updatefile(void)
 int update_app(void)
 {
 	unsigned int					total_sector;
-	UINT							rd;
+	unsigned int							rd;
 	int								i;
 	unsigned int					xor;
-	unsigned int					addr_offset;
+	unsigned int					addr_offset,real_byte_cnt;
 	int								update_index;
 	//unsigned char	str[5];
 	//unsigned char	len;
-
+#if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
 	if( f_open(&file, update_file, FA_OPEN_EXISTING | FA_READ ) != FR_OK )
 	{
 		return -1;
@@ -242,11 +413,6 @@ int update_app(void)
 	total_sector					= ((TPackHeader*)ProHBuffer)->length;
 	total_sector					/= 512;
 
-	if(total_sector != code_sector)
-	{
-		f_close(&file);
-		return -1;
-	}
 #ifdef LCD_VER
 	Lcd_clear(1);
 	Lcd_TextOut(0,12,"FW Upgrade");
@@ -286,10 +452,16 @@ int update_app(void)
 	for(update_index=0; update_index<total_sector; update_index++)
 	{
 		// 读数据
-		if( f_read(&file, ProHBuffer, 512, &rd) != FR_OK )
+		if( record_sector_read(ProHBuffer,1,&real_byte_cnt) != 0)
 		{
-			f_close(&file);
 			goto update_fail;
+			return 2;
+		}
+
+		if (real_byte_cnt != 512)
+		{
+			goto update_fail;
+			return 2;
 		}
 
 		// 计算校验：异或
@@ -302,8 +474,19 @@ int update_app(void)
 #else
         LED_toggle();
 #endif
-		// 解密
+#if(ENCRYPT_MODE == ENCRYPT_MODE_3DES)
+		// 3DES解密
 		un3DES(ProHBuffer, 512, key1, key2, key1, buffer_org, &rd);
+#elif(ENCRYPT_MODE == ENCRYPT_MODE_DES)
+		//DES 解密
+		un3DES(ProHBuffer, 512, key1, buffer_org, &rd);
+#elif(ENCRYPT_MODE == ENCRYPT_MODE_KT_XOR)
+		//KT_Xor解密
+		decode_KT_Xor(ProHBuffer,512,(unsigned char*)KT_key,read_offset-2,buffer_org,&rd);
+#else
+		//明文
+		MEMCPY(ProHBuffer,buffer_org,512);
+#endif
 
 #ifdef LCD_VER
 		Lcd_process_bar_step();
@@ -330,7 +513,7 @@ int update_app(void)
 
 	// 在程序的结尾，写个0x12345678的标号
 	i								= 0x12345678UL;
-	prog_data(ApplicationAddress + FLASH_SIZE - 4, &i, 1);
+	prog_data(ApplicationAddress + ApplicationSize - 4, &i, 1);
 	FLASH_Lock();
 
 #ifdef LED_VER
@@ -358,6 +541,169 @@ update_fail:
 	Lcd_TextOut(26,24,"Fail");
 	delay_ms(2000);
 #endif
+#endif
+
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+
+	//record_offset = 0;
+
+	//if( record_sector_read(ProHBuffer,1,&real_byte_cnt) != 0)
+	//{
+	//	return 2;
+	//}
+
+	//if (real_byte_cnt != 512)
+	//{
+	//	return 2;
+	//}
+
+	read_offset = 0;
+	if (spi_flash_read(DOWNLOAD_FILE_START_SECT/512,ProHBuffer,1))
+	{
+		return 1;
+	}
+
+	read_offset++;
+
+	total_sector					= ((TPackHeader*)ProHBuffer)->length;
+	total_sector					/= 512;
+        
+#ifdef LCD_VER
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"FW Upgrade");
+#endif
+	//
+	FLASH_Unlock();
+
+	for(i=0; i< (ApplicationSize/1024)*2; i++)			
+	{
+		FLASH_ErasePage( ApplicationAddress + i * 512 );
+		if (i%2==0)
+		{
+#ifdef LCD_VER
+			Lcd_process_bar_step();
+#else
+			LED_toggle();
+#endif
+		}
+	}
+
+	xor								= 0;
+	addr_offset						= 0;
+
+	//while(total_sector--)
+
+	// 重新计算密钥
+	for(i=0; i<8; i++)
+	{
+		key2[i]						^= key1[i];
+	}
+	for(i=0; i<8; i++)
+	{
+		key1[i]						^= 0xD6;
+	}
+
+
+	for(update_index=0; update_index<total_sector; update_index++)
+	{
+		// 读数据
+		//if( record_sector_read(ProHBuffer,1,&real_byte_cnt) != 0)
+		//{
+		//	goto update_fail;
+		//	return 2;
+		//}
+
+		//if (real_byte_cnt != 512)
+		//{
+		//	goto update_fail;
+		//	return 2;
+		//}
+
+		if (spi_flash_read(DOWNLOAD_FILE_START_SECT/512+read_offset,ProHBuffer,1))
+		{
+			goto update_fail;
+			return 2;
+		}
+
+		read_offset++;
+
+		// 计算校验：异或
+		for(i=0; i<128; i++)
+		{
+			xor						^= *((unsigned int*)&ProHBuffer[i*4]);
+		}
+#ifdef LCD_VER
+		Lcd_process_bar_step();
+#else
+		LED_toggle();
+#endif
+#if(ENCRYPT_MODE == ENCRYPT_MODE_3DES)
+		// 3DES解密
+		un3DES(ProHBuffer, 512, key1, key2, key1, buffer_org, &rd);
+#elif(ENCRYPT_MODE == ENCRYPT_MODE_DES)
+		//DES 解密
+		un3DES(ProHBuffer, 512, key1, buffer_org, &rd);
+#elif(ENCRYPT_MODE == ENCRYPT_MODE_KT_XOR)
+		//KT_Xor解密
+		decode_KT_Xor(ProHBuffer,512,(unsigned char*)KT_key,read_offset-2,buffer_org,&rd);
+#else
+		//明文
+		MEMCPY(ProHBuffer,buffer_org,512);
+#endif
+#ifdef LCD_VER
+		Lcd_process_bar_step();
+#else
+		LED_toggle();
+#endif
+		// 编程写入
+		if( prog_data( ApplicationAddress + addr_offset, (unsigned int*)buffer_org, 128 ) != 0 )
+		{
+			goto update_fail;
+		}
+
+		// 校验写入
+		if( verify_data( ApplicationAddress + addr_offset, (unsigned int*)buffer_org, 128) != 0 )
+		{
+			goto update_fail;
+		}
+
+		addr_offset					+= 512;
+
+		//LED_toggle();
+	}
+
+
+	// 在程序的结尾，写个0x12345678的标号
+	i								= 0x12345678UL;
+	prog_data(ApplicationAddress + ApplicationSize - 4, &i, 1);
+	FLASH_Lock();
+
+#ifdef LED_VER
+	LED_ON();
+#else
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"FW Upgrade");
+	Lcd_TextOut(26,24,"OK");
+	delay_ms(2000);
+#endif
+	// ==========================================================================================================
+
+	return 0;
+
+update_fail:
+
+	// erase first block;
+	FLASH_ErasePage(ApplicationAddress);
+	FLASH_Lock();
+#ifdef LED_VER
+	LED_OFF();
+#else
+	Lcd_clear(1);
+	Lcd_TextOut(0,12,"FW Upgrade");
+	Lcd_TextOut(26,24,"Fail");
+	delay_ms(2000);
+#endif
+#endif
 	return -1;
 }
 
@@ -379,7 +725,7 @@ int verify_app(void)
 	if( *(unsigned int*)(ApplicationAddress + (79*4)) != 0x12345678uL )
 		return -1;
 
-	if( *(unsigned int*)(ApplicationAddress + FLASH_SIZE - 4) != 0x12345678 )
+	if( *(unsigned int*)(ApplicationAddress + ApplicationSize - 4) != 0x12345678 )
 		return -1;
 
 	return 0;
@@ -407,7 +753,7 @@ static int del_update_bin(void)
 	//挂载文件系统
 	//f_mount(0, &fs);										// 装载文件系统
 
-
+#if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
 	if( f_open(&file, "/update.bin", FA_OPEN_EXISTING | FA_READ ) != FR_OK )
 	{
 		return -1;
@@ -420,7 +766,15 @@ static int del_update_bin(void)
 	{
 		return -1;	//删除旧的资源文件失败
 	}
+#endif
 
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+	//record_delall(REC1BLK);
+        for (int i = 0; i < DOWNLOADE_FILE_SIZE/(BLOCK_ERASE_SIZE*512);i++)
+				{
+					spi_flash_eraseblock(DOWNLOAD_FILE_START_SECT+i*BLOCK_ERASE_SIZE*512);
+				}
+#endif
 	return 0;
 }
 
@@ -509,16 +863,20 @@ sys_fail:
 	LED_OFF();
 #else
 	Lcd_clear(1);
-	Lcd_TextOut(4,18,"UDisk Mode");
+	Lcd_TextOut(0,12,"FW Upgrade");
 #endif
 
 	// ==========================================================================================================
 	// 4,显示错误信息
 	{
 		//int			i;
-		
+#if(USB_DEVICE_CONFIG & _USE_USB_MASS_STOARGE_DEVICE)
         g_mass_storage_device_type = MASSTORAGE_DEVICE_TYPE_SPI_FLASH;
 		usb_device_init(USB_MASSSTORAGE);
+#endif
+#if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
+		usb_device_init(USB_PRINTER_HID_COMP);
+#endif
 		//USB_Cable_Config(1);
 		while(if_feed_key_preesed())
 		{

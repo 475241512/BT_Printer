@@ -365,7 +365,7 @@ void Lcd_clear(unsigned char c)
 	write(0x40,0);      // Set Display Start Line
 
 	tmp = (c==0)?0x00:0xff;
-	memset(Lcd_RAM,tmp,64*6);
+	MEMSET(Lcd_RAM,tmp,64*6);
 	for(cnt = 0; cnt < 6; cnt ++)
 	{
 		write(0xb0 + cnt,0);
@@ -867,7 +867,7 @@ void Lcd_blink(unsigned int cnt,unsigned int period_ms)
 static signed char lcd_flash_cnt;
 #define LCD_SLOW_FLASH_SPEED    4
 #define LCD_FAST_FLASH_SPEED    60
-extern unsigned char BT_current_pin[][5];
+//extern unsigned char BT_current_pin[][5];
 
 void Lcd_disp_BT_info(void)
 {
@@ -877,31 +877,49 @@ void Lcd_disp_BT_info(void)
 		return;
 	}
 
+	Lcd_clear(1);
 	//Lcd_TextOut(0,6,"Name PIN S");
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	if (BT1_CONNECT)
 	{
-		sprintf(str,"HJ1_%s *",&BT_mac[BT1_MODULE][8]);
+		//sprintf(str,"HJ1_%s *",&g_param.bt_mac[BT1_MODULE][8]);
+		STRNCPY(str,"HJ1_",4);
+		STRNCPY(str+4,&g_param.bt_mac[BT1_MODULE][8],4);
+		STRNCPY(str+8," *",2);
 	}
 	else
 	{
-		sprintf(str,"HJ1_%s  ",&BT_mac[BT1_MODULE][8]);
+		//sprintf(str,"HJ1_%s  ",&g_param.bt_mac[BT1_MODULE][8]);
+		STRNCPY(str,"HJ1_",4);
+		STRNCPY(str+4,&g_param.bt_mac[BT1_MODULE][8],4);
+		STRNCPY(str+8,"  ",2);
 	}
+	str[10]=0;
 	Lcd_TextOut(0,6,str);
 #endif
 	
 #if(BT_MODULE_CONFIG & USE_BT2_MODULE)
 	if (BT2_CONNECT)
 	{
-		sprintf(str,"HJ2_%s *",&BT_mac[BT2_MODULE][8]);
+		//sprintf(str,"HJ2_%s *",&g_param.bt_mac[BT2_MODULE][8]);
+		STRNCPY(str,"HJ2_",4);
+		STRNCPY(str+4,&g_param.bt_mac[BT2_MODULE][8],4);
+		STRNCPY(str+8," *",2);
 	}
 	else
 	{
-		sprintf(str,"HJ2_%s  ",&BT_mac[BT2_MODULE][8]);
+		//sprintf(str,"HJ2_%s  ",&g_param.bt_mac[BT2_MODULE][8]);
+		STRNCPY(str,"HJ2_",4);
+		STRNCPY(str+4,&g_param.bt_mac[BT2_MODULE][8],4);
+		STRNCPY(str+8,"  ",2);
 	}
+	str[10]=0;
 	Lcd_TextOut(0,18,str);
 #endif
-	sprintf(str,"PIN:%s",BT_current_pin[BT1_MODULE]);
+	//sprintf(str,"PIN:%s",g_param.bt_pin[BT1_MODULE]);
+	STRNCPY(str,"PIN:",4);
+	STRNCPY(str+4,g_param.bt_pin[BT1_MODULE],4);
+	str[8] = 0;
 	Lcd_TextOut(0,30,str);
 	need_update_bt_info_flag = 0;
 	//Lcd_DrawLineH(0,18,64,0);

@@ -70,20 +70,20 @@
         <option>
           <name>GRuntimeLibSelect</name>
           <version>0</version>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>GRuntimeLibSelectSlave</name>
           <version>0</version>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+          <state>Do not link with a runtime library.</state>
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>$TOOLKIT_DIR$\INC\DLib_Config_Normal.h</state>
+          <state></state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>STM32F10xxB	ST STM32F10xxB</state>
+          <state>STM32F10xx8	ST STM32F10xx8</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -514,7 +514,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -696,7 +696,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabelSelect</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
@@ -1610,9 +1610,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\App\esc_p.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\App\ESC_POS_test.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\App\Event.c</name>

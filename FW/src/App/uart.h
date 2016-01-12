@@ -19,7 +19,7 @@
 ****************************************************************************/
 #ifndef __UART_H
 #define __UART_H
-#include "BT816.h"
+#include "hw_platform.h"
 #include "ringbuffer.h"
 
 #define MAX_PRINT_CHANNEL		(MAX_BT_CHANNEL+1)		//BT channel + USB channel

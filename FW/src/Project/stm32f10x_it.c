@@ -50,7 +50,7 @@ void NMIException(void)
 // with stack frame location as input parameter  
 void hard_fault_handler_c(unsigned int * hardfault_args)  
 {  
-#ifdef DEBUG_VER 
+#ifdef 0 
 	unsigned int stacked_r0;  
 	unsigned int stacked_r1;  
 	unsigned int stacked_r2;  

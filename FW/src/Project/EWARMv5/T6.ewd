@@ -45,11 +45,11 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\iostm32f10xxb.ddf</state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\iostm32f10xxB.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>RunToName</name>
@@ -596,6 +596,26 @@
           <state>1</state>
         </option>
       </data>
+    </settings>
+    <settings>
+      <name>CMSISDAP_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
+    </settings>
+    <settings>
+      <name>IJET_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
+    </settings>
+    <settings>
+      <name>PEMICRO_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
+    </settings>
+    <settings>
+      <name>XDS100_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
     </settings>
     <debuggerPlugins>
       <plugin>
@@ -1242,6 +1262,26 @@
           <state>1</state>
         </option>
       </data>
+    </settings>
+    <settings>
+      <name>CMSISDAP_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
+    </settings>
+    <settings>
+      <name>IJET_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
+    </settings>
+    <settings>
+      <name>PEMICRO_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
+    </settings>
+    <settings>
+      <name>XDS100_ID</name>
+      <archiveVersion>2</archiveVersion>
+      <data/>
     </settings>
     <debuggerPlugins>
       <plugin>

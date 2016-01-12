@@ -55,12 +55,12 @@ LINE_CODING linecoding =
 #endif
 
 #if((USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)||(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE))
-u8 port_status;
-const u8 *device_id="MFG:EPSON;CMD:EJL,ESCP24J-84,ESCPAGEJ-04,ESCPSUPER-00;MDL:LP-2400;CLS:PRINTER;DES:HJ KT486;";
+//u8 port_status;
+//const u8 *device_id="MFG:EPSON;CMD:EJL,ESCP24J-84,ESCPAGEJ-04,ESCPSUPER-00;MDL:LP-2400;CLS:PRINTER;DES:HJ KT486;";
 
-static u8 *Get_Device_id(u16 Length);
-static u8 *Get_Port_status(u16 Length);
-static void print_device_reset(void);
+//static u8 *Get_Device_id(u16 Length);
+//static u8 *Get_Port_status(u16 Length);
+//static void print_device_reset(void);
 #endif
 
 /* -------------------------------------------------------------------------- */
@@ -722,7 +722,7 @@ RESULT USB_APP_Data_Setup(u8 RequestNo)
 					else if ((RequestNo == GET_PORT_STATUS) && (pInformation->USBwValue == 0)
 						&& (pInformation->USBwIndex == 0)&&(pInformation->USBwLength == 1))
 					{
-						CopyRoutine = Get_Port_status;
+						//CopyRoutine = Get_Port_status;
 					}
 					else if(RequestNo == GET_PROTOCOL)
 					{
@@ -854,7 +854,7 @@ RESULT USB_APP_NoData_Setup(u8 RequestNo)
 						if((RequestNo == SOFT_RESET) && (pInformation->USBwValue == 0)
 						&& (pInformation->USBwIndex == 0) && (pInformation->USBwLength == 0x00))
 						{
-							print_device_reset();
+							//print_device_reset();
 							return USB_SUCCESS;
 						}
 						else if (RequestNo == SET_IDLE)
@@ -1183,6 +1183,7 @@ static u8 *Get_Max_Lun(u16 Length)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
+#if 0
 static u8 *Get_Device_id(u16 Length)
 {
 	if (Length == 0)
@@ -1222,6 +1223,7 @@ static void print_device_reset(void)
 	esc_p_init(USB_PRINT_CHANNEL_OFFSET,1);
 	PrintBufToZero();
 }
+#endif
 #endif
 
 #if(USB_DEVICE_CONFIG & _USE_USB_PRINTER_HID_COMP_DEVICE)
@@ -1279,9 +1281,9 @@ u8 *Printer_SetReport(u16 Length)
 		r12_app_res_offset = 0;
 		//if (r12_app_cmd_frame[0] == 0x82)
 		//{
-		//	//表示上一次SetReport事务中接收到一个应用层命令Packet，只是该应用层命令包还有后续�?		//	if(r12_app_cmd_offset + (APP_FRAME_SIZE-1) > R12_APP_CMD_BUF_SIZE)
+		//	//表示上一次SetReport事务中接收到一个应用层命令Packet，只是该应用层命令包还有后续�?		//	if(r12_app_cmd_offset + (APP_FRAME_SIZE-1) > R12_APP_CMD_BUF_SIZE)
 		//	{
-		//		//防止命令缓冲区溢�?		//		r12_app_cmd_offset = 0;
+		//		//防止命令缓冲区溢�?		//		r12_app_cmd_offset = 0;
 		//	}
 		//	memcpy(r12_app_cmd+r12_app_cmd_offset,r12_app_cmd_frame+1,APP_FRAME_SIZE-1);
 		//	r12_app_cmd_offset += (APP_FRAME_SIZE-1);

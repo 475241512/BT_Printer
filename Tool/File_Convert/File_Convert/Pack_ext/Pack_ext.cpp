@@ -46,7 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	char *src_bin_file;
 	char *target_bin_file;
-	char write_buf[132];
+	char write_buf[140];
 	//char read_buf[60];
 	int	offset,write_len,check_sum;
 	char file_type;
@@ -144,12 +144,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		exit(1);
 	}
 	offset = 0;
-	while((offset+60) < len)
+	while((offset+48) < len)
 	{
-		write_buf[3] = HexToAscii((60>>4)&0x0f);	//LEN
-		write_buf[4] = HexToAscii(60&0x0f);
-		check_sum += 60;
-		for(int i = 0; i < 60; i++)
+		write_buf[3] = HexToAscii((48>>4)&0x0f);	//LEN
+		write_buf[4] = HexToAscii(48&0x0f);
+		check_sum += 48;
+		for(int i = 0; i < 48; i++)
 		{
 			write_buf[5+2*i] = HexToAscii((read_buf[offset+i]>>4)&0x0f);
 			write_buf[5+2*i+1] =HexToAscii(read_buf[offset+i]&0x0f);
@@ -158,12 +158,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		check_sum %= 256;
 		check_sum = ~check_sum;
 		check_sum += 1;
-		write_buf[5+2*60]=HexToAscii((check_sum>>4)&0x0f);
-		write_buf[6+2*60]=HexToAscii(check_sum&0x0f);
-		write_buf[7+2*60] = 0x0D;
-		write_buf[8+2*60] = 0x0A;
+		write_buf[5+2*48]=HexToAscii((check_sum>>4)&0x0f);
+		write_buf[6+2*48]=HexToAscii(check_sum&0x0f);
+		write_buf[7+2*48] = 0x0D;
+		write_buf[8+2*48] = 0x0A;
 
-		write_len = fwrite((const char*)write_buf,9+2*60,1,fp_target);
+		write_len = fwrite((const char*)write_buf,9+2*48,1,fp_target);
 		if (write_len != 1)
 		{
 			fclose(fp_target);
@@ -171,8 +171,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			getch();
 			exit(1);
 		}
-		//fseek(fp_target, 7+2*60, SEEK_CUR);
-		offset += 60;
+		//fseek(fp_target, 7+2*64, SEEK_CUR);
+		offset += 48;
 		check_sum = file_type;
 	}
 
