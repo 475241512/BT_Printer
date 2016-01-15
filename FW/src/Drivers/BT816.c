@@ -70,6 +70,8 @@ unsigned char  bt_connect_status;
 unsigned char  last_bt_connect_status;
 
 
+unsigned char	data_cache_in_nvm_flag;
+
 #define	RESET_BT1_DMA()		do{	\
 							DMA_Cmd(DMA1_Channel5,DISABLE);\
 							DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN;\
@@ -886,17 +888,56 @@ int BT816_Channel1_RxISRHandler(unsigned char *res, unsigned int res_len)
 	{
 		//已经处于连接状态，蓝牙模块进入数据透传模式
 		set_BT1_BUSY();
-		//trip1();
-		ringbuffer_put(&spp_ringbuf[BT1_MODULE],res,res_len);
-#ifdef DEBUG_VER
-		//MEMCPY(debug_buffer+debug_cnt,res,res_len);
-		//debug_cnt += res_len;
-#endif
-		DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN;
-		if (ringbuffer_data_len(&spp_ringbuf[BT1_MODULE]) < RING_BUFF_FULL_TH)
+//		//trip1();
+//		ringbuffer_put(&spp_ringbuf[BT1_MODULE],res,res_len);
+//#ifdef DEBUG_VER
+//		//MEMCPY(debug_buffer+debug_cnt,res,res_len);
+//		//debug_cnt += res_len;
+//#endif
+//		DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN;
+//		if (ringbuffer_data_len(&spp_ringbuf[BT1_MODULE]) < RING_BUFF_FULL_TH)
+//		{
+//			set_BT1_FREE();
+//		}	
+
+		if (data_cache_in_nvm_flag)
 		{
+			spi_flash_waddr(BT_CACHE_START_SECT+g_param.bt1_flash_cache_write_offset,res_len,res);
+			
+			g_param.bt1_flash_cache_write_offset += res_len;
+			DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN;
+			if (g_param.bt1_flash_cache_write_offset <= (BT_DATA_CACHE_SIZE - BT816_RES_BUFFER_LEN))
+			{
+				set_BT1_FREE();
+			}
+		}
+		else
+		{
+			len = ringbuffer_space_len(&spp_ringbuf[BT1_MODULE]);
+			if (res_len > len)
+			{
+				ringbuffer_put(&spp_ringbuf[BT1_MODULE],res,len);
+				//剩余数据，需要保存到SPI FLASH区域
+				data_cache_in_nvm_flag = 1;
+				if (g_param.bt1_flash_cache_write_offset)
+				{
+					for(i = 0;i < 1+(g_param.bt1_flash_cache_write_offset/(BLOCK_ERASE_SIZE*512));i++)
+					{
+						spi_flash_eraseblock(BT_CACHE_START_SECT+i*BLOCK_ERASE_SIZE*512);
+					}
+				}
+				g_param.bt1_flash_cache_write_offset = 0;
+				
+				spi_flash_waddr(BT_CACHE_START_SECT+g_param.bt1_flash_cache_write_offset,res_len-len,&res[len]);
+				g_param.bt1_flash_cache_write_offset += (res_len-len);
+			}
+			else
+			{
+				ringbuffer_put(&spp_ringbuf[BT1_MODULE],res,res_len);
+			}
+			DMA1_Channel5->CNDTR = BT816_RES_BUFFER_LEN;
 			set_BT1_FREE();
-		}	
+		}
 	}
 	else
 	{
@@ -1507,10 +1548,10 @@ int BT816_set_pin(unsigned int bt_channel,unsigned char *pin)
 
 /*
  * @brief 查询蓝牙模块HID当前的连接状态  	
- * @return <0 ：发送失败	0: unkown 	1: connected    2： disconnect
+ * @return <0 ：发送失败	1: connected    0： disconnect
  * @note 此函数需要被不断轮询才能正确反应各个模块的连接状态
 */
-void BT816_connect_status(unsigned int bt_channel)
+unsigned char BT816_connect_status(unsigned int bt_channel)
 {
 	unsigned int i;
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
@@ -1620,6 +1661,8 @@ void BT816_connect_status(unsigned int bt_channel)
 		need_update_bt_info_flag = 1;
 	}
 #endif
+        
+        return bt_connect_status;
 }
 
 /*
@@ -1652,55 +1695,100 @@ int BT816_init(void)
 		//memset(BT_mac[i],0,21);
 	}
 
-	ret = BT816_Reset();
-	if(ret < 0)
+	data_cache_in_nvm_flag = 0;
+
+	BT816_Reset();
+	
+#if(BT_MODULE_CONFIG & USE_BT1_MODULE)
+	if (BT816_connect_status(BT1_MODULE)&(1<<BT1_MODULE))
 	{
-		ret = BT816_Reset();
-		if(ret < 0)
+		goto bt_init_step2;
+	}
+
+	if (BT816_query_name(BT1_MODULE,str))
+	{
+		for (i = 0; i < 200;i++)
+		{
+			if (BT816_connect_status(BT1_MODULE)&(1<<BT1_MODULE))
+			{
+				goto bt_init_step2;
+			}
+		}
+
+		if (i == 200)
 		{
 			return -1;
 		}
-	}
-
-#if(BT_MODULE_CONFIG & USE_BT1_MODULE)
-	if (BT816_query_name(BT1_MODULE,str))
-	{
-		if (BT1_CONNECT)
-		{
-			return 0;
-		}
-		return -4;
 	}
 
 	if (MEMCMP(str,"HJ1",3) != 0)
 	{
 		if (BT816_set_name(BT1_MODULE,"HJ1"))
 		{
-			if (BT1_CONNECT)
+			for (i = 0; i < 200;i++)
 			{
-				return 0;
+				if (BT816_connect_status(BT1_MODULE)&(1<<BT1_MODULE))
+				{
+					goto bt_init_step2;
+				}
 			}
-			return -5;
+
+			if (i == 200)
+			{
+				return -1;
+			}
 		}
 	}
 
 	if (BT816_query_mac(BT1_MODULE,g_param.bt_mac[BT1_MODULE]))
 	{
-		if (BT1_CONNECT)
+		for (i = 0; i < 200;i++)
 		{
-			return 0;
+			if (BT816_connect_status(BT1_MODULE)&(1<<BT1_MODULE))
+			{
+				goto bt_init_step2;
+			}
 		}
-		return -6;
+
+		if (i == 200)
+		{
+			return -1;
+		}
 	}
 
 	if (BT816_query_pin(BT1_MODULE,g_param.bt_pin[BT1_MODULE]))
 	{
-		if (BT1_CONNECT)
+		for (i = 0; i < 200;i++)
 		{
-			return 0;
+			if (BT816_connect_status(BT1_MODULE)&(1<<BT1_MODULE))
+			{
+				goto bt_init_step2;
+			}
 		}
-		return -7;
+
+		if (i == 200)
+		{
+			return -1;
+		}
 	}
+
+	if (BT816_query_version(BT1_MODULE,g_param.bt_version))
+	{
+		for (i = 0; i < 200;i++)
+		{
+			if (BT816_connect_status(BT1_MODULE)&(1<<BT1_MODULE))
+			{
+				goto bt_init_step2;
+			}
+		}
+
+		if (i == 200)
+		{
+			return -1;
+		}
+	}
+
+
 #endif
 
 #if(BT_MODULE_CONFIG & USE_BT2_MODULE)
@@ -1821,7 +1909,7 @@ int BT816_init(void)
 		return -7;
 	}
 #endif
-
+bt_init_step2:
 	MEMSET(spp_rec_buffer,0,MAX_BT_CHANNEL*SPP_BUFFER_LEN);
 #if(BT_MODULE_CONFIG & USE_BT1_MODULE)
 	RESET_BT1_DMA();

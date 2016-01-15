@@ -13,9 +13,9 @@
 #define TAG_END			0x05
 
 //处理的文件类型
-#define FILE_TYPE_BIN	1
-#define FILE_TYPE_FONT	2
-#define FILE_TYPE_PIC	3
+#define FILE_TYPE_BIN	2
+#define FILE_TYPE_FONT	3
+#define FILE_TYPE_PIC	4
 /* 
 *********************************************************************** 
 * 函数： TCHAR2Char 
@@ -107,8 +107,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	write_buf[2]=HexToAscii(TAG_START&0x0f);
 	write_buf[3]=0x30;
 	write_buf[4]=0x30;
-	write_buf[5]=0x30;
-	write_buf[6]=0x30;
+	//write_buf[5]=0x30;
+	//write_buf[6]=0x30;
+	write_buf[5]=HexToAscii((file_type>>4)&0x0f);
+	write_buf[6]=HexToAscii(file_type&0x0f);		//file type
 	write_buf[7]=0x30;
 	write_buf[8]=0x31;
 	write_buf[9]=HexToAscii((check_sum>>4)&0x0f);
@@ -215,8 +217,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	write_buf[2]=HexToAscii(TAG_END&0x0f);
 	write_buf[3]=0x30;
 	write_buf[4]=0x30;
-	write_buf[5]=0x30;
-	write_buf[6]=0x30;
+	write_buf[5]=HexToAscii((file_type>>4)&0x0f);
+	write_buf[6]=HexToAscii(file_type&0x0f);		//file type
 	write_buf[7]=0x30;
 	write_buf[8]=0x31;
 	write_buf[9]=HexToAscii((check_sum>>4)&0x0f);

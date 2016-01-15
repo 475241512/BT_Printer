@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>STM32F10xx8	ST STM32F10xx8</state>
+          <state>STM32F10xxB	ST STM32F10xxB</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -515,7 +515,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>Project.bin</state>
+          <state>HJ58B_BootCode.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>

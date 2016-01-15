@@ -162,7 +162,7 @@ int BT816_set_name(unsigned int bt_channel,unsigned char *name);
 int BT816_query_mac(unsigned int bt_channel,unsigned char *mac);
 int BT816_query_pin(unsigned int bt_channel,unsigned char *pin);
 int BT816_set_pin(unsigned int bt_channel,unsigned char *pin);
-void BT816_connect_status(unsigned int bt_channel);
+unsigned char BT816_connect_status(unsigned int bt_channel);
 void BT816_send_data(unsigned int bt_channel,unsigned char *data,unsigned int len);
 int BT816_Channel1_RxISRHandler(unsigned char *res, unsigned int res_len);
 int BT816_Channel2_RxISRHandler(unsigned char *res, unsigned int res_len);

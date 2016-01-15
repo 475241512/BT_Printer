@@ -22,6 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "spi_flash.h"
 #include <string.h>
+#include "BT816.h"
 
 /* Private typedef -----------------------------------------------------------*/
 typedef struct tagSPIFlashID
@@ -136,6 +137,8 @@ int spi_flash_init(void)
 
 	/* Deselect the FLASH: Chip Select high */
 	SPI_FLASH_CS_HIGH();
+
+	SPI_I2S_DeInit(SPI2);	//这一句很重要，GD的主控从BootCode跳转到APP后 SPI表现异常就是因为缺少这句话
 
 	/* SPI2 configuration */
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
@@ -345,7 +348,9 @@ int	spi_flash_rpage(int lba, int secnum, unsigned char *buf)
 	lba		*= 0x200;
 	//while(spi_flash_busy_flag);
 	//spi_flash_busy_flag = 1;
-
+	//NVIC_SETFAULTMASK();
+	USART_ITConfig(USART1,USART_IT_IDLE,DISABLE); 
+	set_BT1_BUSY();
 	/* Select the FLASH: Chip Select low */
 	SPI_FLASH_CS_LOW();
 
@@ -368,7 +373,9 @@ int	spi_flash_rpage(int lba, int secnum, unsigned char *buf)
 
 	/* Deselect the FLASH: Chip Select high */
 	SPI_FLASH_CS_HIGH();
-
+	//NVIC_RESETFAULTMASK();
+	USART_ITConfig(USART1,USART_IT_IDLE,ENABLE); 
+	set_BT1_FREE();
 	return 0;	
 }
 
@@ -582,6 +589,8 @@ int spi_flash_waddr(unsigned int WriteAddr, unsigned int NumByteToWrite, unsigne
 */
 void spi_flash_raddr(unsigned int ReadAddr,unsigned int NumByteToRead, unsigned char *pBuffer)
 {
+	//NVIC_SETFAULTMASK();
+	USART_ITConfig(USART1,USART_IT_IDLE,DISABLE);   
 	/* Select the FLASH: Chip Select low */
 	SPI_FLASH_CS_LOW();
 
@@ -605,6 +614,8 @@ void spi_flash_raddr(unsigned int ReadAddr,unsigned int NumByteToRead, unsigned 
 
 	/* Deselect the FLASH: Chip Select high */
 	SPI_FLASH_CS_HIGH();
+	//NVIC_RESETFAULTMASK();
+	USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);   
 }
 
 /**
@@ -693,7 +704,7 @@ unsigned short spi_flash_send_halfword(unsigned short HalfWord)
 
 	/* Wait to receive a Half Word */
 	//while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-        for(i=0; i<10; i++);
+        for(i=0; i<5; i++);
         
 	/* Return the Half Word read from the SPI bus */
 	return SPI_I2S_ReceiveData(SPI2);

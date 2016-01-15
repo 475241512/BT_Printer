@@ -29,6 +29,7 @@
 #include "stm32f10x_lib.h"
 #include "usb_regs.h"
 #include "usb_app_config.h"
+#include "Terminal_Para.h"
 #define		CHANNEL_TIMEOUT_TH		200		//当某一个串口通道在200ms内没有接收到数据时，认为此通道打印任务结束，此数据待调试	
 
 #ifdef DEBUG_VER
@@ -43,6 +44,64 @@ struct ringbuffer	spp_ringbuf[MAX_PRINT_CHANNEL];
 
 extern uint32_t systick_cnt;
 
+extern unsigned char	data_cache_in_nvm_flag;
+//extern unsigned int    data_cache_write_offset;
+
+//unsigned int data_cache_read_offset;
+
+//typedef struct spi_debug_t
+//{
+//	unsigned int addr;
+//	unsigned char data;
+//}SPI_DEBUG_DATA;
+
+//unsigned char	read_data[14*1024];
+
+unsigned char bt1_get_char(unsigned char *data)
+{
+	if (ringbuffer_getchar(&spp_ringbuf[BT1_MODULE],data))
+	{
+		if (ringbuffer_data_len(&spp_ringbuf[BT1_MODULE]) == 0)
+		{
+			g_param.bt1_flash_cache_read_offset = 0;
+		}
+		return 1;
+	}
+	else
+	{
+		if (data_cache_in_nvm_flag)
+		{
+			spi_flash_raddr(BT_CACHE_START_SECT+g_param.bt1_flash_cache_read_offset,1,data);
+			
+			g_param.bt1_flash_cache_read_offset++;
+			//NVIC_SETFAULTMASK();		//保护g_param.bt1_flash_cache_write_offset变量不会被中断改写
+			USART_ITConfig(USART1,USART_IT_IDLE,DISABLE); 
+			if (g_param.bt1_flash_cache_read_offset == g_param.bt1_flash_cache_write_offset)
+			{
+				data_cache_in_nvm_flag = 0;
+				set_BT1_FREE();
+			}
+			//NVIC_RESETFAULTMASK();
+			USART_ITConfig(USART1,USART_IT_IDLE,ENABLE); 
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+}
+static unsigned char print_channel_getchar(unsigned char ch,unsigned char *c)
+{
+	if (ch == BT1_MODULE)
+	{
+		return bt1_get_char(c);
+	}
+	else
+	{
+		return ringbuffer_getchar(&spp_ringbuf[ch],c);
+	}
+}
 /******************************************************************************
 **Function name:  Getchar
 **
@@ -66,7 +125,7 @@ extern uint8_t Getchar(void)        //接收数据
 			//还未进入打印通道的打印会话过程
 			for (i = 0; i < MAX_PRINT_CHANNEL;i++)
 			{
-				if (ringbuffer_getchar(&spp_ringbuf[i],&c))
+				if(print_channel_getchar(i,&c))
 				{
 					timeout = 0;
 					//debug_cnt = 0;
@@ -76,6 +135,14 @@ extern uint8_t Getchar(void)        //接收数据
 					//debug_cnt = 1;
 #endif
 					//trip1();
+					if ((current_channel == BT1_MODULE)&&(g_param.bt1_flash_cache_write_offset > 0))
+					{
+						for(i = 0;i < 1+(g_param.bt1_flash_cache_write_offset/(BLOCK_ERASE_SIZE*512));i++)
+						{
+							spi_flash_eraseblock(BT_CACHE_START_SECT+i*BLOCK_ERASE_SIZE*512);
+						}
+						g_param.bt1_flash_cache_write_offset = 0;
+					}
 					return c;
 				}
 			}
@@ -83,16 +150,18 @@ extern uint8_t Getchar(void)        //接收数据
 		else
 		{
 			//已经进入某一个打印通道的打印会话过程
-			if (ringbuffer_getchar(&spp_ringbuf[current_channel],&c))
+			//if (ringbuffer_getchar(&spp_ringbuf[current_channel],&c))
+			//if(bt1_get_char(&c))
+			if(print_channel_getchar(current_channel,&c))
 			{
 				timeout = 0;
 				//debug_cnt = 0;
 				if (current_channel != USB_PRINT_CHANNEL_OFFSET)
 				{
-					if (ringbuffer_data_len(&spp_ringbuf[current_channel]) < RING_BUFF_EMPTY_TH)
+					/*if (ringbuffer_data_len(&spp_ringbuf[current_channel]) < RING_BUFF_EMPTY_TH)
 					{
 						set_BT_free(current_channel);
-					}
+					}*/
 				}
 				else
 				{
@@ -138,6 +207,10 @@ extern uint8_t Getchar(void)        //接收数据
 							PrintBufToZero();
 							current_channel = -1;
 							//debug_cnt = 0;
+							//for(i = 0;i < BT_DATA_CACHE_SIZE/(BLOCK_ERASE_SIZE*512);i++)
+							//{
+							//	spi_flash_eraseblock(BT_CACHE_START_SECT+i*BLOCK_ERASE_SIZE*512);
+							//}
 						}
 					}
 				}

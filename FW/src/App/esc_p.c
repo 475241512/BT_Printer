@@ -879,7 +879,7 @@ extern void esc_p(void)
 			}
 			else
 			{
-				CURRENT_ESC_STS.h_motionunit = 1;
+				CURRENT_ESC_STS.h_motionunit = 0;
 			}
 			
 			if (chs[2])
@@ -888,7 +888,7 @@ extern void esc_p(void)
 			}
 			else
 			{
-				CURRENT_ESC_STS.v_motionunit = 1;
+				CURRENT_ESC_STS.v_motionunit = 0;
 			}
 			break;
 		}

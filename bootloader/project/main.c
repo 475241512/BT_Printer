@@ -801,7 +801,7 @@ int main(void)
 	//	NVIC_SetVectorTable(NVIC_VectTab_FLASH+0x20000, 0);
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0);
 
-#if 0
+#if 1
 	// 检查ROM是否被读保护，没有则执行读保护操作
 	if( FLASH_GetReadOutProtectionStatus() != SET )
 	{
@@ -851,10 +851,10 @@ recheck:
 		// ==========================================================================================================
 		// 3,运行应用
 		RCC->CIR						= 0x00000000;				/* 关闭中断				*/
-		JumpAddress						= *(volatile unsigned int *)(ApplicationAddress + 4);
+		JumpAddress						= *(volatile unsigned int *)(ApplicationAddress + 4);	//Application的入口
 		Jump_To_Application				= (pFunction)JumpAddress;
 
-		__MSR_MSP(*(volatile unsigned int *) ApplicationAddress);
+		__MSR_MSP(*(volatile unsigned int *) ApplicationAddress);	//重置C的运行栈
 		Jump_To_Application();
 	}
 

@@ -45,11 +45,11 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\iostm32f10xxB.ddf</state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\ST\iostm32f10xxE.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RunToName</name>

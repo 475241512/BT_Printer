@@ -24,6 +24,10 @@
 #if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
 //#include "record_mod.h"
 static unsigned int write_offset = 0;
+#define FILE_TYPE_BIN	2
+#define FILE_TYPE_FONT	3
+#define FILE_TYPE_PIC	4
+
 #endif
 #ifdef DEBUG_VER
 extern unsigned char debug_buffer[];
@@ -77,6 +81,7 @@ void EP3_OUT_Callback(void)
 
   #if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
    u16 i;
+  int tmp1,tmp2;
   if (g_usb_type == USB_PRINTER_HID_COMP)
   {
 		i = GetEPRxCount(ENDP3);
@@ -84,7 +89,12 @@ void EP3_OUT_Callback(void)
 		SetEPRxValid(ENDP3);
 		if (hid_buffer_out[1] == 0xf9)
 		{
-			strcpy(hid_buffer_out+2,"HJPrinter V1.0.3");
+			strcpy(hid_buffer_out+2,"HJPrinter V1.00.00");
+			hid_buffer_out[2+11] = HexToAscii(VERSION_MAJOR);
+			hid_buffer_out[2+13] = HexToAscii(VERSION_MINOR/10);
+			hid_buffer_out[2+14] = HexToAscii(VERSION_MINOR);
+			hid_buffer_out[2+16] = HexToAscii(VERSION_TEST/10);
+			hid_buffer_out[2+17] = HexToAscii(VERSION_TEST);
 			//usb_SendData(,64)
 			UserToPMABufferCopy(hid_buffer_out, GetEPTxAddr(ENDP2), 64);
 			SetEPTxCount(ENDP2, 64);
@@ -94,32 +104,74 @@ void EP3_OUT_Callback(void)
 		{
 			if ((hid_buffer_out[2] == 0x01)&&(hid_buffer_out[3] == 0x00))	//表示文件下载开始
 			{
-				//if (record_count_ext(REC1BLK))
-				//{
-				//	record_delall(REC1BLK);
-				//}
-				for (i = 0; i < DOWNLOADE_FILE_SIZE/(BLOCK_ERASE_SIZE*512);i++)
+				if (hid_buffer_out[4] == FILE_TYPE_BIN)
 				{
-					spi_flash_eraseblock(DOWNLOADE_FILE_SIZE+i*BLOCK_ERASE_SIZE*512);
+					for (i = 0; i < DOWNLOADE_FILE_SIZE/(BLOCK_ERASE_SIZE*512);i++)
+					{
+						spi_flash_eraseblock(DOWNLOAD_FILE_START_SECT+i*BLOCK_ERASE_SIZE*512);
+					}
 				}
+				else if (hid_buffer_out[4] == FILE_TYPE_FONT)
+				{
+					//擦除保存字库资源的SPI Flash区域的第一个block
+					//spi_flash_eraseblock(RES_START_SECT);
+				}
+				else if (hid_buffer_out[4] == FILE_TYPE_PIC)
+				{
+					//@todo 下载PIC
+				}
+				
 				write_offset = 0;
 			}
 			else if ((hid_buffer_out[2] == 0x05)&&(hid_buffer_out[3] == 0x00))	//表示文件下载结束
 			{
 #ifdef RELEASE_VER
-				//@todo....
-				//从应用跳转到BootLoader代码，执行应用程序的升级
-
+				if (hid_buffer_out[4] == FILE_TYPE_BIN)
+				{
+					//@todo....
+					//从应用跳转到BootLoader代码，执行应用程序的升级
+				}
+				else if(hid_buffer_out[4] == FILE_TYPE_BIN)
+				{
+					NVIC_SETFAULTMASK();
+					NVIC_GenerateSystemReset();
+				}		 
 #endif
 			}
-			else if ((hid_buffer_out[2] == 0x02)||(hid_buffer_out[2] == 0x03)||(hid_buffer_out[2] == 0x04))
+			else if ((hid_buffer_out[2] == FILE_TYPE_BIN)||(hid_buffer_out[2] == FILE_TYPE_FONT)||(hid_buffer_out[2] == FILE_TYPE_PIC))
 			{
-				//record_write(REC1BLK,hid_buffer_out+2,67);
-				spi_flash_waddr(DOWNLOAD_FILE_START_SECT+write_offset,hid_buffer_out[3],hid_buffer_out+4);
+				if (hid_buffer_out[2] == FILE_TYPE_BIN)
+				{
+					spi_flash_waddr(DOWNLOAD_FILE_START_SECT+write_offset,hid_buffer_out[3],hid_buffer_out+4);
+				}
+				else if (hid_buffer_out[2] == FILE_TYPE_FONT)
+				{
+					if (write_offset >= 512)
+					{
+						if (write_offset/(BLOCK_ERASE_SIZE*512) + 1 == (write_offset+hid_buffer_out[3])/(BLOCK_ERASE_SIZE*512))
+						{
+							spi_flash_eraseblock(RES_START_SECT+(write_offset+hid_buffer_out[3])/(BLOCK_ERASE_SIZE*512)*(BLOCK_ERASE_SIZE*512));
+						}
+						spi_flash_waddr(RES_START_SECT+write_offset-512,hid_buffer_out[3],hid_buffer_out+4);
+					}
+					else
+					{
+						if ((write_offset + hid_buffer_out[3]) > 512)
+						{
+							tmp1 = 512 - write_offset;
+							tmp2 = write_offset + hid_buffer_out[3] - 512;
+							spi_flash_eraseblock(RES_START_SECT);
+							spi_flash_waddr(RES_START_SECT,tmp2,hid_buffer_out+4+tmp1);
+						}
+					}
+				}
+				else if (hid_buffer_out[2] == FILE_TYPE_PIC)
+				{
+					//@todo...
+				}
 				write_offset += hid_buffer_out[3];
 			}       
 		}
-
   }
   else
 #endif

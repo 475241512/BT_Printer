@@ -241,9 +241,11 @@ int res_init(void)
 
 	
 	// 装入资源
-	dwLBA							= RES_START_SECT/512;
+	//dwLBA							= RES_START_SECT/512;
+	dwLBA							= 0;
 	do
 	{
+		dwLBA += RES_START_SECT/512;
 		// 装入一个表
 		if( res_loadres(dwLBA, &res_type, &res_id) != 0)
 		{
@@ -389,10 +391,11 @@ re_open:
 			*/
 			
 			//这里存在一个问题，如果资源链表之间夹了一个AppCode，可能导致Appcode后面的资源没有更新进来		
-			if(dwsrcLBA != 0xffffffff)
-			{
-				*(unsigned int*)&res_buffer[0x1F4] += RES_START_SECT/512+1;
-			}
+			//if(dwsrcLBA != 0xffffffff)
+			//{
+			//	*(unsigned int*)&res_buffer[0x1F4] += RES_START_SECT/512+1;
+			//}
+			//此处注释掉，资源的偏移地址在升级的时候不需要修改，只有在读资源的时候才需要将存储位置的偏移计算进去
 			
 			// 将TResInfoTable 写入SPI Flash的第一个Sector
 			if( spi_flash_wpage(desFlashAddress,res_buffer) != 0 ||

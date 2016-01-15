@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>STM32F10xxE	ST STM32F10xxE</state>
+          <state>STM32F10xx8	ST STM32F10xx8</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -639,7 +639,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\stm32f10x_flash.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_flash _16K_bootcode.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>

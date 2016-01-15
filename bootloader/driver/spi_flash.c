@@ -124,6 +124,8 @@ int spi_flash_init(void)
 	/* Deselect the FLASH: Chip Select high */
 	SPI_FLASH_CS_HIGH();
 
+        SPI_I2S_DeInit(SPI2);
+        
 	/* SPI2 configuration */
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;

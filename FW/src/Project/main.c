@@ -66,7 +66,7 @@ void system_error_tip(int err_no)
 	Lcd_TextOut(0,12,"System Err");
 	//sprintf(str,"Code:%d",err_no);
 	STRNCPY(str,"Code:",5);
-	hex_to_str(err_no,0x10,0,str+5);
+	hex_to_str(err_no,10,0,str+5);
 	Lcd_TextOut(0,24,str);
 #endif
 	//@todo...
@@ -80,26 +80,32 @@ void system_error_tip(int err_no)
 	}
 }
 
-#if(USB_DEVICE_CONFIG &_USE_USB_MASS_STOARGE_DEVICE)
 /*******************************************************************************
-* Function Name  : enter_u_disk_mode
-* Description    : 进入U盘模式
+* Function Name  : enter_upgrade_mode
+* Description    : 进入资源升级模式
 *******************************************************************************/
-void enter_u_disk_mode(void)
+void enter_upgrade_mode(void)
 {
 	int key_state = 0;
+#if(USB_DEVICE_CONFIG &_USE_USB_MASS_STOARGE_DEVICE)
 	g_mass_storage_device_type = MASSTORAGE_DEVICE_TYPE_SPI_FLASH;
 	usb_device_init(USB_MASSSTORAGE);
+#else
+	usb_device_init(USB_PRINTER_HID_COMP);
+#endif
+
 	//usb_Cable_Config(ENABLE);
 #ifdef LCD_VER
 	Lcd_clear(1);
-	Lcd_TextOut(0,12,"UDisk Mode");
+	Lcd_TextOut(0,12," Upgrade");
+	Lcd_TextOut(0,24,"   Mode");
 #endif
 
 	while(1)
 	{
 #ifdef LCD_VER
-		Lcd_blink(1,200);
+		//Lcd_blink(1,200);
+		delay_ms(400);
 #else
 		LED_blink(1,200);
 #endif
@@ -119,7 +125,7 @@ void enter_u_disk_mode(void)
 		}
 	}
 }
-#endif
+
 
 /*******************************************************************************
 * Function Name  : main
@@ -130,7 +136,8 @@ void enter_u_disk_mode(void)
 *******************************************************************************/
 int main(void)
 {
-	int	ret,key_state;
+	int	i,ret,key_state;
+        unsigned char data[16];
 	/* System Clocks Configuration **********************************************/
 	RCC_Configuration(); 
 #ifdef RELEASE_VER
@@ -241,48 +248,61 @@ int main(void)
 	//实现了Printer+HID的复合设备时，采用HID接口将升级文件download到SPI Flash保存起来
 	//利用record_mod驱动来保存下载下来的Intel Hex文件，重新上电后，进入Bootloader再将Intel Hex格式的升级文件解析并编程到相应的FLASH空间
 	//每条记录存储了3字节的冗余信息，TAG(1BYTE)+LEN[1BYTE]+[DATA(0),DATA(1)，...,DATA(n)](LEN BYTE)+CHECKSUM[1BYTE]
-	ret = record_init(REC1BLK,67,256*1024/64);	//最多支持256K的BIN文件的下载，只开辟这么大的空间来保存HEX文件
-	if (ret != 0)
-	{
-#ifdef DEBUG_VER
-		//bootloader负责完成此记录的初始化
-		if (ret == -3 || ret == -4 || ret == -6)
-		{
-			ret = record_format(REC1BLK,67,256*1024/64);
-			if (ret)
-			{
-				system_error_tip(80);
-			}
-		}
-		else
-#endif
-		{
-			system_error_tip(81);
-		}
-	}
+//	ret = record_init(REC1BLK,67,200*1024/64);	//最多支持200K的BIN文件的下载，只开辟这么大的空间来保存HEX文件
+//	if (ret != 0)
+//	{
+//#ifdef DEBUG_VER
+//		//bootloader负责完成此记录的初始化
+//		if (ret == -3 || ret == -4 || ret == -6)
+//		{
+//			ret = record_format(REC1BLK,67,200*1024/64);
+//			if (ret)
+//			{
+//				system_error_tip(80);
+//			}
+//		}
+//		else
+//#endif
+//		{
+//			system_error_tip(81);
+//		}
+//	}
+//
+//	ret = record_count(REC1BLK);
+//	if (ret < 0)
+//	{
+//		system_error_tip(81);
+//	}
+//	else if(ret > 0)
+//	{
+//		if(record_delall(REC1BLK))
+//		{
+//			system_error_tip(81);
+//		}
+//	}
 
-	ret = record_count(REC1BLK);
-	if (ret < 0)
+	//最终没有用record_mode驱动来保存下载下来的文件，直接利用SPI Flash的底层驱动去管理的，所以此处不需要初始化记录区
+#endif
+
+	//检查一下SPI Flash的蓝牙数据缓存区域是否有数据，有则需要先擦除。
+	spi_flash_raddr(BT_CACHE_START_SECT,16,data);
+	for(i = 0; i < 16;i++)
 	{
-		system_error_tip(81);
-	}
-	else if(ret > 0)
-	{
-		if(record_delall(REC1BLK))
+		if (data[i] != 0xff)
 		{
-			system_error_tip(81);
+			for(i = 0;i < BT_DATA_CACHE_SIZE/(BLOCK_ERASE_SIZE*512);i++)
+			{
+				spi_flash_eraseblock(BT_CACHE_START_SECT+i*BLOCK_ERASE_SIZE*512);
+			}
+			g_param.bt1_flash_cache_write_offset = 0;
+			break;
 		}
 	}
-#endif
 
 	ret = res_init();
 	if (ret != 0)
 	{
-#if(USB_DEVICE_CONFIG &_USE_USB_MASS_STOARGE_DEVICE)
-		enter_u_disk_mode();
-#else
-		system_error_tip(82);
-#endif
+		enter_upgrade_mode();
 	}
 	else
 	{

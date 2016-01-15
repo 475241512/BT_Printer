@@ -1732,11 +1732,13 @@ extern void TPPrintTestPage(void)
 	len = STRLEN("Firmware:");
 	STRNCPY(buf,"Firmware:",len);
 	STRNCPY(buf+len,"1.01.01 \n",STRLEN("1.01.01 \n"));
-	len = STRLEN("1.01.01 \n");
+	//len = STRLEN("1.01.01 \n");
 	buf[len+0] = HexToAscii(VERSION_MAJOR);
+	buf[len+2] = HexToAscii(VERSION_MINOR/10);
 	buf[len+3] = HexToAscii(VERSION_MINOR);
+	buf[len+5] = HexToAscii(VERSION_TEST/10);
 	buf[len+6] = HexToAscii(VERSION_TEST);
-	TPPrintAsciiLine(buf,len);
+	TPPrintAsciiLine(buf,len+STRLEN("1.01.01 \n"));
 
 	//len = snprintf(buf, sizeof(buf), "Build date: %s\n", __DATE__);
 	len = STRLEN("Build date: ");
@@ -1766,7 +1768,7 @@ extern void TPPrintTestPage(void)
 
 	//len = snprintf(buf, sizeof(buf),  "\n");
 	STRNCPY(buf,"\n",1);
-	TPPrintAsciiLine(buf,len);
+	TPPrintAsciiLine(buf,1);
 
 	//len = snprintf(buf, sizeof(buf),  "[Uart Configure]\n");
 	//TPPrintAsciiLine(buf,len);
@@ -1818,6 +1820,14 @@ extern void TPPrintTestPage(void)
 		STRNCPY(buf,"\n",1);
 		TPPrintAsciiLine(buf,1);
 	}
+	len = STRLEN("BT_Ver:");
+	STRNCPY(buf,"BT_Ver:",len);
+	TPPrintAsciiLine(buf,len);
+	len = STRLEN(g_param.bt_version);
+	STRNCPY(buf,g_param.bt_version,len);
+	TPPrintAsciiLine(buf,len);
+	STRNCPY(buf,"\n",1);
+	TPPrintAsciiLine(buf,1);
 
 	//len = snprintf(buf, sizeof(buf),  "\n");
 	//TPPrintAsciiLine(buf,len);
