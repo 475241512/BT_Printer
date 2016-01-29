@@ -27,51 +27,85 @@ extern unsigned int					dwPictureLBA;
 void ESC_POS_test_esc(void)
 {
 
-    uint32_t len,i;
-    char buf[64];
+    uint32_t len,i,j;
+    char buf[80];
 
 	//debug_cnt = 0;
 	current_channel = 0;
-     PrintBufToZero();
-    len = snprintf(buf, sizeof(buf),  "\n");
-    TPPrintAsciiLine(buf,len);
-    TPPrintAsciiLine(buf,len);
+ //    PrintBufToZero();
+ //   len = snprintf(buf, sizeof(buf),  "\n");
+ //   TPPrintAsciiLine(buf,len);
+ //   TPPrintAsciiLine(buf,len);
 
-	//ESC @  初始化打印机,先用默认设置打印一行数据
-    len = snprintf(buf, sizeof(buf), "\x1b@1234567890测试\n");
-    TPPrintAsciiLine(buf,len);
+	////ESC @  初始化打印机,先用默认设置打印一行数据
+ //   len = snprintf(buf, sizeof(buf), "\x1b@1234567890测试\n");
+ //   TPPrintAsciiLine(buf,len);
 
-	//ESC SP n -- 改变右行间距  ESC ! n -- 修改打印模式
-	len = snprintf(buf, sizeof(buf), "\x1b\x20\x10\x1b!\xff 1234567890测试\n");
-    TPPrintAsciiLine(buf,len);
+	////ESC SP n -- 改变右行间距  ESC ! n -- 修改打印模式
+	//len = snprintf(buf, sizeof(buf), "\x1b\x20\x10\x1b!\xff 1234567890测试\n");
+ //   TPPrintAsciiLine(buf,len);
 
-	//ESC $ nl nh  设置绝对打印位置 //ESC - n	选择/取消下划线模式  低半字节的低2位表示下划线宽度  0： 不改变  1：一点行   2:2点行
-								    //								 高半字节的低2位表示是否需要下划线  0： 取消  else: 选择
-	len = snprintf(buf, sizeof(buf), "\x1b@\x1b$\x20\x01\x1b-\x12 1234567890测试\n");
-    TPPrintAsciiLine(buf,len);
+	////ESC $ nl nh  设置绝对打印位置 //ESC - n	选择/取消下划线模式  低半字节的低2位表示下划线宽度  0： 不改变  1：一点行   2:2点行
+	//							    //								 高半字节的低2位表示是否需要下划线  0： 取消  else: 选择
+	//len = snprintf(buf, sizeof(buf), "\x1b@\x1b$\x20\x01\x1b-\x12 1234567890测试\n");
+ //   TPPrintAsciiLine(buf,len);
 
-	//ESC 3 n  设置行间距   //ESC J n 打印并走纸
-	len = snprintf(buf, sizeof(buf), "\x1b@\x1b\x33\x40 123456\x1bJ\x05 7890测试\n");
-    TPPrintAsciiLine(buf,len);
+	////ESC 3 n  设置行间距   //ESC J n 打印并走纸
+	//len = snprintf(buf, sizeof(buf), "\x1b@\x1b\x33\x40 123456\x1bJ\x05 7890测试\n");
+ //   TPPrintAsciiLine(buf,len);
 
-	//ESC 2  设置默认行间距   //ESC a n  选择对齐方式
-	len = snprintf(buf, sizeof(buf), "\x1b\x32\x1b\x61\x02 1234567890测试\n");
-    TPPrintAsciiLine(buf,len);
-	len = snprintf(buf, sizeof(buf), "\x1b\x61\x01 1234567890测试\n");
-    TPPrintAsciiLine(buf,len);
-	len = snprintf(buf, sizeof(buf), "\x1b\x61\x30 1234567890测试\n");
-    TPPrintAsciiLine(buf,len);
+	////ESC 2  设置默认行间距   //ESC a n  选择对齐方式
+	//len = snprintf(buf, sizeof(buf), "\x1b\x32\x1b\x61\x02 1234567890测试\n");
+ //   TPPrintAsciiLine(buf,len);
+	//len = snprintf(buf, sizeof(buf), "\x1b\x61\x01 1234567890测试\n");
+ //   TPPrintAsciiLine(buf,len);
+	//len = snprintf(buf, sizeof(buf), "\x1b\x61\x30 1234567890测试\n");
+ //   TPPrintAsciiLine(buf,len);
 
-	////ESC d n 打印并向前走纸n 行 //ESC { n 打开/关闭颠倒打印模式
-	len = snprintf(buf, sizeof(buf), "\x1b{\x01 1212345\x1b\x64\x08\x1b{\x30 67890测试\n");
-    TPPrintAsciiLine(buf,len);
+	//////ESC d n 打印并向前走纸n 行 //ESC { n 打开/关闭颠倒打印模式
+	//len = snprintf(buf, sizeof(buf), "\x1b{\x01 1212345\x1b\x64\x08\x1b{\x30 67890测试\n");
+ //   TPPrintAsciiLine(buf,len);
 
-	//ESC M n
-	len = snprintf(buf, sizeof(buf), "\x1bM\x01 121234567890测试\n\x1b@");
-    TPPrintAsciiLine(buf,len);
+	////ESC M n
+	//len = snprintf(buf, sizeof(buf), "\x1bM\x01 121234567890测试\n\x1b@");
+ //   TPPrintAsciiLine(buf,len);
 
-    len = snprintf(buf, sizeof(buf),  "\n\n\n\n\n");
-    TPPrintAsciiLine(buf,len);
+ //   len = snprintf(buf, sizeof(buf),  "\n\n\n\n\n");
+ //   TPPrintAsciiLine(buf,len);
+
+
+	
+	//测试曲线打印命令
+	//ESC ’ml mh l1 h1 l2 h2 l3 h3 … li hi…
+	//打印30行
+	for (i = 0; i < 30;i++)
+	{
+		buf[0] = 0x1b;
+		buf[1] = 0x27;
+		buf[2] = 30;		//每一行要打印的点数，低8位
+		buf[3] = 0;			//每一行要打印的点数，高8位
+		//每一行要打印的点的坐标，注意要与上面的点数一致
+		for(j = 0; j < 5;j++)
+		{
+			buf[4+12*j] =	(j*60+i)&0xff;		//打印点的坐标的低8位
+			buf[4+12*j+1] =  (j*60+i)>>8;		//打印点的坐标的高8位
+			buf[4+12*j+2] =	(j*60+i+1)&0xff; 
+			buf[4+12*j+3] =  (j*60+i+1)>>8;
+			buf[4+12*j+4] =	(j*60+i+2)&0xff; 
+			buf[4+12*j+5] =  (j*60+i+2)>>8;
+			buf[4+12*j+6] =	((j+1)*60-i-2)&0xff; 
+			buf[4+12*j+7] =  ((j+1)*60-i-2)>>8;
+			buf[4+12*j+8] =	((j+1)*60-i-1)&0xff; 
+			buf[4+12*j+9] =  ((j+1)*60-i-1)>>8;
+			buf[4+12*j+10] =	((j+1)*60-i)&0xff; 
+			buf[4+12*j+11] =  ((j+1)*60-i)>>8;
+		}
+		TPPrintAsciiLine(buf,64);
+	}
+
+	   len = snprintf(buf, sizeof(buf),  "\n\n\n\n\n");
+	   TPPrintAsciiLine(buf,len);
+	
 }
 
 

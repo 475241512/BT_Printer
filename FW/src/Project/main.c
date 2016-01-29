@@ -36,7 +36,7 @@
 #define SysCtrl_SLEEPDEEP_Set		((u32)0x00000004)
 
 #ifdef DEBUG_VER
-unsigned char	debug_buffer[2];
+unsigned char	debug_buffer[8096];
 unsigned int	debug_cnt;
 #endif
 

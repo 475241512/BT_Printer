@@ -334,6 +334,7 @@ extern void esc_p(void)
 			//ESC r n		Select printing color
 			chs[1] = Getchar();
 			//@not support
+			TPFeedLine(0x50);
 			break;
 		case 't':
 			//ESC t n		Select character code table
@@ -354,7 +355,7 @@ extern void esc_p(void)
 				chs[2] = Getchar();
 				chs[3] = Getchar();
 				//产生控制钱箱的脉冲
-				box_ctrl(chs[1]*2);
+				box_ctrl(chs[2]*2);
 			}
 			break;
 		case 0x27:
@@ -374,7 +375,8 @@ extern void esc_p(void)
 					chs[2] = Getchar();
 					off = chs[2]<<8;
 					off |= chs[1];
-					tmp[off/8] |= (1<<(off%8)); 
+					//tmp[off/8] |= (1<<(off%8)); 
+					tmp[off/8] |= (0x80>>(off%8)); 
 				}
 				TPPrintLine(tmp);
 			}
@@ -875,7 +877,7 @@ extern void esc_p(void)
 			chs[2] = Getchar();
 			if (chs[1])
 			{
-				CURRENT_ESC_STS.h_motionunit = 255/chs[1];
+				CURRENT_ESC_STS.h_motionunit = 203/chs[1];
 			}
 			else
 			{
@@ -884,11 +886,11 @@ extern void esc_p(void)
 			
 			if (chs[2])
 			{
-				CURRENT_ESC_STS.v_motionunit = 255/chs[2];
+				CURRENT_ESC_STS.v_motionunit = 203/chs[2];
 			}
 			else
 			{
-				CURRENT_ESC_STS.v_motionunit = 0;
+				CURRENT_ESC_STS.v_motionunit = 203/200;
 			}
 			break;
 		}

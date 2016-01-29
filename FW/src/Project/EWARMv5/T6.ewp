@@ -146,7 +146,7 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state>RELEASE_VER</state>
+          <state>DEBUG_VER</state>
           <state>LCD_VER</state>
           <state>GD_MCU</state>
         </option>
@@ -640,7 +640,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\stm32f10x_flash _16K_bootcode.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_debug.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>

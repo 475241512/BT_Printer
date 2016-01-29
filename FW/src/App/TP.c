@@ -1498,7 +1498,7 @@ extern void SetDesity(void)
 	TPSetSpeed(17);
 #else
 #if defined(HIGH_8V_PRINT)
-	TPSetSpeed(6);	//7//4
+	TPSetSpeed(6);//6	//7//4
 #else
 	TPSetSpeed(10);//10
 #endif
