@@ -814,11 +814,6 @@ int main(void)
 	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
 	// 初始化升级指示的硬件资源
-#ifdef LCD_VER
-	Lcd_init();
-#else
-	LED_init();
-#endif
 	key_init();
 	platform_misc_port_init();
 	spi_flash_init();
@@ -833,6 +828,11 @@ recheck:
 	// 1,初始化存储区（SD卡or SPI Flash），检查升级应用是否有效
 	if( check_updatefile() == 0 )
 	{
+#ifdef LCD_VER
+		Lcd_init();
+#else
+		LED_init();
+#endif
 		if( update_app() != 0 )
 		{
 			goto sys_fail;
@@ -859,6 +859,11 @@ recheck:
 	}
 
 sys_fail:
+#ifdef LCD_VER
+	Lcd_init();
+#else
+	LED_init();
+#endif
 #ifdef LED_VER
 	LED_OFF();
 #else

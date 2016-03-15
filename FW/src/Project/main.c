@@ -36,7 +36,11 @@
 #define SysCtrl_SLEEPDEEP_Set		((u32)0x00000004)
 
 #ifdef DEBUG_VER
+#if(HW_VER == HW_VER_V12)
+unsigned char	debug_buffer[1];
+#else
 unsigned char	debug_buffer[8096];
+#endif
 unsigned int	debug_cnt;
 #endif
 
@@ -179,7 +183,11 @@ int main(void)
 	//初始化时基函数
 	TimeBase_Init();
 
-
+#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
+	usb_device_init(USB_PRINTER_HID_COMP);
+#elif(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
+	usb_device_init(USB_PRINTER);
+#endif
 	//初始化按键模块
 	KeyScanInit();
 
@@ -333,11 +341,6 @@ int main(void)
 
 	esc_init();
 
-#if(USB_DEVICE_CONFIG &_USE_USB_PRINTER_HID_COMP_DEVICE)
-	usb_device_init(USB_PRINTER_HID_COMP);
-#elif(USB_DEVICE_CONFIG & _USE_USB_PRINTER_DEVICE)
-	usb_device_init(USB_PRINTER);
-#endif
 	//test_motor();
 
 	PaperStartSns();		//Systick跳动起来

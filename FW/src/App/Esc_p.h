@@ -7,6 +7,8 @@
 #include "BT816.h"
 
 
+//#define DEBUG_ESC_POS
+
 #if defined(TM_T88II)
 #define FONT_A_WIDTH		(12)
 #define FONT_A_HEIGHT		(24)

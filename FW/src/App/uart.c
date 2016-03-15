@@ -175,8 +175,10 @@ extern uint8_t Getchar(void)        //接收数据
 					}
 				}
 #ifdef DEBUG_VER
+#if(HW_VER != HW_VER_V12)
 				debug_buffer[debug_cnt%8096] = c;
 				debug_cnt++;
+#endif
 #endif
 				//trip2();
 				return c;

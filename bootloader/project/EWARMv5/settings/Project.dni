@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-1077784894
+Checksum=-1197244126
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -99,6 +99,10 @@ ActionState=1
 [TraceHelper]
 Enabled=0
 ShowSource=1
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -127,7 +131,3 @@ mode=1
 Bp0=_ "STD_CODE" "{D:\work\finance\oslib\fw\bootloader\project\main.c}.758.1@1" 0 0 0 0 "" 0 "" 0
 Bp1=_ "STD_CODE" "{D:\work\finance\oslib\fw\bootloader\project\main.c}.409.6@1" 0 0 0 0 "" 0 "" 0
 Count=2
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0

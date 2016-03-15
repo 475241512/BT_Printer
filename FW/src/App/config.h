@@ -12,7 +12,7 @@
 
 #define VERSION_MAJOR	1
 #define VERSION_MINOR	0
-#define VERSION_TEST    9
+#define VERSION_TEST    11
 
 //#define LOW_5V_PRINT
 #define HIGH_8V_PRINT

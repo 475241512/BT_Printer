@@ -11,7 +11,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=-807471364
+Checksum=1739250755
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -59,9 +59,6 @@ SWOInfo_ITMLogFile=$PROJ_DIR$\ITM.log
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [DataLog]
 LogEnabled=0
 SumEnabled=0
@@ -96,3 +93,6 @@ Bp8=_ "STD_CODE" "{E:\H520B\FW\src\App\record_m.c}.583.2@1" 0 0 0 0 "" 0 "" 0
 Bp9=_ "STD_CODE" "{E:\BT_Printer\FW\src\usb_lib\usb_int.c}.155.3@1" 0 0 0 0 "" 0 "" 0
 Bp10=_ "STD_CODE" "0x08009DF0" 0 0 0 0 "" 0 "" 0
 Count=11
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""

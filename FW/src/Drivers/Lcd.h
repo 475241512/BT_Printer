@@ -6,7 +6,7 @@
 	GPIOB->BSRR = GPIO_Pin_12;\
 	}while(0)
 
-#define LCD_BACKLIGHT_OFF()	do{\
+#define LCD_BACKLIGHT_OFF()	//do{\
 	GPIOB->BRR = GPIO_Pin_12;\
 	}while(0)
 

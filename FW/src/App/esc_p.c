@@ -8,6 +8,7 @@
 #include "Font.h"
 #include "uart.h"
 #include "TP.h"
+
 //======================================================================================================
 //======================================================================================================
 //======================================================================================================
@@ -88,7 +89,7 @@ extern void esc_p_init(unsigned int n,unsigned char mode)
 	esc_sts[n].international_character_set = 0;    // english
 	esc_sts[n].character_code_page = g_param.character_code_page;
 	esc_sts[n].h_motionunit = 0;
-	esc_sts[n].v_motionunit = 0;
+	esc_sts[n].v_motionunit = 1;
 	esc_sts[n].prt_on = 0;
 	esc_sts[n].larger = 0;
 #ifdef ASCII9X24
@@ -160,6 +161,7 @@ extern void esc_p(void)
 	 	
 	switch(cmd=Getchar())
 	{
+#ifndef DEBUG_ESC_POS
 	case LF:	// line feed
 		PrintCurrentBuffer(0);
 		break;
@@ -196,9 +198,32 @@ extern void esc_p(void)
 			//	on	0x80	设置下划线模式
 			CURRENT_ESC_STS.revert = ((chs[1]&(1<<1))?1:0);
 			CURRENT_ESC_STS.italic = ((chs[1]&(1<<2))?1:0);
-			CURRENT_ESC_STS.larger |= ((chs[1]&(1<<4))?1:0);
-			CURRENT_ESC_STS.larger |= ((chs[1]&(1<<5))?1:0)<<4;
-			CURRENT_ESC_STS.underline |= (((chs[1]&(1<<7))?1:0)|0x80);
+			if(chs[1]&(1<<4))
+			{
+				CURRENT_ESC_STS.larger |= 0x01;
+			}
+			else
+			{
+				CURRENT_ESC_STS.larger &= ~0x01;
+			}
+
+			if(chs[1]&(1<<5))
+			{
+				CURRENT_ESC_STS.larger |= 0x10;
+			}
+			else
+			{
+				CURRENT_ESC_STS.larger &= ~0x10;
+			}
+
+			if(chs[1]&(1<<7))
+			{
+				CURRENT_ESC_STS.underline |= 0x80;
+			}
+			else
+			{
+				CURRENT_ESC_STS.underline &= ~0x80;
+			}
 			break;
 		case '$':
 			//ESC $ nl nh  设置绝对打印位置
@@ -283,7 +308,11 @@ extern void esc_p(void)
 			//ESC J n 打印并走纸
 			chs[1] = Getchar();
 			PrintCurrentBuffer_0(0);
-			TPFeedLine(chs[1]*CURRENT_ESC_STS.v_motionunit);
+			if (chs[1]*CURRENT_ESC_STS.v_motionunit > FONT_A_HEIGHT*((CURRENT_ESC_STS.larger & 0x0f)+1))
+			{
+				//TPFeedLine(chs[1]*CURRENT_ESC_STS.v_motionunit - FONT_A_HEIGHT*((CURRENT_ESC_STS.larger & 0x0f)+1));
+				TPFeedLine(chs[1]*CURRENT_ESC_STS.v_motionunit);
+			}
 			CURRENT_ESC_STS.start_dot = 0;
 			break;
 		case 'a':
@@ -898,6 +927,7 @@ extern void esc_p(void)
 #endif
 	case ESC_CAN:
 		break;
+#endif
 	default:
 		{
 			//----chang
@@ -949,6 +979,17 @@ extern void esc_p(void)
 					GetEnglishFont('?');
 				}
 			}
+#ifdef DEBUG_ESC_POS
+			else
+			{
+				GetEnglishFont(' ');
+				GetEnglishFont(0x30);
+				GetEnglishFont('x');
+				GetEnglishFont(HexToAscii((cmd>>4)&0x0f));
+				GetEnglishFont(HexToAscii(cmd&0x0f));
+				GetEnglishFont(' ');
+			}
+#endif
 #endif
 #endif
 		}

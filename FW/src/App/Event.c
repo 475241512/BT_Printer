@@ -58,7 +58,11 @@ extern void event_proc(void)
 		//ESC_POS_test_esc();
 		//ESC_POS_test_esc_special();
 		//TPPrintTestPage();
+#ifdef DEBUG_ESC_POS
+		PrintCurrentBuffer(0);
+#endif
 		TPFeedStart();
+
           //if(TPPrinterReady())
           //{
           //  TPSelfTest2();
